@@ -91,7 +91,16 @@ if file:
 
     st.subheader("📋 Cluster Analysis")
     st.write(df['cluster'].value_counts())
-    st.dataframe(df.groupby('cluster')[colonnes].mean().T.style.background_gradient(cmap="YlGnBu"))
+        st.subheader("📈 Average Survey Scores per Cluster (Dynamic Table)")
+
+    def color_gradient(val):
+        color = 'background-color: {}'.format(
+            f'rgba(100, 200, 255, {val})' if val > 0 else 'white'
+        )
+        return color
+
+    styled_table = avg_scores_per_cluster.style.background_gradient(cmap='YlGnBu', axis=0).format("{:.2f}")
+    st.dataframe(styled_table, use_container_width=True)
 
     # PCA Visualization
     pca = PCA(n_components=2)

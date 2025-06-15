@@ -90,24 +90,27 @@ if file:
     df['cluster'] = kmeans.fit_predict(scaled_features)
 
     st.subheader("📋 Cluster Analysis")
-    st.write(df['cluster'].value_counts())
+
+    # Count of each cluster
+    cluster_counts = df['cluster'].value_counts().sort_index()
     
-    # --- Average Survey Scores per Cluster with maturity level ---
+    # Map cluster number to maturity level label
     niveau_maturite_map = {
         0: 'Niveau Avancé',
         1: 'Niveau Initial',
         2: 'Niveau Intégré'
     }
     
-    avg_scores_per_cluster = df.groupby('cluster')[colonnes].mean()
-    avg_scores_per_cluster['Niveau de maturité Lean 4.0'] = avg_scores_per_cluster.index.map(niveau_maturite_map)
+    # Create a DataFrame to show cluster counts with labels
+    cluster_summary = pd.DataFrame({
+        'Cluster': cluster_counts.index,
+        'Nombre d\'entreprises': cluster_counts.values,
+        'Niveau de maturité Lean 4.0': cluster_counts.index.map(niveau_maturite_map)
+    })
     
-    # Reorder columns to put maturity level first
-    cols = ['Niveau de maturité Lean 4.0'] + [c for c in avg_scores_per_cluster.columns if c != 'Niveau de maturité Lean 4.0']
-    avg_scores_per_cluster = avg_scores_per_cluster[cols]
-    
-    st.write("### Scores moyens par cluster et Niveau de maturité Lean 4.0")
-    st.dataframe(avg_scores_per_cluster.style.background_gradient(cmap='YlGnBu').format("{:.2f}"))
+    # Display the table
+    st.table(cluster_summary)
+
 
 
     # PCA Visualization

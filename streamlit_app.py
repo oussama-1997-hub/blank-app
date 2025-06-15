@@ -149,21 +149,6 @@ if file:
         ax=ax
     )
     
-    ax.set_title("Average Survey Scores per Cluster", fontsize=20, fontweight='bold', pad=20)
-    ax.set_xlabel("Cluster", fontsize=14, labelpad=15)
-    ax.set_ylabel("Survey Features", fontsize=14, labelpad=15)
-    
-    # Set y-ticks to feature names
-    ax.set_yticks(np.arange(len(colonnes)) + 0.5)  # center tick labels on each row
-    ax.set_yticklabels(colonnes, fontsize=12, rotation=0)  # rotation=45 if you want slant
-    
-    # X ticks
-    ax.tick_params(axis='x', labelsize=12)
-    plt.xticks(rotation=0)
-    
-    plt.tight_layout()
-    
-    st.pyplot(fig)
 
 
     # --- Decision Tree ---

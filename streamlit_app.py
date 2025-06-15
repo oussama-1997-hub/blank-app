@@ -89,8 +89,26 @@ if file:
     kmeans = KMeans(n_clusters=final_k, random_state=42, n_init=10)
     df['cluster'] = kmeans.fit_predict(scaled_features)
 
-    st.subheader("📋 Cluster Analysis")
+   st.subheader("📋 Cluster Analysis")
     st.write(df['cluster'].value_counts())
+    
+    # --- Average Survey Scores per Cluster with maturity level ---
+    niveau_maturite_map = {
+        0: 'Niveau Avancé',
+        1: 'Niveau Initial',
+        2: 'Niveau Intégré'
+    }
+    
+    avg_scores_per_cluster = df.groupby('cluster')[colonnes].mean()
+    avg_scores_per_cluster['Niveau de maturité Lean 4.0'] = avg_scores_per_cluster.index.map(niveau_maturite_map)
+    
+    # Reorder columns to put maturity level first
+    cols = ['Niveau de maturité Lean 4.0'] + [c for c in avg_scores_per_cluster.columns if c != 'Niveau de maturité Lean 4.0']
+    avg_scores_per_cluster = avg_scores_per_cluster[cols]
+    
+    st.write("### Scores moyens par cluster et Niveau de maturité Lean 4.0")
+    st.dataframe(avg_scores_per_cluster.style.background_gradient(cmap='YlGnBu').format("{:.2f}"))
+
     
 
     # PCA Visualization

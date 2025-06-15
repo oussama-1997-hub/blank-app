@@ -106,14 +106,13 @@ if file:
 
     # --- Heatmaps ---
     import matplotlib.ticker as ticker
-    
+
     avg_scores = df.groupby('cluster')[colonnes].mean()
     
     st.subheader("📈 Average Survey Scores per Cluster (Heatmap)")
     
-    fig, ax = plt.subplots(figsize=(14, 9))  # Larger figure for clarity
+    fig, ax = plt.subplots(figsize=(14, max(9, len(colonnes)*0.5)))  # increase height dynamically
     
-    # Create heatmap with annotations and improved style
     sns.heatmap(
         avg_scores.T,
         cmap="YlGnBu",
@@ -129,6 +128,23 @@ if file:
         },
         ax=ax
     )
+    
+    ax.set_title("Average Survey Scores per Cluster", fontsize=20, fontweight='bold', pad=20)
+    ax.set_xlabel("Cluster", fontsize=14, labelpad=15)
+    ax.set_ylabel("Survey Features", fontsize=14, labelpad=15)
+    
+    # Set y-ticks to feature names
+    ax.set_yticks(np.arange(len(colonnes)) + 0.5)  # center tick labels on each row
+    ax.set_yticklabels(colonnes, fontsize=12, rotation=0)  # rotation=45 if you want slant
+    
+    # X ticks
+    ax.tick_params(axis='x', labelsize=12)
+    plt.xticks(rotation=0)
+    
+    plt.tight_layout()
+    
+    st.pyplot(fig)
+
     
     # Title with bigger font and bold
     ax.set_title("Average Survey Scores per Cluster", fontsize=20, fontweight='bold', pad=20)

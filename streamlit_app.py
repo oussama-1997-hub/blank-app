@@ -9,6 +9,7 @@ from sklearn.metrics import silhouette_score
 from sklearn.decomposition import PCA
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
 import graphviz
@@ -90,19 +91,7 @@ if file:
 
     st.subheader("📋 Cluster Analysis")
     st.write(df['cluster'].value_counts())
-
-    # Show Niveau Maturité associated with each cluster
-    if 'Niveau Maturité' in df.columns:
-        maturite_table = df.groupby('cluster')['Niveau Maturité'].value_counts().unstack(fill_value=0)
-        st.subheader("🔎 Distribution of 'Niveau Maturité' per Cluster")
-        st.dataframe(maturite_table)
-
-    # Show average survey scores per cluster
-    avg_scores_per_cluster = df.groupby('cluster')[colonnes].mean()
-    st.subheader("📈 Average Survey Scores per Cluster")
-    fig3, ax3 = plt.subplots(figsize=(12, 8))
-    sns.heatmap(avg_scores_per_cluster.T, cmap="YlGnBu", annot=True, fmt=".2f", ax=ax3)
-    st.pyplot(fig3)
+    st.dataframe(df.groupby('cluster')[colonnes].mean().T.style.background_gradient(cmap='YlGnBu'))
 
     # PCA Visualization
     pca = PCA(n_components=2)
@@ -110,9 +99,16 @@ if file:
     df_pca = pd.DataFrame(pca_result, columns=['PCA1', 'PCA2'])
     df_pca['cluster'] = df['cluster']
 
-    fig4, ax4 = plt.subplots()
-    sns.scatterplot(data=df_pca, x='PCA1', y='PCA2', hue='cluster', palette='viridis', ax=ax4)
-    ax4.set_title("PCA of Clusters")
+    fig3, ax3 = plt.subplots()
+    sns.scatterplot(data=df_pca, x='PCA1', y='PCA2', hue='cluster', palette='viridis', ax=ax3)
+    ax3.set_title("PCA of Clusters")
+    st.pyplot(fig3)
+
+    # --- Heatmaps ---
+    st.subheader("📈 Average Survey Scores per Cluster")
+    avg_scores = df.groupby('cluster')[colonnes].mean()
+    fig4, ax4 = plt.subplots(figsize=(12, 8))
+    sns.heatmap(avg_scores.T, cmap="YlGnBu", annot=True, fmt=".2f", ax=ax4)
     st.pyplot(fig4)
 
     # --- Decision Tree ---
@@ -129,8 +125,21 @@ if file:
 
         clf = DecisionTreeClassifier(min_samples_leaf=4, random_state=42)
         clf.fit(X_train, y_train)
+        y_pred = clf.predict(X_test)
 
-        # --- Graphviz tree rendering ---
+        st.write("**Accuracy:**", accuracy_score(y_test, y_pred))
+        st.text("Classification Report")
+        st.text(classification_report(y_test, y_pred))
+        st.text("Confusion Matrix")
+        st.write(confusion_matrix(y_test, y_pred))
+
+        st.subheader("Feature Importances")
+        importances = pd.Series(clf.feature_importances_, index=X_train.columns).sort_values(ascending=False).head(20)
+        fig5, ax5 = plt.subplots()
+        importances.plot(kind='barh', ax=ax5)
+        ax5.set_title("Top 20 Feature Importances")
+        st.pyplot(fig5)
+
         st.subheader("🎯 Visualize Decision Tree")
         dot_data = export_graphviz(
             clf,

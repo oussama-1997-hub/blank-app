@@ -114,7 +114,8 @@ if file:
         return color
 
     styled_table = avg_scores_per_cluster.style.background_gradient(cmap='YlGnBu', axis=0).format("{:.2f}")
-    st.dataframe(styled_table, use_container_width=True)
+    st.write(styled_table)
+
 
     # --- Decision Tree ---
     st.header("🌳 Decision Tree Classification")

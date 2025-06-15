@@ -148,7 +148,27 @@ if file:
         },
         ax=ax
     )
-    
+    # Title with bigger font and bold
+ax.set_title("Average Survey Scores per Cluster", fontsize=20, fontweight='bold', pad=20)
+
+# Axis labels styling
+ax.set_xlabel("Cluster", fontsize=14, labelpad=15)
+ax.set_ylabel("Survey Features", fontsize=14, labelpad=15)
+
+# Tick params for better readability
+ax.tick_params(axis='x', labelsize=12)
+ax.tick_params(axis='y', labelsize=12)
+
+# Rotate x-axis labels if needed
+plt.xticks(rotation=0)  # keep horizontal or try 30 or 45 if crowded
+plt.yticks(rotation=0)
+
+# Optional: set major ticks for y-axis to show all features clearly
+ax.yaxis.set_major_locator(ticker.FixedLocator(range(len(avg_scores.columns))))
+
+plt.tight_layout()  # adjust layout to prevent clipping
+
+st.pyplot(fig)
 
 
     # --- Decision Tree ---

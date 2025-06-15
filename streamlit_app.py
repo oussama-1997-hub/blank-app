@@ -97,10 +97,12 @@ if file:
         st.subheader("🔎 Distribution of 'Niveau Maturité' per Cluster")
         st.dataframe(maturite_table)
 
-    # Show average survey scores per cluster with YlGnBu color gradient
+    # Show average survey scores per cluster
     avg_scores_per_cluster = df.groupby('cluster')[colonnes].mean()
     st.subheader("📈 Average Survey Scores per Cluster")
-    st.dataframe(avg_scores_per_cluster.style.background_gradient(cmap="YlGnBu", axis=1, vmin=0, vmax=5).format("{:.2f}"))
+    fig3, ax3 = plt.subplots(figsize=(12, 8))
+    sns.heatmap(avg_scores_per_cluster.T, cmap="YlGnBu", annot=True, fmt=".2f", ax=ax3)
+    st.pyplot(fig3)
 
     # PCA Visualization
     pca = PCA(n_components=2)

@@ -91,7 +91,7 @@ if file:
 
     st.subheader("📋 Cluster Analysis")
     st.write(df['cluster'].value_counts())
-        st.subheader("📈 Average Survey Scores per Cluster (Dynamic Table)")
+    st.subheader("📈 Average Survey Scores per Cluster (Dynamic Table)")
 
     def color_gradient(val):
         color = 'background-color: {}'.format(

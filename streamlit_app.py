@@ -105,8 +105,7 @@ if file:
     st.pyplot(fig3)
 
     # --- Heatmaps ---
-   st.subheader("📈 Average Survey Scores per Cluster (Dynamic Table)")
-
+    st.subheader("📈 Average Survey Scores per Cluster (Dynamic Table)")
     def color_gradient(val):
         color = 'background-color: {}'.format(
             f'rgba(100, 200, 255, {val})' if val > 0 else 'white'

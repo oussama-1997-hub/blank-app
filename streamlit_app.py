@@ -182,12 +182,24 @@ if file:
         clf.fit(X_train, y_train)
         y_pred = clf.predict(X_test)
 
-        st.subheader("Feature Importances")
-        importances = pd.Series(clf.feature_importances_, index=X_train.columns).sort_values(ascending=False).head(20)
-        fig5, ax5 = plt.subplots()
-        importances.plot(kind='barh', ax=ax5)
-        ax5.set_title("Top 20 Feature Importances")
-        st.pyplot(fig5)
+        st.subheader("🔎 Top Feature Importances (non-zero only)")
+
+        # Get importances and filter only non-zero ones
+        importances = pd.Series(clf.feature_importances_, index=X_train.columns)
+        non_zero_importances = importances[importances > 0].sort_values(ascending=False).head(20)
+        
+        # Plot only if any non-zero importances exist
+        if not non_zero_importances.empty:
+            fig5, ax5 = plt.subplots(figsize=(10, 6))
+            non_zero_importances.plot(kind='barh', ax=ax5, color='steelblue')
+            ax5.set_title("Top Non-Zero Feature Importances")
+            ax5.set_xlabel("Importance")
+            ax5.set_ylabel("Feature")
+            plt.tight_layout()
+            st.pyplot(fig5)
+        else:
+            st.info("ℹ️ No features with non-zero importance were found.")
+
 
         st.subheader("🎯 Visualize Decision Tree")
         dot_data = export_graphviz(

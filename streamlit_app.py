@@ -106,7 +106,7 @@ if file:
 
     # --- Heatmaps ---
     # Calculate average scores per cluster
- avg_scores = df.groupby('cluster')[colonnes].mean()
+  avg_scores = df.groupby('cluster')[colonnes].mean()
 
 # Transpose for better visualization (features as rows, clusters as columns)
 avg_scores_T = avg_scores.T

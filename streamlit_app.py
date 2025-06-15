@@ -108,24 +108,24 @@ if file:
     st.subheader("📈 Average Survey Scores per Cluster")
     avg_scores = df.groupby('cluster')[colonnes].mean()
     # Transpose for better visualization (features as rows, clusters as columns)
-avg_scores_T = avg_scores.T
-
-# Apply styling
-styled_table = (
-    avg_scores_T.style
-    .background_gradient(cmap='YlGnBu')
-    .set_caption("Average Survey Scores per Cluster")
-    .format("{:.2f}")
-    .set_table_styles([
-        {'selector': 'th', 'props': [('font-weight', 'bold'), ('font-size', '14px'), ('text-align', 'center')]},
-        {'selector': 'td', 'props': [('font-size', '12px'), ('text-align', 'center')]},
-        {'selector': 'caption', 'props': [('caption-side', 'top'), ('font-size', '16px'), ('font-weight', 'bold')]}
-    ])
-    .apply(lambda x: ['background-color: #f0f0f0' if i % 2 == 0 else '' for i in range(len(x))], axis=1)  # striped rows
-)
-
-st.subheader("📋 Average Survey Scores per Cluster (Stylish Table)")
-st.dataframe(styled_table)
+    avg_scores_T = avg_scores.T
+    
+    # Apply styling
+    styled_table = (
+        avg_scores_T.style
+        .background_gradient(cmap='YlGnBu')
+        .set_caption("Average Survey Scores per Cluster")
+        .format("{:.2f}")
+        .set_table_styles([
+            {'selector': 'th', 'props': [('font-weight', 'bold'), ('font-size', '14px'), ('text-align', 'center')]},
+            {'selector': 'td', 'props': [('font-size', '12px'), ('text-align', 'center')]},
+            {'selector': 'caption', 'props': [('caption-side', 'top'), ('font-size', '16px'), ('font-weight', 'bold')]}
+        ])
+        .apply(lambda x: ['background-color: #f0f0f0' if i % 2 == 0 else '' for i in range(len(x))], axis=1)  # striped rows
+    )
+    
+    st.subheader("📋 Average Survey Scores per Cluster (Stylish Table)")
+    st.dataframe(styled_table)
 
     # --- Decision Tree ---
     st.header("🌳 Decision Tree Classification")

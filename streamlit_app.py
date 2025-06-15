@@ -105,27 +105,53 @@ if file:
     st.pyplot(fig3)
 
     # --- Heatmaps ---
-    st.subheader("📈 Average Survey Scores per Cluster")
-    avg_scores = df.groupby('cluster')[colonnes].mean()
-    # Transpose for better visualization (features as rows, clusters as columns)
-    avg_scores_T = avg_scores.T
+    import matplotlib.ticker as ticker
     
-    # Apply styling
-    styled_table = (
-        avg_scores_T.style
-        .background_gradient(cmap='YlGnBu')
-        .set_caption("Average Survey Scores per Cluster")
-        .format("{:.2f}")
-        .set_table_styles([
-            {'selector': 'th', 'props': [('font-weight', 'bold'), ('font-size', '14px'), ('text-align', 'center')]},
-            {'selector': 'td', 'props': [('font-size', '12px'), ('text-align', 'center')]},
-            {'selector': 'caption', 'props': [('caption-side', 'top'), ('font-size', '16px'), ('font-weight', 'bold')]}
-        ])
-        .apply(lambda x: ['background-color: #f0f0f0' if i % 2 == 0 else '' for i in range(len(x))], axis=1)  # striped rows
+    avg_scores = df.groupby('cluster')[colonnes].mean()
+    
+    st.subheader("📈 Average Survey Scores per Cluster (Heatmap)")
+    
+    fig, ax = plt.subplots(figsize=(14, 9))  # Larger figure for clarity
+    
+    # Create heatmap with annotations and improved style
+    sns.heatmap(
+        avg_scores.T,
+        cmap="YlGnBu",
+        annot=True,
+        fmt=".2f",
+        linewidths=0.8,
+        linecolor='gray',
+        cbar_kws={
+            'label': 'Average Score',
+            'shrink': 0.75,
+            'aspect': 15,
+            'pad': 0.02
+        },
+        ax=ax
     )
     
-    st.subheader("📋 Average Survey Scores per Cluster (Stylish Table)")
-    st.dataframe(styled_table)
+    # Title with bigger font and bold
+    ax.set_title("Average Survey Scores per Cluster", fontsize=20, fontweight='bold', pad=20)
+    
+    # Axis labels styling
+    ax.set_xlabel("Cluster", fontsize=14, labelpad=15)
+    ax.set_ylabel("Survey Features", fontsize=14, labelpad=15)
+    
+    # Tick params for better readability
+    ax.tick_params(axis='x', labelsize=12)
+    ax.tick_params(axis='y', labelsize=12)
+    
+    # Rotate x-axis labels if needed
+    plt.xticks(rotation=0)  # keep horizontal or try 30 or 45 if crowded
+    plt.yticks(rotation=0)
+    
+    # Optional: set major ticks for y-axis to show all features clearly
+    ax.yaxis.set_major_locator(ticker.FixedLocator(range(len(avg_scores.columns))))
+    
+    plt.tight_layout()  # adjust layout to prevent clipping
+    
+    st.pyplot(fig)
+    
 
     # --- Decision Tree ---
     st.header("🌳 Decision Tree Classification")

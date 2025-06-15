@@ -105,14 +105,11 @@ if file:
     st.pyplot(fig3)
 
     # --- Heatmaps ---
-    # Calculate average scores per cluster
-      avg_scores = df.groupby('cluster')[colonnes].mean()
-    
-    # Plot heatmap with seaborn for visualization (optional)
-    st.subheader("📈 Average Survey Scores per Cluster (Heatmap)")
-    fig, ax = plt.subplots(figsize=(12, 8))
-    sns.heatmap(avg_scores.T, cmap="YlGnBu", annot=True, fmt=".2f", ax=ax)
-    st.pyplot(fig)
+    st.subheader("📈 Average Survey Scores per Cluster")
+    avg_scores = df.groupby('cluster')[colonnes].mean()
+    fig4, ax4 = plt.subplots(figsize=(12, 8))
+    sns.heatmap(avg_scores.T, cmap="YlGnBu", annot=True, fmt=".2f", ax=ax4)
+    st.pyplot(fig4)
 
     # --- Decision Tree ---
     st.header("🌳 Decision Tree Classification")

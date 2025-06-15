@@ -207,9 +207,12 @@ if file:
             out_file=None,
             feature_names=X_train.columns,
             class_names=[str(c) for c in clf.classes_],
-            filled=True, rounded=True,
-            special_characters=True
+            filled=True,
+            rounded=True,
+            special_characters=True,
+            max_depth=3  # 👈 Adjust this value to improve readability
         )
+
         st.graphviz_chart(dot_data)
 
     else:

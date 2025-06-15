@@ -91,7 +91,7 @@ if file:
 
     st.subheader("📋 Cluster Analysis")
     st.write(df['cluster'].value_counts())
-    st.dataframe(df.groupby('cluster')[colonnes].mean().T.style.background_gradient(cmap="YlGnBu", annot=True, fmt=".2f", ax=ax3))
+    st.dataframe(df.groupby('cluster')[colonnes].mean().T.style.background_gradient(cmap="YlGnBu"))
 
     # PCA Visualization
     pca = PCA(n_components=2)

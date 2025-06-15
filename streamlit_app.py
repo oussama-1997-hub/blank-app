@@ -105,15 +105,20 @@ if file:
     st.pyplot(fig3)
 
     # --- Heatmaps ---
-    st.subheader("📈 Average Survey Scores per Cluster (Dynamic Table)")
-    def color_gradient(val):
-        color = 'background-color: {}'.format(
-            f'rgba(100, 200, 255, {val})' if val > 0 else 'white'
-        )
-        return color
+    # Calculate average scores per cluster
+    avg_scores = df.groupby('cluster')[colonnes].mean()
+    
+    # Plot heatmap with seaborn for visualization (optional)
+    st.subheader("📈 Average Survey Scores per Cluster (Heatmap)")
+    fig, ax = plt.subplots(figsize=(12, 8))
+    sns.heatmap(avg_scores.T, cmap="YlGnBu", annot=True, fmt=".2f", ax=ax)
+    st.pyplot(fig)
+    
+    # Display dynamic table with same color gradient
+    st.subheader("📋 Average Survey Scores per Cluster (Dynamic Table)")
+    styled_table = avg_scores.T.style.background_gradient(cmap='YlGnBu').format("{:.2f}")
+    st.dataframe(styled_table)
 
-    styled_table = avg_scores_per_cluster.style.background_gradient(cmap='YlGnBu', axis=0).format("{:.2f}")
-    st.write(styled_table)
 
 
     # --- Decision Tree ---

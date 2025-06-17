@@ -1,220 +1,87 @@
-# streamlit_cluster_app.py
+# app_personalized_recommendation.py
 
 import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.decomposition import PCA
-from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
-import graphviz
 
-st.set_page_config(page_title="Lean 4.0 Cluster & Tree App", layout="wide")
-st.title("🔍 Lean 4.0 Clustering & Decision Tree Dashboard")
-st.markdown("This app lets you perform clustering and classification on Lean 4.0 survey data using KMeans and Decision Tree models.")
+st.set_page_config(page_title="Lean 4.0 Diagnostic", layout="wide")
+st.title("🏭 Évaluation Personnalisée de la Maturité Lean 4.0")
 
-# --- Sidebar Config ---
-st.sidebar.header("📂 Upload your CSV file")
-file = st.sidebar.file_uploader("Upload df_cleaned_with_dummies.csv", type="csv")
+st.markdown("""
+Cette application vous permet de :
+1. Évaluer votre positionnement Lean 4.0
+2. Comparer vos outils avec les leaders
+3. Générer une feuille de route personnalisée
+""")
 
-# --- Define the column names ---
-colonnes = [
-    "Leadership - Engagement Lean ",
-    "Leadership - Engagement DT",
-    "Leadership - Stratégie ",
-    "Leadership - Communication",
-    "Supply Chain - Collaboration inter-organisationnelle",
-    "Supply Chain - Traçabilité",
-    "Supply Chain - Impact sur les employées",
-    "Opérations - Standardisation des processus",
-    "Opérations - Juste-à-temps (JAT)",
-    "Opérations - Gestion des résistances",
-    "Technologies - Connectivité et gestion des données",
-    "Technologies - Automatisation",
-    "Technologies - Pilotage du changement",
-    "Organisation apprenante  - Formation et développement des compétences",
-    "Organisation apprenante  - Collaboration et Partage des Connaissances",
-    "Organisation apprenante  - Flexibilité organisationnelle"
-]
-
-cols_to_exclude = [
-    'Indicateurs suivis', 'Zone investissement principale',
-    'Typologie de production', 'Type de flux', 'Pays ',
-    'Méthodes Lean ', 'Technologies industrie 4.0', 'cluster',
-    'Cluster', 'Feature_Cluster', 'Niveau Maturité', 'Cluster Label'
-] + colonnes
+# --- Upload CSV file ---
+file = st.sidebar.file_uploader("📂 Importer vos données Lean 4.0 (CSV)", type="csv")
 
 if file:
     df = pd.read_csv(file)
-    st.success("✅ File loaded successfully")
 
-    # Drop NaNs and scale features
-    features = df[colonnes].dropna()
+    colonnes = [col for col in df.columns if "Leadership" in col or "Supply" in col or "Opérations" in col or "Technologies" in col or "Organisation" in col]
+    dummy_cols = [col for col in df.columns if col.startswith("Tech_") or col.startswith("Lean_")]
+
+    st.success("✅ Données chargées avec succès")
+
+    # Step 1: Clustering
+    features_cluster = df[colonnes].dropna()
     scaler = StandardScaler()
-    scaled_features = scaler.fit_transform(features)
+    scaled = scaler.fit_transform(features_cluster)
+    kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+    df['cluster'] = kmeans.fit_predict(scaled)
 
-    # --- Clustering Section ---
-    st.header("📊 Clustering (KMeans)")
-    k_range = st.slider("Select range for K", 2, 10, (2, 6))
+    labels_map = {0: "Initial", 1: "Émergent", 2: "Avancé"}
+    df['Niveau Observé'] = df['cluster'].map(labels_map)
 
-    inertia, silhouette_scores = [], []
-    for k in range(k_range[0], k_range[1] + 1):
-        model = KMeans(n_clusters=k, random_state=42, n_init=10)
-        model.fit(scaled_features)
-        inertia.append(model.inertia_)
-        silhouette_scores.append(silhouette_score(scaled_features, model.labels_))
+    # Step 2: Decision Tree
+    X = df[dummy_cols].fillna(0)
+    y = df['Niveau Observé']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=42)
+    clf = DecisionTreeClassifier(min_samples_leaf=3, random_state=42)
+    clf.fit(X_train, y_train)
+    df['Niveau Prévu'] = clf.predict(X)
 
-    st.subheader("Elbow Method")
-    fig1, ax1 = plt.subplots()
-    ax1.plot(range(k_range[0], k_range[1] + 1), inertia, marker='o')
-    ax1.set_title('Elbow Method')
-    ax1.set_xlabel('K')
-    ax1.set_ylabel('Inertia')
-    st.pyplot(fig1)
+    # Step 3: Recommandation logiques
+    st.header("📊 Résultats du Diagnostic")
+    for i, row in df.iterrows():
+        st.markdown(f"**Entreprise {i+1}**")
+        obs = row['Niveau Observé']
+        pre = row['Niveau Prévu']
+        st.write(f"- Niveau Observé (KMeans): `{obs}`")
+        st.write(f"- Niveau Prévu (Arbre): `{pre}`")
 
-    st.subheader("Silhouette Score")
-    fig2, ax2 = plt.subplots()
-    ax2.plot(range(k_range[0], k_range[1] + 1), silhouette_scores, marker='o')
-    ax2.set_title('Silhouette Scores')
-    ax2.set_xlabel('K')
-    ax2.set_ylabel('Score')
-    st.pyplot(fig2)
+        if obs != pre:
+            if obs == "Avancé" and pre != "Avancé":
+                st.warning("🔺 Vous avez un bon niveau mais peu d'outils. Priorisez les technologies utilisées par les entreprises avancées.")
+            elif pre == "Avancé" and obs != "Avancé":
+                st.error("🔻 Vous avez des outils avancés mais une organisation peu mature. Concentrez-vous sur la stratégie et la formation.")
+            else:
+                st.info("🔄 Écart intermédiaire. Améliorez à la fois outils et sous-dimensions.")
+        else:
+            st.success("✅ Vous êtes cohérent avec votre niveau de maturité.")
 
-    final_k = st.selectbox("Select final K", list(range(k_range[0], k_range[1] + 1)))
-    kmeans = KMeans(n_clusters=final_k, random_state=42, n_init=10)
-    df['cluster'] = kmeans.fit_predict(scaled_features)
-
-    st.subheader("📋 Cluster Analysis")
-
-    # Count of each cluster
-    cluster_counts = df['cluster'].value_counts().sort_index()
-    
-    # Map cluster number to maturity level label
-    niveau_maturite_map = {
-        0: 'Niveau Avancé',
-        1: 'Niveau Initial',
-        2: 'Niveau Intégré'
-    }
-    
-    # Create a DataFrame to show cluster counts with labels
-    cluster_summary = pd.DataFrame({
-        'Cluster': cluster_counts.index,
-        'Nombre d\'entreprises': cluster_counts.values,
-        'Niveau de maturité Lean 4.0': cluster_counts.index.map(niveau_maturite_map)
-    })
-    
-    # Display the table
-    st.table(cluster_summary)
-
-
-
-    # PCA Visualization
-    pca = PCA(n_components=2)
-    pca_result = pca.fit_transform(scaled_features)
-    df_pca = pd.DataFrame(pca_result, columns=['PCA1', 'PCA2'])
-    df_pca['cluster'] = df['cluster']
-
-    fig3, ax3 = plt.subplots()
-    sns.scatterplot(data=df_pca, x='PCA1', y='PCA2', hue='cluster', palette='viridis', ax=ax3)
-    ax3.set_title("PCA of Clusters")
-    st.pyplot(fig3)
-
-    # --- Heatmaps ---
-    import matplotlib.ticker as ticker
-
-    avg_scores = df.groupby('cluster')[colonnes].mean()
-    
-    st.subheader("📈 Average Survey Scores per Cluster (Heatmap)")
-    
-    fig, ax = plt.subplots(figsize=(14, max(9, len(colonnes)*0.5)))  # increase height dynamically
-    
-    sns.heatmap(
-        avg_scores.T,
-        cmap="YlGnBu",
-        annot=True,
-        fmt=".2f",
-        linewidths=0.8,
-        linecolor='gray',
-        cbar_kws={
-            'label': 'Average Score',
-            'shrink': 0.75,
-            'aspect': 15,
-            'pad': 0.02
-        },
-        ax=ax
-    )
-    
-    ax.set_title("Average Survey Scores per Cluster", fontsize=20, fontweight='bold', pad=20)
-    ax.set_xlabel("Cluster", fontsize=14, labelpad=15)
-    ax.set_ylabel("Survey Features", fontsize=14, labelpad=15)
-    
-    # Set y-ticks to feature names
-    ax.set_yticks(np.arange(len(colonnes)) + 0.5)  # center tick labels on each row
-    ax.set_yticklabels(colonnes, fontsize=12, rotation=0)  # rotation=45 if you want slant
-    
-    # X ticks
-    ax.tick_params(axis='x', labelsize=12)
-    plt.xticks(rotation=0)
-    
-    plt.tight_layout()
-    
+    # Step 4: Visuals
+    st.header("📈 Visualisation des Scores Moyens par Cluster")
+    avg = df.groupby('cluster')[colonnes].mean()
+    fig, ax = plt.subplots(figsize=(14, 8))
+    sns.heatmap(avg.T, cmap="YlGnBu", annot=True, fmt=".2f", ax=ax)
     st.pyplot(fig)
 
-
-    # --- Decision Tree ---
-    st.header("🌳 Decision Tree Classification")
-    target_col = 'Niveau Maturité'
-
-    if target_col in df.columns:
-        features_dt = df.drop(columns=cols_to_exclude, errors='ignore')
-        features_dt = features_dt.select_dtypes(include=[np.number]).fillna(0)
-        y = df[target_col].dropna()
-        features_dt = features_dt.loc[y.index]
-
-        X_train, X_test, y_train, y_test = train_test_split(features_dt, y, test_size=0.3, stratify=y, random_state=42)
-
-        clf = DecisionTreeClassifier(min_samples_leaf=4, random_state=42)
-        clf.fit(X_train, y_train)
-        y_pred = clf.predict(X_test)
-
-        st.subheader("🔎 Top Feature Importances (non-zero only)")
-
-        # Get importances and filter only non-zero ones
-        importances = pd.Series(clf.feature_importances_, index=X_train.columns)
-        non_zero_importances = importances[importances > 0].sort_values(ascending=False).head(20)
-        
-        # Plot only if any non-zero importances exist
-        if not non_zero_importances.empty:
-            fig5, ax5 = plt.subplots(figsize=(10, 6))
-            non_zero_importances.plot(kind='barh', ax=ax5, color='steelblue')
-            ax5.set_title("Top Non-Zero Feature Importances")
-            ax5.set_xlabel("Importance")
-            ax5.set_ylabel("Feature")
-            plt.tight_layout()
-            st.pyplot(fig5)
-        else:
-            st.info("ℹ️ No features with non-zero importance were found.")
-
-
-        st.subheader("🎯 Visualize Decision Tree")
-        dot_data = export_graphviz(
-            clf,
-            out_file=None,
-            feature_names=X_train.columns,
-            class_names=[str(c) for c in clf.classes_],
-            filled=True, rounded=True,
-            special_characters=True
-        )
-
-        st.graphviz_chart(dot_data)
-
-    else:
-        st.warning("The column 'Niveau Maturité' was not found in the dataset.")
+    st.header("🚀 Feuille de Route Personnalisée")
+    st.markdown("Suggestions d’outils et pratiques à adopter basées sur les écarts constatés :")
+    for cl in sorted(df['cluster'].unique()):
+        st.subheader(f"Cluster {cl} - {labels_map[cl]}")
+        tech_avg = df[df['cluster'] == cl][dummy_cols].mean().sort_values(ascending=False).head(10)
+        st.dataframe(tech_avg)
 
 else:
-    st.info("👈 Upload a file to begin.")
+    st.info("Veuillez importer un fichier CSV pour commencer.")

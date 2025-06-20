@@ -260,8 +260,8 @@ if file:
             else:
                 st.info("No features with importance found.")
 
-        st.subheader("🎯 Decision Tree Visualization")
-        dot_data = export_graphviz(
+            st.subheader("🎯 Decision Tree Visualization")
+            dot_data = export_graphviz(
                                         clf,
                                         out_file=None,
                                         feature_names=X_train.columns,
@@ -274,9 +274,9 @@ if file:
                                         precision=2
                                    )
 
-        # Inject custom font size
-        dot_data = dot_data.replace("label=", 'fontsize=16, label=')
-        st.graphviz_chart(dot_data)
+            # Inject custom font size
+            dot_data = dot_data.replace("label=", 'fontsize=16, label=')
+            st.graphviz_chart(dot_data)
         else:
             st.warning("🛑 'Niveau de maturité Lean 4.0' not found in dataset.")
 

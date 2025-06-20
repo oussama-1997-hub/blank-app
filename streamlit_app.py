@@ -119,39 +119,36 @@ if file:
         ax3.set_title("PCA of Clusters")
         st.pyplot(fig3)
 
-    with tabs[2]:
-        st.header("📡 Radar Chart - Cluster Profiles")
-    
-        # Ensure the cluster label exists
-        if 'Niveau de maturité Lean 4.0' not in df.columns:
-            st.warning("🛑 Clustering must be done first.")
+  with tabs[2]:
+    st.header("📡 Radar Chart - Cluster Profiles")
+
+    if len(selected_features) == 0:
+        st.warning("⚠️ Please select at least one feature from the sidebar to view the radar chart.")
+    else:
+        cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
+
+        if cluster_avg.empty:
+            st.warning("⚠️ Not enough data to display the radar chart. Some clusters may be missing.")
         else:
-            # Compute cluster average
-            try:
-                cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
-    
-                if cluster_avg.empty:
-                    st.warning("⚠️ No data to display radar chart.")
-                else:
-                    fig_radar = go.Figure()
-    
-                    for label in cluster_avg.index:
-                        fig_radar.add_trace(go.Scatterpolar(
-                            r=cluster_avg.loc[label].values.tolist(),
-                            theta=selected_features,
-                            fill='toself',
-                            name=label
-                        ))
-    
-                    fig_radar.update_layout(
-                        polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
-                        showlegend=True,
-                        height=600,
-                        title="Radar Chart by Maturity Level"
-                    )
-                    st.plotly_chart(fig_radar)
-            except Exception as e:
-                st.error(f"❌ Radar chart failed: {e}")
+            fig_radar = go.Figure()
+
+            for label in cluster_avg.index:
+                values = cluster_avg.loc[label].fillna(0).values
+                if not np.all(np.isnan(values)):
+                    fig_radar.add_trace(go.Scatterpolar(
+                        r=values,
+                        theta=selected_features,
+                        fill='toself',
+                        name=label
+                    ))
+
+            fig_radar.update_layout(
+                polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
+                showlegend=True,
+                height=600
+            )
+            st.plotly_chart(fig_radar)
+
 
 
     with tabs[3]:

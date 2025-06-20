@@ -58,25 +58,15 @@ if file:
     scaler = StandardScaler()
     scaled_features = scaler.fit_transform(features)
 
-    # --- Clustering to generate labels if needed ---
-    # --- Ensure 'Niveau Maturité' column exists and is valid ---
+    # --- Ensure or generate 'Niveau Maturité' column ---
     if 'Niveau Maturité' not in df.columns or df['Niveau Maturité'].isnull().all():
         st.warning("ℹ️ 'Niveau Maturité' not found or is empty. Running KMeans to assign clusters.")
         kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
         df['cluster'] = kmeans.fit_predict(scaled_features)
         df['Niveau Maturité'] = df['cluster']
-    
-    # Ensure it's integer
-    df['Niveau Maturité'] = df['Niveau Maturité'].astype(int)
-    
-    # Filter unexpected values
-    df = df[df['Niveau Maturité'].isin([0, 1, 2])]
-    
-    # Map numeric to label
-    maturity_label_map = {1: 'Niveau Initial', 2: 'Niveau Intégré', 0: 'Niveau Avancé'}
-    maturity_order = ['Niveau Initial', 'Niveau Intégré', 'Niveau Avancé']
-    df['Niveau Maturité Label'] = df['Niveau Maturité'].map(maturity_label_map)
 
+    df['Niveau Maturité'] = pd.to_numeric(df['Niveau Maturité'], errors='coerce').astype('Int64')
+    df = df[df['Niveau Maturité'].isin([0, 1, 2])]
 
     # Map numeric to labels
     maturity_label_map = {1: 'Niveau Initial', 2: 'Niveau Intégré', 0: 'Niveau Avancé'}

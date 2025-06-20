@@ -6,3 +6,5 @@ matplotlib
 seaborn
 plotly
 graphviz
+fpdf
+kaleido

@@ -369,54 +369,68 @@ if file:
         
         # Plot radar chart
        # Radar chart: Comparaison entre l’entreprise et le cluster intégré
+       # --- 📡 Radar Chart for Selected Enterprise vs Cluster Target ---
+
         try:
-            st.subheader("Comparaison des niveaux de maturité par dimension")
+            st.markdown("### 📡 Radar Chart: Comparaison entreprise vs cluster cible")
         
-            # Moyenne des dimensions pour l’entreprise (exemple)
-            entreprise_avg = company_values.groupby('Dimension')['Score Entreprise'].mean()
+            # Prepare dimension-level averages
+            entreprise_dimension_scores = pd.DataFrame({
+                'Dimension': [],
+                'Score Entreprise': [],
+                'Moyenne Cluster 2': []
+            })
         
-            # Moyenne des dimensions pour le Cluster 2 (cible)
-            cluster2_avg = company_values.groupby('Dimension')['Moyenne Cluster 2'].mean()
+            for dim, sub_dims in dimension_map.items():
+                selected_sub_dims = [sd for sd in sub_dims if sd in selected_features]
+                if not selected_sub_dims:
+                    continue
+                entreprise_score = entreprise[selected_sub_dims].mean()
+                cluster_score = df[df['cluster'] == next_cluster][selected_sub_dims].mean().mean()
         
-            # Construction du radar chart
-            fig_radar = go.Figure()
+                entreprise_dimension_scores = pd.concat([
+                    entreprise_dimension_scores,
+                    pd.DataFrame({
+                        'Dimension': [dim],
+                        'Score Entreprise': [entreprise_score],
+                        'Moyenne Cluster 2': [cluster_score]
+                    })
+                ], ignore_index=True)
         
-            # Données de l'entreprise
-            fig_radar.add_trace(go.Scatterpolar(
-                r=entreprise_avg.values,
-                theta=entreprise_avg.index,
+            fig_radar_ex = go.Figure()
+        
+            fig_radar_ex.add_trace(go.Scatterpolar(
+                r=entreprise_dimension_scores['Score Entreprise'],
+                theta=entreprise_dimension_scores['Dimension'],
                 fill='toself',
                 name='Entreprise',
                 line=dict(color='red', width=3),
                 fillcolor='rgba(255, 0, 0, 0.3)'
             ))
         
-            # Moyenne du cluster cible
-            fig_radar.add_trace(go.Scatterpolar(
-                r=cluster2_avg.values,
-                theta=cluster2_avg.index,
+            fig_radar_ex.add_trace(go.Scatterpolar(
+                r=entreprise_dimension_scores['Moyenne Cluster 2'],
+                theta=entreprise_dimension_scores['Dimension'],
                 fill='toself',
-                name='Cluster Intégré (Référence)',
+                name='Cluster Cible',
                 line=dict(color='blue', width=3),
                 fillcolor='rgba(0, 0, 255, 0.2)'
             ))
         
-            # Mise en page
-            fig_radar.update_layout(
+            fig_radar_ex.update_layout(
                 polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
                 showlegend=True,
                 height=700,
                 width=1000
             )
         
-            # Affichage dans une large colonne
             col1, col2 = st.columns([5, 1])
             with col1:
-                st.plotly_chart(fig_radar)
+                st.plotly_chart(fig_radar_ex)
         
         except Exception as e:
-            st.error(f"Erreur lors de l’affichage du radar chart : {e}")
-        
+            st.error(f"Erreur lors de l'affichage du radar chart personnalisé : {e}")
+                
         # --- Display Lean methods and Industry 4.0 tech usage ---
         
         # Assuming lean_cols and tech_cols are your columns names of Lean and Tech dummies

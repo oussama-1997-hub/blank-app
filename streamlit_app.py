@@ -337,7 +337,9 @@ if file:
             st.success("✅ Scénario 3 : Niveau prédit = niveau réel (alignement)")
             st.write("• Améliorer en parallèle la maturité organisationnelle et l’adoption d’outils.")
             st.write("• Viser les outils du nœud parent dans l’arbre et les sous-dimensions où l’écart est le plus important.")
-                # --- 3b. Radar Chart personnalisé : Entreprise vs Cluster cible ---
+        # --- 3b. Radar Chart personnalisé : Entreprise vs Cluster cible ---
+        cluster_means = df.groupby('cluster')[selected_features].mean()
+        entreprise_scores = entreprise[selected_features]
         st.markdown("### 📡 Radar Chart : Entreprise vs Cluster Cible")
 
         try:
@@ -383,8 +385,6 @@ if file:
         target_cluster = predicted_cluster
         next_cluster = target_cluster + 1 if target_cluster + 1 < final_k else target_cluster
 
-        cluster_means = df.groupby('cluster')[selected_features].mean()
-        entreprise_scores = entreprise[selected_features]
 
         # Calcul des écarts entre l'entreprise et le cluster cible
 

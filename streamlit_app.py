@@ -203,8 +203,8 @@ if file:
         avg_scores = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
 
         # Detect Lean and Tech dummy columns
+        tech_cols = [col for col in df.columns if col.startswith('Tech_')]
         lean_cols = [col for col in df.columns if col.startswith('Lean_')]
-        tech_cols = [col for col in df.columns if col.startswith('Tech')]
 
         lean_avg = df.groupby('Niveau de maturité Lean 4.0')[lean_cols].mean() if lean_cols else pd.DataFrame()
         tech_avg = df.groupby('Niveau de maturité Lean 4.0')[tech_cols].mean() if tech_cols else pd.DataFrame()

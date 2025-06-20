@@ -352,6 +352,7 @@ if file:
         entreprise_scores = entreprise[selected_features]
 
         # Calcul des écarts entre l'entreprise et le cluster cible
+
         gaps = entreprise_scores - cluster_means.loc[next_cluster]
         
         # Ne garder que les écarts négatifs
@@ -363,18 +364,15 @@ if file:
         # Affichage
         st.subheader("🔻 Sous-dimensions avec un écart négatif (priorité d'amélioration)")
         
-        # Extraire les 5 plus grands écarts négatifs
-        top_gaps = gaps_sorted.head(5)
-        
-        # Convertir en float et arrondir
-        gap_values = pd.to_numeric(top_gaps.values, errors='coerce')
+        # On affiche tous les écarts négatifs triés, sans limite
+        gap_values = pd.to_numeric(gaps_sorted.values, errors='coerce')
         gap_df = pd.DataFrame({
-            'Sous-dimension': top_gaps.index,
+            'Sous-dimension': gaps_sorted.index,
             'Écart': np.round(gap_values, 2)
         })
         
-        # Affichage du tableau
         st.table(gap_df)
+
 
 
         # 4b. Feuille de route technologique personnalisée

@@ -368,37 +368,54 @@ if file:
         target_values += [target_values[0]]
         
         # Plot radar chart
-        fig = go.Figure()
+       # Radar chart: Comparaison entre l’entreprise et le cluster intégré
+        try:
+            st.subheader("Comparaison des niveaux de maturité par dimension")
         
-        fig.add_trace(go.Scatterpolar(
-            r=company_values,
-            theta=categories,
-            fill='toself',
-            name=f"Entreprise: {entreprise}",
-            line=dict(color='rgba(0, 0, 139, 1)', width=3),
-            fillcolor='rgba(0, 0, 139, 0.3)'
-        ))
+            # Moyenne des dimensions pour l’entreprise (exemple)
+            entreprise_avg = entreprise_scores.groupby('Dimension')['Score Entreprise'].mean()
         
-        fig.add_trace(go.Scatterpolar(
-            r=target_values,
-            theta=categories,
-            fill='toself',
-            name=f"Groupe Cible ({target_cluster_label})",
-            line=dict(color='rgba(255, 0, 0, 1)', width=3),
-            fillcolor='rgba(255, 0, 0, 0.3)'
-        ))
+            # Moyenne des dimensions pour le Cluster 2 (cible)
+            cluster2_avg = entreprise_scores.groupby('Dimension')['Moyenne Cluster 2'].mean()
         
-        fig.update_layout(
-        polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
-        showlegend=True,
-        title="Radar Chart: Niveau de Maturité - Entreprise vs Groupe",
-        height=900,    # bigger height
-        width=1100     # bigger width
-        )
-
+            # Construction du radar chart
+            fig_radar = go.Figure()
         
-        st.plotly_chart(fig, use_container_width=True)
-
+            # Données de l'entreprise
+            fig_radar.add_trace(go.Scatterpolar(
+                r=entreprise_avg.values,
+                theta=entreprise_avg.index,
+                fill='toself',
+                name='Entreprise',
+                line=dict(color='red', width=3),
+                fillcolor='rgba(255, 0, 0, 0.3)'
+            ))
+        
+            # Moyenne du cluster cible
+            fig_radar.add_trace(go.Scatterpolar(
+                r=cluster2_avg.values,
+                theta=cluster2_avg.index,
+                fill='toself',
+                name='Cluster Intégré (Référence)',
+                line=dict(color='blue', width=3),
+                fillcolor='rgba(0, 0, 255, 0.2)'
+            ))
+        
+            # Mise en page
+            fig_radar.update_layout(
+                polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
+                showlegend=True,
+                height=700,
+                width=1000
+            )
+        
+            # Affichage dans une large colonne
+            col1, col2 = st.columns([5, 1])
+            with col1:
+                st.plotly_chart(fig_radar)
+        
+        except Exception as e:
+            st.error(f"Erreur lors de l’affichage du radar chart : {e}")
         
         # --- Display Lean methods and Industry 4.0 tech usage ---
         

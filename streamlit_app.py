@@ -358,19 +358,6 @@ if file:
 
         # Afficher top 5 gaps négatifs
         top_gaps = gaps_sorted.head(5)
-        gap_df = pd.DataFrame({
-        # Extraction des dimensions et sous-dimensions depuis les noms complets
-        dims = []
-        subs = []
-        for name in top_gaps.index:
-            parts = name.split(" - ")
-            if len(parts) == 2:
-                dims.append(parts[0])
-                subs.append(parts[1])
-            else:
-                dims.append(name)
-                subs.append("")
-        
         # Création du DataFrame avec ces listes déjà définies
         dims = []
         subs = []

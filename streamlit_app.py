@@ -258,7 +258,7 @@ if file:
                 st.info("ℹ️ No features with non-zero importance were found.")
 
             st.subheader("🎯 Visualize Decision Tree")
-                        dot_data = export_graphviz(
+            dot_data = export_graphviz(
                 clf,
                 out_file=None,
                 feature_names=X_train.columns,

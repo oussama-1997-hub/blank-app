@@ -351,21 +351,29 @@ if file:
         cluster_means = df.groupby('cluster')[selected_features].mean()
         entreprise_scores = entreprise[selected_features]
 
-        # Calcul des gaps
+        # Calcul des écarts entre l'entreprise et le cluster cible
         gaps = entreprise_scores - cluster_means.loc[next_cluster]
-        gaps_sorted = gaps.sort_values()
         
-        st.subheader("Priorités d'amélioration (écarts négatifs uniquement)")
+        # Ne garder que les écarts négatifs
+        negative_gaps = gaps[gaps < 0]
         
-        # Filtrer uniquement les écarts négatifs et trier du plus négatif au moins négatif
-        top_negative_gaps = gaps_sorted[gaps_sorted < 0].sort_values()
+        # Trier du plus grand écart négatif au plus petit (valeurs les plus éloignées)
+        gaps_sorted = negative_gaps.sort_values()
         
         # Affichage
-        gap_values = pd.to_numeric(top_negative_gaps.values, errors='coerce')
+        st.subheader("🔻 Sous-dimensions avec un écart négatif (priorité d'amélioration)")
+        
+        # Extraire les 5 plus grands écarts négatifs
+        top_gaps = gaps_sorted.head(5)
+        
+        # Convertir en float et arrondir
+        gap_values = pd.to_numeric(top_gaps.values, errors='coerce')
         gap_df = pd.DataFrame({
-            'Sous-dimension': top_negative_gaps.index,
+            'Sous-dimension': top_gaps.index,
             'Écart': np.round(gap_values, 2)
         })
+        
+        # Affichage du tableau
         st.table(gap_df)
 
 

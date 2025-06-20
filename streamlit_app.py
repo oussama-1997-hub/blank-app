@@ -359,6 +359,7 @@ if file:
         # Afficher top 5 gaps négatifs
         top_gaps = gaps_sorted.head(5)
         gap_df = pd.DataFrame({
+        # Extraction des dimensions et sous-dimensions depuis les noms complets
         dims = []
         subs = []
         for name in top_gaps.index:
@@ -369,6 +370,16 @@ if file:
             else:
                 dims.append(name)
                 subs.append("")
+        
+        # Création du DataFrame avec ces listes déjà définies
+        gap_df = pd.DataFrame({
+            'Dimension': dims,
+            'Sous-dimension': subs,
+            'Score Entreprise': entreprise.loc[top_gaps.index].values,
+            'Moyenne Cluster 2': cluster_avg.loc['Niveau Intégré', top_gaps.index].values,
+            'Écart': top_gaps.round(2).values
+        })
+
         'Score Entreprise': entreprise.loc[[dim_sd for dim_sd in top_gaps.index]].values,
         'Moyenne Cluster 2': cluster_avg.loc['Niveau Intégré', top_gaps.index].values,
         'Écart': top_gaps.round(2).values  # ou juste top_gaps.round(2)

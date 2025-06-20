@@ -126,16 +126,26 @@ if file:
             cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean().dropna(axis=1, how='any')
             available_features = cluster_avg.columns.tolist()
     
+            # Define custom colors for each label
+            custom_colors = {
+                'Niveau Initial': 'darkblue',
+                'Niveau Avancé': 'lightblue',
+                'Niveau Intégré': 'seagreen'  # You can change this if needed
+            }
+    
             if cluster_avg.empty:
                 st.warning("No available data for radar chart after grouping. Please check selected features.")
             else:
                 fig_radar = go.Figure()
+    
                 for label in cluster_avg.index:
                     fig_radar.add_trace(go.Scatterpolar(
                         r=cluster_avg.loc[label].values,
                         theta=available_features,
                         fill='toself',
-                        name=label
+                        name=label,
+                        line=dict(color=custom_colors.get(label, 'gray')),
+                        fillcolor=custom_colors.get(label, 'gray')
                     ))
     
                 fig_radar.update_layout(
@@ -147,6 +157,7 @@ if file:
     
         except Exception as e:
             st.error(f"⚠️ Radar chart error: {e}")
+    
 
 
 

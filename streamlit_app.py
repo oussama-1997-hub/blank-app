@@ -260,7 +260,7 @@ if file:
             else:
                 st.info("No features with importance found.")
 
-            
+            from dtreeviz.trees import dtreeviz
             import tempfile
             from PIL import Image
             

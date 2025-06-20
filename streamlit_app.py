@@ -48,9 +48,51 @@ if file:
     st.success("✅ File loaded successfully")
 
     # --- Feature selection ---
-    selected_features = st.sidebar.multiselect(
-        "📌 Select features for clustering", colonnes, default=colonnes
-    )
+   # --- Define dimensions and sub-dimensions ---
+        dimension_map = {
+            "Leadership": [
+                "Leadership - Engagement Lean ",
+                "Leadership - Engagement DT",
+                "Leadership - Stratégie ",
+                "Leadership - Communication"
+            ],
+            "Supply Chain": [
+                "Supply Chain - Collaboration inter-organisationnelle",
+                "Supply Chain - Traçabilité",
+                "Supply Chain - Impact sur les employées"
+            ],
+            "Opérations": [
+                "Opérations - Standardisation des processus",
+                "Opérations - Juste-à-temps (JAT)",
+                "Opérations - Gestion des résistances"
+            ],
+            "Technologies": [
+                "Technologies - Connectivité et gestion des données",
+                "Technologies - Automatisation",
+                "Technologies - Pilotage du changement"
+            ],
+            "Organisation Apprenante": [
+                "Organisation apprenante  - Formation et développement des compétences",
+                "Organisation apprenante  - Collaboration et Partage des Connaissances",
+                "Organisation apprenante  - Flexibilité organisationnelle"
+            ]
+        }
+        
+        # --- Custom Multiselect by Dimension using Expanders ---
+        st.sidebar.markdown("### 📌 Select sub-dimensions per dimension")
+        selected_features = []
+        
+        for dimension, sub_dims in dimension_map.items():
+            with st.sidebar.expander(f"🧩 {dimension}"):
+                selected = st.multiselect(f"Sous-dimensions de {dimension}", sub_dims, default=sub_dims, key=dimension)
+                selected_features.extend(selected)
+        
+        # Display selected features for confirmation
+        if selected_features:
+            st.sidebar.success(f"{len(selected_features)} feature(s) selected.")
+        else:
+            st.sidebar.warning("Please select at least one sub-dimension.")
+
 
     features = df[selected_features].dropna()
     scaler = StandardScaler()

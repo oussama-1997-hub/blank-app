@@ -307,8 +307,12 @@ if file:
 
         # --- 2. Prédiction arbre de décision (niveau prédit) ---
         # Préparer features DT (technos et lean dummies)
-        features_dt_new = entreprise.drop(exclude_cols, errors='ignore')
-        features_dt_new = features_dt_new.select_dtypes(include=[np.number]).fillna(0).values.reshape(1, -1)
+        # Préparer features DT (technos et lean dummies) pour la nouvelle entreprise
+        features_dt = df.drop(columns=exclude_cols, errors='ignore')
+        features_dt = features_dt.select_dtypes(include=[np.number]).fillna(0)
+        
+        features_dt_new = features_dt.loc[[entreprise_idx]].values.reshape(1, -1)
+
 
         predicted_dt = clf.predict(features_dt_new)[0]
         st.write(f"**Niveau prédit (arbre de décision) :** {predicted_dt}")

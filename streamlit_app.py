@@ -121,23 +121,38 @@ if file:
 
     with tabs[2]:
         st.header("📡 Radar Chart - Cluster Profiles")
-        cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
-        fig_radar = go.Figure()
+    
+        # Ensure the cluster label exists
+        if 'Niveau de maturité Lean 4.0' not in df.columns:
+            st.warning("🛑 Clustering must be done first.")
+        else:
+            # Compute cluster average
+            try:
+                cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
+    
+                if cluster_avg.empty:
+                    st.warning("⚠️ No data to display radar chart.")
+                else:
+                    fig_radar = go.Figure()
+    
+                    for label in cluster_avg.index:
+                        fig_radar.add_trace(go.Scatterpolar(
+                            r=cluster_avg.loc[label].values.tolist(),
+                            theta=selected_features,
+                            fill='toself',
+                            name=label
+                        ))
+    
+                    fig_radar.update_layout(
+                        polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
+                        showlegend=True,
+                        height=600,
+                        title="Radar Chart by Maturity Level"
+                    )
+                    st.plotly_chart(fig_radar)
+            except Exception as e:
+                st.error(f"❌ Radar chart failed: {e}")
 
-        for label in cluster_avg.index:
-            fig_radar.add_trace(go.Scatterpolar(
-                r=cluster_avg.loc[label].values,
-                theta=selected_features,
-                fill='toself',
-                name=label
-            ))
-
-        fig_radar.update_layout(
-            polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
-            showlegend=True,
-            height=600
-        )
-        st.plotly_chart(fig_radar)
 
     with tabs[3]:
         st.header("🔥 Heatmap of Average Scores by Maturity Level")

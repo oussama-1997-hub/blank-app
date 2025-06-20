@@ -119,35 +119,35 @@ if file:
         ax3.set_title("PCA of Clusters")
         st.pyplot(fig3)
 
-  with tabs[2]:
-    st.header("📡 Radar Chart - Cluster Profiles")
-
-    if len(selected_features) == 0:
-        st.warning("⚠️ Please select at least one feature from the sidebar to view the radar chart.")
-    else:
-        cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
-
-        if cluster_avg.empty:
-            st.warning("⚠️ Not enough data to display the radar chart. Some clusters may be missing.")
+    with tabs[2]:
+        st.header("📡 Radar Chart - Cluster Profiles")
+    
+        if len(selected_features) == 0:
+            st.warning("⚠️ Please select at least one feature from the sidebar to view the radar chart.")
         else:
-            fig_radar = go.Figure()
-
-            for label in cluster_avg.index:
-                values = cluster_avg.loc[label].fillna(0).values
-                if not np.all(np.isnan(values)):
-                    fig_radar.add_trace(go.Scatterpolar(
-                        r=values,
-                        theta=selected_features,
-                        fill='toself',
-                        name=label
-                    ))
-
-            fig_radar.update_layout(
-                polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
-                showlegend=True,
-                height=600
-            )
-            st.plotly_chart(fig_radar)
+            cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
+    
+            if cluster_avg.empty:
+                st.warning("⚠️ Not enough data to display the radar chart. Some clusters may be missing.")
+            else:
+                fig_radar = go.Figure()
+    
+                for label in cluster_avg.index:
+                    values = cluster_avg.loc[label].fillna(0).values
+                    if not np.all(np.isnan(values)):
+                        fig_radar.add_trace(go.Scatterpolar(
+                            r=values,
+                            theta=selected_features,
+                            fill='toself',
+                            name=label
+                        ))
+    
+                fig_radar.update_layout(
+                    polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
+                    showlegend=True,
+                    height=600
+                )
+                st.plotly_chart(fig_radar)
 
 
 

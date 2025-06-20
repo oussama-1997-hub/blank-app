@@ -180,48 +180,48 @@ if file:
     
     # Later, in the Radar Chart tab, use selected_features_for_radar instead of selected_features
     with tabs[2]:
-    st.header("📡 Radar Chart - Profils par Dimension")
-    try:
-        cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features_for_radar].mean().dropna(axis=1, how='any')
-        available_features = cluster_avg.columns.tolist()
-
-        custom_colors = {
-            'Niveau Initial': {
-                'line': 'rgba(0, 0, 139, 1)',       # Dark Blue, opaque
-                'fill': 'rgba(0, 0, 139, 0.5)'      # Dark Blue, semi-transparent
-            },
-            'Niveau Avancé': {
-                'line': 'rgba(173, 216, 230, 1)',   # Light Blue
-                'fill': 'rgba(173, 216, 230, 0.3)'  # Light Blue, transparent
-            },
-            'Niveau Intégré': {
-                'line': 'rgba(255, 0, 0, 1)',       # Red
-                'fill': 'rgba(255, 0, 0, 0.3)'      # Red, transparent
+        st.header("📡 Radar Chart - Profils par Dimension")
+        try:
+            cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features_for_radar].mean().dropna(axis=1, how='any')
+            available_features = cluster_avg.columns.tolist()
+    
+            custom_colors = {
+                'Niveau Initial': {
+                    'line': 'rgba(0, 0, 139, 1)',       # Dark Blue, opaque
+                    'fill': 'rgba(0, 0, 139, 0.5)'      # Dark Blue, semi-transparent
+                },
+                'Niveau Avancé': {
+                    'line': 'rgba(173, 216, 230, 1)',   # Light Blue
+                    'fill': 'rgba(173, 216, 230, 0.3)'  # Light Blue, transparent
+                },
+                'Niveau Intégré': {
+                    'line': 'rgba(255, 0, 0, 1)',       # Red
+                    'fill': 'rgba(255, 0, 0, 0.3)'      # Red, transparent
+                }
             }
-        }
-
-        if cluster_avg.empty:
-            st.warning("Pas de données disponibles pour le radar. Veuillez vérifier la sélection.")
-        else:
-            fig_radar = go.Figure()
-            for label in cluster_avg.index:
-                fig_radar.add_trace(go.Scatterpolar(
-                    r=cluster_avg.loc[label].values,
-                    theta=available_features,
-                    fill='toself',
-                    name=label,
-                    line=dict(color=custom_colors[label]['line'], width=3),
-                    fillcolor=custom_colors[label]['fill']
-                ))
-            fig_radar.update_layout(
-                polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
-                showlegend=True,
-                height=600
-            )
-            st.plotly_chart(fig_radar)
-
-    except Exception as e:
-        st.error(f"Erreur du Radar Chart : {e}")
+    
+            if cluster_avg.empty:
+                st.warning("Pas de données disponibles pour le radar. Veuillez vérifier la sélection.")
+            else:
+                fig_radar = go.Figure()
+                for label in cluster_avg.index:
+                    fig_radar.add_trace(go.Scatterpolar(
+                        r=cluster_avg.loc[label].values,
+                        theta=available_features,
+                        fill='toself',
+                        name=label,
+                        line=dict(color=custom_colors[label]['line'], width=3),
+                        fillcolor=custom_colors[label]['fill']
+                    ))
+                fig_radar.update_layout(
+                    polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
+                    showlegend=True,
+                    height=600
+                )
+                st.plotly_chart(fig_radar)
+    
+        except Exception as e:
+            st.error(f"Erreur du Radar Chart : {e}")
 
 
 

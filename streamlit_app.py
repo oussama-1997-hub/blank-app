@@ -375,43 +375,97 @@ if file:
         
         # Radar Chart personnalisé de comparaison des scores de maturité par sous-dimension
         st.markdown("### 📡 Radar Chart personnalisé : Entreprise vs Cluster Cible")
-        try:
-            cluster_means_radar = df[df['cluster'] == next_cluster][selected_features].mean()
-            entreprise_scores_radar = entreprise[selected_features]
+        import plotly.graph_objects as go
+import streamlit as st
+import pandas as pd
+
+# Example variables setup (replace with your real data)
+# cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features_for_radar].mean()
+# entreprise = df.loc[selected_company_index]
+# lean_cols = [col for col in df.columns if col.startswith('Lean_')]
+# tech_cols = [col for col in df.columns if col.startswith('Tech_')]
+
+# Calculate entreprise maturity average per dimension
+entreprise_avg = entreprise[selected_features_for_radar].mean()  # or your aggregation method
+
+# Group average per cluster (already calculated)
+# cluster_avg - dataframe indexed by maturity level labels
+
+custom_colors = {
+    'Niveau Initial': {
+        'line': 'rgba(0, 0, 139, 1)',       # Dark Blue opaque
+        'fill': 'rgba(0, 0, 139, 0.5)'      # Dark Blue transparent
+    },
+    'Niveau Avancé': {
+        'line': 'rgba(173, 216, 230, 1)',   # Light Blue opaque
+        'fill': 'rgba(173, 216, 230, 0.3)'  # Light Blue transparent
+    },
+    'Niveau Intégré': {
+        'line': 'rgba(255, 0, 0, 1)',       # Red opaque
+        'fill': 'rgba(255, 0, 0, 0.3)'      # Red transparent
+    },
+    'Entreprise': {
+        'line': 'rgba(34, 139, 34, 1)',     # Forest Green opaque
+        'fill': 'rgba(34, 139, 34, 0.4)'    # Forest Green transparent
+    }
+}
+
+fig = go.Figure()
+
+# Add cluster average profiles
+for label in cluster_avg.index:
+    fig.add_trace(go.Scatterpolar(
+        r=cluster_avg.loc[label].values,
+        theta=cluster_avg.columns,
+        fill='toself',
+        name=f'Groupe {label}',
+        line=dict(color=custom_colors.get(label, {}).get('line', 'blue'), width=3),
+        fillcolor=custom_colors.get(label, {}).get('fill', 'rgba(0,0,255,0.3)')
+    ))
+
+        # Add entreprise profile
+        fig.add_trace(go.Scatterpolar(
+            r=entreprise_avg.values,
+            theta=cluster_avg.columns,
+            fill='toself',
+            name='Entreprise sélectionnée',
+            line=dict(color=custom_colors['Entreprise']['line'], width=4),
+            fillcolor=custom_colors['Entreprise']['fill']
+        ))
         
-            radar_data = pd.DataFrame({
-                'Entreprise': entreprise_scores_radar.values,
-                'Cluster Cible (moyenne)': cluster_means_radar.values
-            }, index=selected_features)
+        fig.update_layout(
+            polar=dict(
+                radialaxis=dict(
+                    visible=True,
+                    range=[0, 5]
+                )
+            ),
+            showlegend=True,
+            title="Radar Chart: Niveau de Maturité - Entreprise vs Groupe",
+            height=700,
+            width=900
+        )
         
-            fig_personal_radar = go.Figure()
-            fig_personal_radar.add_trace(go.Scatterpolar(
-                r=radar_data['Entreprise'],
-                theta=radar_data.index,
-                fill='toself',
-                name='Entreprise',
-                line=dict(color='royalblue', width=3),
-                fillcolor='rgba(65, 105, 225, 0.3)'
-            ))
-            fig_personal_radar.add_trace(go.Scatterpolar(
-                r=radar_data['Cluster Cible (moyenne)'],
-                theta=radar_data.index,
-                fill='toself',
-                name='Cluster Cible',
-                line=dict(color='red', width=3),
-                fillcolor='rgba(255, 0, 0, 0.2)'
-            ))
-            fig_personal_radar.update_layout(
-                title="Comparaison des scores de maturité par sous-dimension",
-                polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
-                showlegend=True,
-                height=700,
-                width=1000
-            )
-            st.plotly_chart(fig_personal_radar)
+        st.plotly_chart(fig, use_container_width=True)
         
-        except Exception as e:
-            st.error(f"Erreur lors de l'affichage du radar chart personnalisé : {e}")
+        # Display Lean tools adopted by the company
+        st.markdown("### Méthodes Lean utilisées par l'entreprise")
+        lean_adopted = entreprise[lean_cols]
+        lean_adopted_df = pd.DataFrame({
+            'Méthode Lean': lean_cols,
+            'Utilisé': ['✅ Oui' if val > 0 else '❌ Non' for val in lean_adopted.values]
+        })
+        st.table(lean_adopted_df)
+        
+        # Display Industry 4.0 tech adopted by the company
+        st.markdown("### Technologies Industrie 4.0 utilisées par l'entreprise")
+        tech_adopted = entreprise[tech_cols]
+        tech_adopted_df = pd.DataFrame({
+            'Technologie': tech_cols,
+            'Utilisé': ['✅ Oui' if val > 0 else '❌ Non' for val in tech_adopted.values]
+        })
+        st.table(tech_adopted_df)
+
 
                 
         # --- Display Lean methods and Industry 4.0 tech usage ---

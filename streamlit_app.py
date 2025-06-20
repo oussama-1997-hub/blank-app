@@ -131,8 +131,17 @@ if file:
         max_depth = st.slider("Max Depth", 1, 10, 4)
         min_samples_split = st.slider("Min Samples Split", 2, 10, 4)
 
-        X_train, X_test, y_train, y_test = train_test_split(
-            features_dt, y, test_size=0.3, stratify=y, random_state=42)
+        if y.nunique() > 1 and len(y) > 5:
+        X_train, X_test, y_train, y_test = train_test_split(features_dt, y, test_size=0.3, stratify=y, random_state=42)
+
+        clf = DecisionTreeClassifier(max_depth=max_depth, min_samples_split=min_samples_split, random_state=42)
+        clf.fit(X_train, y_train)
+
+    # Feature importances & plotting code here...
+
+else:
+    st.warning(\"⚠️ Not enough data or class variety to train the Decision Tree. Please check your input.\")
+
 
         clf = DecisionTreeClassifier(max_depth=max_depth, min_samples_split=min_samples_split, random_state=42)
         clf.fit(X_train, y_train)

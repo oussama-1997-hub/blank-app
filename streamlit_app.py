@@ -329,58 +329,110 @@ if file:
             ]
         }
         
-        # Extraire les scores par dimension
-        dimension_scores = {}
-        for dim, subs in dimension_map.items():
-            # Assurer que toutes les sous-dimensions existent dans le dataframe entreprise
-            existing_subs = [col for col in subs if col in entreprise.index]
-            if existing_subs:
-                dimension_scores[dim] = entreprise.loc[existing_subs].mean()
+        import plotly.graph_objects as go
+
+        # --- Prepare company dimension scores for radar ---
+        # Calculate dimension scores for the company: average of subdimensions per dimension
+        company_dim_scores = {}
+        for dim, subdims in dimension_map.items():
+            # Filter existing subdimensions present in entreprise index
+            valid_subdims = [sd for sd in subdims if sd in entreprise.index]
+            if valid_subdims:
+                company_dim_scores[dim] = entreprise[valid_subdims].mean()
             else:
-                dimension_scores[dim] = 0
+                company_dim_scores[dim] = 0
         
-        # Radar Chart
-        categories = list(dimension_scores.keys())
-        values = list(dimension_scores.values())
-        values += values[:1]  # Pour fermer le cercle radar
+        # Prepare target group average dimension scores (for example cluster 2 = "Niveau Intégré")
+        target_cluster = 2  # Adjust as needed (cluster for integrated level)
+        target_cluster_label = cluster_label_map.get(target_cluster, None)
+        if target_cluster_label and target_cluster_label in df['Niveau de maturité Lean 4.0'].values:
+            cluster_avg = df[df['Niveau de maturité Lean 4.0'] == target_cluster_label]
+            target_dim_scores = {}
+            for dim, subdims in dimension_map.items():
+                valid_subdims = [sd for sd in subdims if sd in cluster_avg.columns]
+                if valid_subdims:
+                    target_dim_scores[dim] = cluster_avg[valid_subdims].mean().mean()
+                else:
+                    target_dim_scores[dim] = 0
+        else:
+            target_dim_scores = {dim: 0 for dim in dimension_map.keys()}
         
-        fig = go.Figure(
-            data=[
-                go.Scatterpolar(
-                    r=values,
-                    theta=categories + categories[:1],
-                    fill='toself',
-                    name=f"Niveau par dimension - {entreprise_name}"
-                )
-            ]
-        )
+        # Prepare data for radar chart
+        categories = list(dimension_map.keys())
+        company_values = [company_dim_scores[d] for d in categories]
+        target_values = [target_dim_scores[d] for d in categories]
+        
+        # Close the loop for radar chart
+        categories += [categories[0]]
+        company_values += [company_values[0]]
+        target_values += [target_values[0]]
+        
+        # Plot radar chart
+        fig = go.Figure()
+        
+        fig.add_trace(go.Scatterpolar(
+            r=company_values,
+            theta=categories,
+            fill='toself',
+            name=f"Entreprise: {selected_company}",
+            line=dict(color='rgba(0, 0, 139, 1)', width=3),
+            fillcolor='rgba(0, 0, 139, 0.3)'
+        ))
+        
+        fig.add_trace(go.Scatterpolar(
+            r=target_values,
+            theta=categories,
+            fill='toself',
+            name=f"Groupe Cible ({target_cluster_label})",
+            line=dict(color='rgba(255, 0, 0, 1)', width=3),
+            fillcolor='rgba(255, 0, 0, 0.3)'
+        ))
+        
         fig.update_layout(
-            polar=dict(radialaxis=dict(visible=True, range=[0,5])),
+            polar=dict(
+                radialaxis=dict(
+                    visible=True,
+                    range=[0, 5]
+                )
+            ),
             showlegend=True,
-            title=f"Niveau de maturité par dimension pour {entreprise_name}",
-            height=500
+            title="Radar Chart: Niveau de Maturité par Dimension"
         )
-        st.plotly_chart(fig)
         
-        # 2. Afficher les méthodes Lean utilisées par l'entreprise
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # --- Display Lean methods and Industry 4.0 tech usage ---
+        
+        # Assuming lean_cols and tech_cols are your columns names of Lean and Tech dummies
         lean_cols = [col for col in df.columns if col.startswith('Lean_')]
-        lean_used = {col: (entreprise.get(col, 0) > 0.5) for col in lean_cols}
-        
-        st.markdown("### Méthodes Lean utilisées :")
-        for method, used in lean_used.items():
-            label = method.replace('Lean_', '').replace('_', ' ')
-            icon = "✅" if used else "❌"
-            st.write(f"{icon} {label}")
-        
-        # 3. Afficher les technologies Industrie 4.0 utilisées par l'entreprise
         tech_cols = [col for col in df.columns if col.startswith('Tech_')]
-        tech_used = {col: (entreprise.get(col, 0) > 0.5) for col in tech_cols}
         
-        st.markdown("### Technologies Industrie 4.0 utilisées :")
-        for tech, used in tech_used.items():
-            label = tech.replace('Tech_', '').replace('_', ' ')
-            icon = "✅" if used else "❌"
-            st.write(f"{icon} {label}")
+        # Extract adoption for this company
+        lean_adopted = entreprise[lean_cols] if all(col in entreprise.index for col in lean_cols) else pd.Series(dtype=float)
+        tech_adopted = entreprise[tech_cols] if all(col in entreprise.index for col in tech_cols) else pd.Series(dtype=float)
+        
+        if not lean_adopted.empty:
+            lean_used = lean_adopted[lean_adopted == 1].index.str.replace('Lean_', '').to_list()
+        else:
+            lean_used = []
+        
+        if not tech_adopted.empty:
+            tech_used = tech_adopted[tech_adopted == 1].index.str.replace('Tech_', '').to_list()
+        else:
+            tech_used = []
+        
+        st.subheader("Méthodes Lean utilisées")
+        if lean_used:
+            st.write(", ".join(lean_used))
+        else:
+            st.write("Aucune méthode Lean utilisée.")
+        
+        st.subheader("Technologies Industrie 4.0 utilisées")
+        if tech_used:
+            st.write(", ".join(tech_used))
+        else:
+            st.write("Aucune technologie Industrie 4.0 utilisée.")
+
 
         # --- 1. Prédiction cluster KMeans (niveau réel) ---
         entreprise_scaled = scaler.transform(entreprise[selected_features].values.reshape(1, -1))

@@ -351,7 +351,7 @@ if file:
         cluster_means = df.groupby('cluster')[selected_features].mean()
         entreprise_scores = entreprise[selected_features]
 
-        gaps = cluster_means.loc[next_cluster] - entreprise_scores
+        gaps = entreprise_scores - cluster_means.loc[next_cluster] 
         gaps_sorted = gaps.sort_values()
 
         st.subheader("Priorités d'amélioration (plus grands écarts négatifs)")

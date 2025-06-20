@@ -8,3 +8,5 @@ plotly
 graphviz
 fpdf
 kaleido
+pydotplus
+Pillow

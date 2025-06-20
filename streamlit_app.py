@@ -260,19 +260,19 @@ if file:
             else:
                 st.info("No features with importance found.")
 
-            st.subheader("🎯 Decision Tree Visualization")
-            dot_data = export_graphviz(
-                                            clf,
-                                            out_file=None,
-                                            feature_names=X_train.columns,
-                                            class_names=[str(c) for c in clf.classes_],
-                                            filled=True,
-                                            rounded=True,
-                                            special_characters=True,
-                                            node_ids=True,
-                                            proportion=False,
-                                            precision=2
-                                        )
+        st.subheader("🎯 Decision Tree Visualization")
+        dot_data = export_graphviz(
+                                        clf,
+                                        out_file=None,
+                                        feature_names=X_train.columns,
+                                        class_names=[str(c) for c in clf.classes_],
+                                        filled=True,
+                                        rounded=True,
+                                        special_characters=True,
+                                        node_ids=True,
+                                        proportion=False,
+                                        precision=2
+                                   )
 
         # Inject custom font size
         dot_data = dot_data.replace("label=", 'fontsize=16, label=')

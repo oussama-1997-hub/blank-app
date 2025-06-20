@@ -372,13 +372,23 @@ if file:
                 subs.append("")
         
         # Création du DataFrame avec ces listes déjà définies
+        dims = []
+        subs = []
+        for name in top_gaps.index:
+            parts = name.split(" - ")
+            if len(parts) == 2:
+                dims.append(parts[0])
+                subs.append(parts[1])
+            else:
+                dims.append(name)
+                subs.append("")
         gap_df = pd.DataFrame({
-            'Dimension': dims,
-            'Sous-dimension': subs,
-            'Score Entreprise': entreprise.loc[top_gaps.index].values,
-            'Moyenne Cluster 2': cluster_avg.loc['Niveau Intégré', top_gaps.index].values,
-            'Écart': top_gaps.round(2).values
-        })
+                'Dimension': dims,
+                'Sous-dimension': subs,
+                'Score Entreprise': entreprise.loc[top_gaps.index].values,
+                'Moyenne Cluster 2': cluster_avg.loc['Niveau Intégré', top_gaps.index].values,
+                'Écart': top_gaps.round(2).values
+            })
 
         'Score Entreprise': entreprise.loc[[dim_sd for dim_sd in top_gaps.index]].values,
         'Moyenne Cluster 2': cluster_avg.loc['Niveau Intégré', top_gaps.index].values,

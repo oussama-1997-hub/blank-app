@@ -1,5 +1,3 @@
-# streamlit_cluster_app.py
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -59,7 +57,7 @@ if file:
     scaled_features = scaler.fit_transform(features)
 
     # --- Cluster Tabs ---
-    tabs = st.tabs(["📊 Clustering", "🧭 PCA Visualization", "🔥 Heatmap", "🌳 Decision Tree", "📥 Export"])
+    tabs = st.tabs(["📊 Clustering", "🧭 PCA Visualization", "📡 Radar Chart", "🔥 Heatmap", "🌳 Decision Tree", "📥 Export"])
 
     with tabs[0]:
         st.header("📊 KMeans Clustering")
@@ -90,34 +88,48 @@ if file:
 
         final_k = st.selectbox("Select final K", list(range(k_range[0], k_range[1] + 1)))
         kmeans = KMeans(n_clusters=final_k, random_state=42, n_init=10)
-        cluster_labels = kmeans.fit_predict(scaled_features)
-        df['cluster'] = cluster_labels
+        df['cluster'] = kmeans.fit_predict(scaled_features)
+
+        # --- Maturity label mapping ---
+        cluster_label_map = {
+            0: 'Niveau Avancé',
+            1: 'Niveau Initial',
+            2: 'Niveau Intégré'
+        }
+        df['Niveau de maturité Lean 4.0'] = df['cluster'].map(cluster_label_map)
 
         st.subheader("📋 Cluster Summary")
         cluster_counts = df['cluster'].value_counts().sort_index()
-        cluster_means = df.groupby('cluster')[selected_features].mean().mean(axis=1).sort_values()
-        cluster_order = {cluster: label for cluster, label in zip(cluster_means.index, ['Niveau Initial', 'Niveau Intégré', 'Niveau Avancé'])}
-        df['Niveau Maturité'] = df['cluster'].map(cluster_order)
-
         summary_df = pd.DataFrame({
             'Cluster': cluster_counts.index,
             'Nombre d\'entreprises': cluster_counts.values,
-            'Niveau de maturité Lean 4.0': cluster_counts.index.map(cluster_order)
+            'Niveau de maturité Lean 4.0': cluster_counts.index.map(cluster_label_map)
         })
         st.table(summary_df)
 
-        # Radar Chart
-        st.subheader("📡 Cluster Profile Radar Chart")
-        cluster_avg = df.groupby('cluster')[selected_features].mean()
-        categories = selected_features
+    with tabs[1]:
+        st.header("🧭 PCA Cluster Visualization")
+        pca = PCA(n_components=2)
+        pca_result = pca.fit_transform(scaled_features)
+        df_pca = pd.DataFrame(pca_result, columns=['PCA1', 'PCA2'])
+        df_pca['label'] = df['Niveau de maturité Lean 4.0']
+
+        fig3, ax3 = plt.subplots()
+        sns.scatterplot(data=df_pca, x='PCA1', y='PCA2', hue='label', palette='Set2', ax=ax3)
+        ax3.set_title("PCA of Clusters")
+        st.pyplot(fig3)
+
+    with tabs[2]:
+        st.header("📡 Radar Chart - Cluster Profiles")
+        cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
         fig_radar = go.Figure()
 
-        for i in cluster_avg.index:
+        for label in cluster_avg.index:
             fig_radar.add_trace(go.Scatterpolar(
-                r=cluster_avg.loc[i].values,
-                theta=categories,
+                r=cluster_avg.loc[label].values,
+                theta=selected_features,
                 fill='toself',
-                name=f"Cluster {i}"
+                name=label
             ))
 
         fig_radar.update_layout(
@@ -127,30 +139,18 @@ if file:
         )
         st.plotly_chart(fig_radar)
 
-    with tabs[1]:
-        st.header("🧭 PCA Cluster Visualization")
-        pca = PCA(n_components=2)
-        pca_result = pca.fit_transform(scaled_features)
-        df_pca = pd.DataFrame(pca_result, columns=['PCA1', 'PCA2'])
-        df_pca['cluster'] = df['cluster']
-
-        fig3, ax3 = plt.subplots()
-        sns.scatterplot(data=df_pca, x='PCA1', y='PCA2', hue='cluster', palette='viridis', ax=ax3)
-        ax3.set_title("PCA of Clusters")
-        st.pyplot(fig3)
-
-    with tabs[2]:
-        st.header("🔥 Heatmap of Average Scores by Cluster")
-        avg_scores = df.groupby('cluster')[selected_features].mean()
+    with tabs[3]:
+        st.header("🔥 Heatmap of Average Scores by Maturity Level")
+        avg_scores = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
 
         fig, ax = plt.subplots(figsize=(14, max(9, len(selected_features) * 0.5)))
         sns.heatmap(avg_scores.T, cmap="YlGnBu", annot=True, fmt=".2f", linewidths=0.8, ax=ax)
-        ax.set_title("Average Scores per Cluster", fontsize=16)
+        ax.set_title("Average Scores by Maturity Level", fontsize=16)
         st.pyplot(fig)
 
-    with tabs[3]:
+    with tabs[4]:
         st.header("🌳 Decision Tree Classification")
-        target_col = 'Niveau Maturité'
+        target_col = 'Niveau de maturité Lean 4.0'
 
         if target_col in df.columns:
             features_dt = df.drop(columns=exclude_cols, errors='ignore')
@@ -183,12 +183,11 @@ if file:
                                        filled=True, rounded=True, special_characters=True)
             st.graphviz_chart(dot_data)
         else:
-            st.warning("🛑 'Niveau Maturité' not found in dataset.")
+            st.warning("🛑 'Niveau de maturité Lean 4.0' not found in dataset.")
 
-    with tabs[4]:
+    with tabs[5]:
         st.header("📥 Export Results")
-        st.download_button("Download full dataset", data=df.to_csv(index=False), file_name="clustered_data.csv", mime="text/csv")
+        st.download_button("Download clustered dataset", data=df.to_csv(index=False), file_name="clustered_data.csv", mime="text/csv")
 
 else:
     st.info("👈 Please upload a CSV file to begin.")
-

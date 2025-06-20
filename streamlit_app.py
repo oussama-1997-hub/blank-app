@@ -370,7 +370,7 @@ with tabs[5]:
 
         tools_df = pd.DataFrame({
             'Outil / Technologie': to_adopt.index,
-            'Taux d'adoption Cluster 2': to_adopt.values,
+            "Taux d'adoption Cluster 2": to_adopt.values,
             'Priorité': pd.cut(to_adopt.values, bins=[0, 0.2, 0.5, 1], labels=['Faible', 'Moyenne', 'Haute'])
         })
 

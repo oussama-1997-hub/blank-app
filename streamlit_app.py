@@ -94,6 +94,58 @@ if file:
     else:
         st.sidebar.warning("⚠️ Veuillez sélectionner au moins une sous-dimension.")
 
+    # Sidebar: dimension selector for radar chart
+st.sidebar.markdown("### 🎯 Choisissez les dimensions à afficher dans le Radar Chart")
+
+all_dimensions = list(dimension_map.keys())
+selected_dimensions_for_radar = st.sidebar.multiselect(
+    "Dimensions pour Radar Chart",
+    options=all_dimensions,
+    default=all_dimensions,
+    key='radar_dimensions'
+)
+
+# Based on selected dimensions, get the corresponding sub-dimensions
+selected_features_for_radar = []
+for dim in selected_dimensions_for_radar:
+    selected_features_for_radar.extend(dimension_map[dim])
+
+# Later, in the Radar Chart tab, use selected_features_for_radar instead of selected_features
+with tabs[2]:
+    st.header("📡 Radar Chart - Profils par Dimension")
+    try:
+        # Use selected_features_for_radar here:
+        cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features_for_radar].mean().dropna(axis=1, how='any')
+        available_features = cluster_avg.columns.tolist()
+
+        custom_colors = {
+            'Niveau Initial': 'darkblue',
+            'Niveau Avancé': 'lightblue',
+            'Niveau Intégré': 'seagreen'
+        }
+
+        if cluster_avg.empty:
+            st.warning("Pas de données disponibles pour le radar. Veuillez vérifier la sélection.")
+        else:
+            fig_radar = go.Figure()
+            for label in cluster_avg.index:
+                fig_radar.add_trace(go.Scatterpolar(
+                    r=cluster_avg.loc[label].values,
+                    theta=available_features,
+                    fill='toself',
+                    name=label,
+                    line=dict(color=custom_colors.get(label, 'gray')),
+                    fillcolor=custom_colors.get(label, 'gray')
+                ))
+            fig_radar.update_layout(
+                polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
+                showlegend=True,
+                height=600
+            )
+            st.plotly_chart(fig_radar)
+
+    except Exception as e:
+        st.error(f"Erreur du Radar Chart : {e}")
 
 
     features = df[selected_features].dropna()

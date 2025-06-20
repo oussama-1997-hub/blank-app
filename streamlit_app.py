@@ -359,9 +359,13 @@ if file:
         # Afficher top 5 gaps négatifs
         top_gaps = gaps_sorted.head(5)
         gap_df = pd.DataFrame({
-            'Sous-dimension': top_gaps.index,
-            'Écart': top_gaps.values.round(2)
+        'Dimension': [dim for dim, _ in top_gaps.index],
+        'Sous-dimension': [sd for _, sd in top_gaps.index],
+        'Score Entreprise': entreprise.loc[[dim_sd for dim_sd in top_gaps.index]].values,
+        'Moyenne Cluster 2': cluster_avg.loc['Niveau Intégré', top_gaps.index].values,
+        'Écart': top_gaps.round(2).values  # ou juste top_gaps.round(2)
         })
+
         st.table(gap_df)
 
         # 4b. Feuille de route technologique personnalisée

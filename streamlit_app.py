@@ -359,8 +359,16 @@ if file:
         # Afficher top 5 gaps négatifs
         top_gaps = gaps_sorted.head(5)
         gap_df = pd.DataFrame({
-        'Dimension': [dim for dim, _ in top_gaps.index],
-        'Sous-dimension': [sd for _, sd in top_gaps.index],
+        dims = []
+        subs = []
+        for name in top_gaps.index:
+            parts = name.split(" - ")
+            if len(parts) == 2:
+                dims.append(parts[0])
+                subs.append(parts[1])
+            else:
+                dims.append(name)
+                subs.append("")
         'Score Entreprise': entreprise.loc[[dim_sd for dim_sd in top_gaps.index]].values,
         'Moyenne Cluster 2': cluster_avg.loc['Niveau Intégré', top_gaps.index].values,
         'Écart': top_gaps.round(2).values  # ou juste top_gaps.round(2)

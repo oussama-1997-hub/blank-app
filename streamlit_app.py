@@ -369,70 +369,50 @@ if file:
         
         # Plot radar chart
        # Radar chart: Comparaison entre l’entreprise et le cluster intégré
-       # --- 📡 Radar Chart for Selected Enterprise vs Cluster Target ---
-        # Récupérer le cluster actuel et le cluster cible
+       # Récupérer le cluster actuel et le cluster cible
         target_cluster = predicted_cluster
         next_cluster = target_cluster + 1 if target_cluster + 1 < final_k else target_cluster
-
+        
+        # Radar Chart personnalisé de comparaison des scores de maturité par sous-dimension
+        st.markdown("### 📡 Radar Chart personnalisé : Entreprise vs Cluster Cible")
         try:
-            st.markdown("### 📡 Radar Chart: Comparaison entreprise vs cluster cible")
+            cluster_means_radar = df[df['cluster'] == next_cluster][selected_features].mean()
+            entreprise_scores_radar = entreprise[selected_features]
         
-            # Prepare dimension-level averages
-            entreprise_dimension_scores = pd.DataFrame({
-                'Dimension': [],
-                'Score Entreprise': [],
-                'Moyenne Cluster 2': []
-            })
+            radar_data = pd.DataFrame({
+                'Entreprise': entreprise_scores_radar.values,
+                'Cluster Cible (moyenne)': cluster_means_radar.values
+            }, index=selected_features)
         
-            for dim, sub_dims in dimension_map.items():
-                selected_sub_dims = [sd for sd in sub_dims if sd in selected_features]
-                if not selected_sub_dims:
-                    continue
-                entreprise_score = entreprise[selected_sub_dims].mean()
-                cluster_score = df[df['cluster'] == next_cluster][selected_sub_dims].mean().mean()
-        
-                entreprise_dimension_scores = pd.concat([
-                    entreprise_dimension_scores,
-                    pd.DataFrame({
-                        'Dimension': [dim],
-                        'Score Entreprise': [entreprise_score],
-                        'Moyenne Cluster 2': [cluster_score]
-                    })
-                ], ignore_index=True)
-        
-            fig_radar_ex = go.Figure()
-        
-            fig_radar_ex.add_trace(go.Scatterpolar(
-                r=entreprise_dimension_scores['Score Entreprise'],
-                theta=entreprise_dimension_scores['Dimension'],
+            fig_personal_radar = go.Figure()
+            fig_personal_radar.add_trace(go.Scatterpolar(
+                r=radar_data['Entreprise'],
+                theta=radar_data.index,
                 fill='toself',
                 name='Entreprise',
-                line=dict(color='red', width=3),
-                fillcolor='rgba(255, 0, 0, 0.3)'
+                line=dict(color='royalblue', width=3),
+                fillcolor='rgba(65, 105, 225, 0.3)'
             ))
-        
-            fig_radar_ex.add_trace(go.Scatterpolar(
-                r=entreprise_dimension_scores['Moyenne Cluster 2'],
-                theta=entreprise_dimension_scores['Dimension'],
+            fig_personal_radar.add_trace(go.Scatterpolar(
+                r=radar_data['Cluster Cible (moyenne)'],
+                theta=radar_data.index,
                 fill='toself',
                 name='Cluster Cible',
-                line=dict(color='blue', width=3),
-                fillcolor='rgba(0, 0, 255, 0.2)'
+                line=dict(color='red', width=3),
+                fillcolor='rgba(255, 0, 0, 0.2)'
             ))
-        
-            fig_radar_ex.update_layout(
+            fig_personal_radar.update_layout(
+                title="Comparaison des scores de maturité par sous-dimension",
                 polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
                 showlegend=True,
                 height=700,
                 width=1000
             )
-        
-            col1, col2 = st.columns([5, 1])
-            with col1:
-                st.plotly_chart(fig_radar_ex)
+            st.plotly_chart(fig_personal_radar)
         
         except Exception as e:
             st.error(f"Erreur lors de l'affichage du radar chart personnalisé : {e}")
+
                 
         # --- Display Lean methods and Industry 4.0 tech usage ---
         

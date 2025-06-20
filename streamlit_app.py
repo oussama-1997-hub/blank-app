@@ -57,7 +57,7 @@ if file:
     scaled_features = scaler.fit_transform(features)
 
     # --- Cluster Tabs ---
-    tabs = st.tabs(["📊 Clustering", "🧭 PCA Visualization", "📡 Radar Chart", "🔥 Heatmap", "🌳 Decision Tree", "📥 Export"])
+    tabs = st.tabs(["📊 Clustering", "🧭 PCA", "📡 Radar", "🔥 Heatmap", "🌳 Tree", "📥 Export"])
 
     with tabs[0]:
         st.header("📊 KMeans Clustering")
@@ -121,27 +121,23 @@ if file:
 
     with tabs[2]:
         st.header("📡 Radar Chart - Cluster Profiles")
-        
-        # Group by the label, not by cluster number
         cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
-    
         fig_radar = go.Figure()
-    
+
         for label in cluster_avg.index:
             fig_radar.add_trace(go.Scatterpolar(
                 r=cluster_avg.loc[label].values,
                 theta=selected_features,
                 fill='toself',
-                name=label  # This will be 'Niveau Avancé', etc.
+                name=label
             ))
-    
+
         fig_radar.update_layout(
             polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
             showlegend=True,
             height=600
         )
         st.plotly_chart(fig_radar)
-
 
     with tabs[3]:
         st.header("🔥 Heatmap of Average Scores by Maturity Level")

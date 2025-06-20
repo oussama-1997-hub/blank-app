@@ -351,23 +351,23 @@ if file:
         cluster_means = df.groupby('cluster')[selected_features].mean()
         entreprise_scores = entreprise[selected_features]
 
-        gaps = entreprise_scores - cluster_means.loc[next_cluster] 
+        # Calcul des gaps
+        gaps = entreprise_scores - cluster_means.loc[next_cluster]
         gaps_sorted = gaps.sort_values()
-
-        st.subheader("Priorités d'amélioration (plus grands écarts négatifs)")
-
-        import numpy as np  # Make sure numpy is imported at the top
-        # Assurez-vous que les écarts sont bien des valeurs numériques
-        top_gaps = gaps_sorted.head(5)
         
-        # Convertir les valeurs en float avant d'appliquer np.round
-        gap_values = pd.to_numeric(top_gaps.values, errors='coerce')
+        st.subheader("Priorités d'amélioration (écarts négatifs uniquement)")
+        
+        # Filtrer uniquement les écarts négatifs et trier du plus négatif au moins négatif
+        top_negative_gaps = gaps_sorted[gaps_sorted < 0].sort_values()
+        
+        # Affichage
+        gap_values = pd.to_numeric(top_negative_gaps.values, errors='coerce')
         gap_df = pd.DataFrame({
-            'Sous-dimension': top_gaps.index,
+            'Sous-dimension': top_negative_gaps.index,
             'Écart': np.round(gap_values, 2)
         })
-        
         st.table(gap_df)
+
 
         # 4b. Feuille de route technologique personnalisée
         st.subheader("Méthodes Lean & Technologies à adopter")

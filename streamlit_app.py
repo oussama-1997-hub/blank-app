@@ -260,31 +260,23 @@ if file:
             else:
                 st.info("No features with importance found.")
 
-            st.subheader("🎯 Decision Tree Visualization")
+            from dtreeviz.trees import dtreeviz
+            import tempfile
             from PIL import Image
-            import io
-            import pydotplus
-            from sklearn.tree import export_graphviz
             
-            # Export tree to DOT format
-            dot_data = export_graphviz(
-                clf,
-                out_file=None,
-                feature_names=X_train.columns,
-                class_names=[str(c) for c in clf.classes_],
-                filled=True,
-                rounded=True,
-                special_characters=True
-            )
+            st.subheader("🎯 Decision Tree Visualization (dtreeviz)")
             
-            # Convert DOT to high-res PNG
-            graph = pydotplus.graph_from_dot_data(dot_data)
-            png_data = graph.create_png()
+            # Create visualization
+            viz = dtreeviz(clf, X_train, y_train,
+                           feature_names=X_train.columns,
+                           class_names=list(clf.classes_),
+                           title="Decision Tree")
             
-            # Display the image in Streamlit
-            st.subheader("🎯 Decision Tree Visualization (High Resolution)")
-            image = Image.open(io.BytesIO(png_data))
-            st.image(image, caption="Decision Tree", use_column_width=True)
+            # Save to temporary file
+            with tempfile.NamedTemporaryFile(suffix=".png") as f:
+                viz.save(f.name)
+                image = Image.open(f.name)
+                st.image(image, use_column_width=True)
         else:
             st.warning("🛑 'Niveau de maturité Lean 4.0' not found in dataset.")
 

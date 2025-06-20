@@ -199,11 +199,31 @@ if file:
     with tabs[3]:
         st.header("🔥 Heatmap of Average Scores by Maturity Level")
         avg_scores = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
-
+    
         fig, ax = plt.subplots(figsize=(14, max(9, len(selected_features) * 0.5)))
         sns.heatmap(avg_scores.T, cmap="YlGnBu", annot=True, fmt=".2f", linewidths=0.8, ax=ax)
         ax.set_title("Average Scores by Maturity Level", fontsize=16)
         st.pyplot(fig)
+    
+        # --- Heatmap for Lean Methods and Industry 4.0 Technologies ---
+        # Identify method and technology columns (adjust column names as per your dataset)
+        lean_methods_cols = [col for col in df.columns if col.startswith('Méthodes Lean')]
+        tech_cols = [col for col in df.columns if col.startswith('Technologies industrie')]
+    
+        # Combine all
+        method_tech_cols = lean_methods_cols + tech_cols
+    
+        if method_tech_cols:
+            avg_method_tech = df.groupby('Niveau de maturité Lean 4.0')[method_tech_cols].mean()
+    
+            st.subheader("🔥 Usage of Lean Methods & Industrie 4.0 Technologies by Maturity Level")
+            fig2, ax2 = plt.subplots(figsize=(14, max(6, len(method_tech_cols)*0.4)))
+            sns.heatmap(avg_method_tech.T, cmap="YlOrRd", annot=True, fmt=".2f", linewidths=0.8, ax=ax2)
+            ax2.set_title("Average Usage of Lean Methods & Industrie 4.0 Technologies", fontsize=16)
+            st.pyplot(fig2)
+        else:
+            st.info("No Lean Methods or Industrie 4.0 Technology columns found in dataset.")
+    
 
     with tabs[4]:
         st.header("🌳 Decision Tree Classification")

@@ -370,6 +370,9 @@ if file:
         # Plot radar chart
        # Radar chart: Comparaison entre l’entreprise et le cluster intégré
        # --- 📡 Radar Chart for Selected Enterprise vs Cluster Target ---
+        # Récupérer le cluster actuel et le cluster cible
+        target_cluster = predicted_cluster
+        next_cluster = target_cluster + 1 if target_cluster + 1 < final_k else target_cluster
 
         try:
             st.markdown("### 📡 Radar Chart: Comparaison entreprise vs cluster cible")

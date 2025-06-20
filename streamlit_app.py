@@ -276,7 +276,7 @@ if file:
 
         # Inject custom font size
         dot_data = dot_data.replace("label=", 'fontsize=16, label=')
-                    st.graphviz_chart(dot_data)
+        st.graphviz_chart(dot_data)
         else:
             st.warning("🛑 'Niveau de maturité Lean 4.0' not found in dataset.")
 

@@ -389,17 +389,13 @@ if file:
         ))
         
         fig.update_layout(
-            polar=dict(
-                radialaxis=dict(
-                    visible=True,
-                    range=[0, 5]
-                )
-            ),
-            showlegend=True,
-            title="Radar Chart: Niveau de Maturité par Dimension",
-            height=700,          # Increase height (default is usually ~450)
-            width=900            # Optionally increase width (you can remove this if you want it fluid)
+        polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
+        showlegend=True,
+        title="Radar Chart: Niveau de Maturité - Entreprise vs Groupe",
+        height=900,    # bigger height
+        width=1100     # bigger width
         )
+
         
         st.plotly_chart(fig, use_container_width=True)
 

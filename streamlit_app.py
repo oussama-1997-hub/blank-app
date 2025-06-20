@@ -128,40 +128,37 @@ if file:
         y = df[target_col].dropna()
         features_dt = features_dt.loc[y.index]
 
-        max_depth = st.slider("Max Depth", 1, 10, 4)
-        min_samples_split = st.slider("Min Samples Split", 2, 10, 4)
+        st.write("Sample counts per maturity level:", y.value_counts())
 
         if y.nunique() > 1 and len(y) > 5:
-        X_train, X_test, y_train, y_test = train_test_split(features_dt, y, test_size=0.3, stratify=y, random_state=42)
+            max_depth = st.slider("Max Depth", 1, 10, 4)
+            min_samples_split = st.slider("Min Samples Split", 2, 10, 4)
 
-        clf = DecisionTreeClassifier(max_depth=max_depth, min_samples_split=min_samples_split, random_state=42)
-        clf.fit(X_train, y_train)
+            X_train, X_test, y_train, y_test = train_test_split(
+                features_dt, y, test_size=0.3, stratify=y, random_state=42)
 
-    # Feature importances & plotting code here...
+            clf = DecisionTreeClassifier(max_depth=max_depth, min_samples_split=min_samples_split, random_state=42)
+            clf.fit(X_train, y_train)
 
-else:
-    st.warning(\"⚠️ Not enough data or class variety to train the Decision Tree. Please check your input.\")
+            importances = pd.Series(clf.feature_importances_, index=X_train.columns)
+            top_importances = importances[importances > 0].sort_values(ascending=False).head(20)
 
+            st.subheader("🔎 Feature Importances")
+            if not top_importances.empty:
+                fig5, ax5 = plt.subplots(figsize=(10, 6))
+                top_importances.plot(kind='barh', ax=ax5, color='steelblue')
+                ax5.set_title("Top Feature Importances")
+                st.pyplot(fig5)
+            else:
+                st.info("No features with importance found.")
 
-        clf = DecisionTreeClassifier(max_depth=max_depth, min_samples_split=min_samples_split, random_state=42)
-        clf.fit(X_train, y_train)
+            st.subheader("🎯 Decision Tree Visualization")
+            dot_data = export_graphviz(clf, out_file=None, feature_names=X_train.columns,
+                                       class_names=clf.classes_, filled=True, rounded=True, special_characters=True)
+            st.graphviz_chart(dot_data)
 
-        importances = pd.Series(clf.feature_importances_, index=X_train.columns)
-        top_importances = importances[importances > 0].sort_values(ascending=False).head(20)
-
-        st.subheader("🔎 Feature Importances")
-        if not top_importances.empty:
-            fig5, ax5 = plt.subplots(figsize=(10, 6))
-            top_importances.plot(kind='barh', ax=ax5, color='steelblue')
-            ax5.set_title("Top Feature Importances")
-            st.pyplot(fig5)
         else:
-            st.info("No features with importance found.")
-
-        st.subheader("🎯 Decision Tree Visualization")
-        dot_data = export_graphviz(clf, out_file=None, feature_names=X_train.columns,
-                                   class_names=clf.classes_, filled=True, rounded=True, special_characters=True)
-        st.graphviz_chart(dot_data)
+            st.warning("⚠️ Not enough data or class variety to train the Decision Tree. Please check your input.")
 
     with tabs[4]:
         st.header("📥 Export Results")

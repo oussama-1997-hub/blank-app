@@ -373,10 +373,10 @@ if file:
             st.subheader("Comparaison des niveaux de maturité par dimension")
         
             # Moyenne des dimensions pour l’entreprise (exemple)
-            entreprise_avg = company_dim_scores.groupby('Dimension')['Score Entreprise'].mean()
+            entreprise_avg = company_values.groupby('Dimension')['Score Entreprise'].mean()
         
             # Moyenne des dimensions pour le Cluster 2 (cible)
-            cluster2_avg = company_dim_scores.groupby('Dimension')['Moyenne Cluster 2'].mean()
+            cluster2_avg = company_values.groupby('Dimension')['Moyenne Cluster 2'].mean()
         
             # Construction du radar chart
             fig_radar = go.Figure()

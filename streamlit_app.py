@@ -396,10 +396,13 @@ if file:
                 )
             ),
             showlegend=True,
-            title="Radar Chart: Niveau de Maturité par Dimension"
+            title="Radar Chart: Niveau de Maturité par Dimension",
+            height=700,          # Increase height (default is usually ~450)
+            width=900            # Optionally increase width (you can remove this if you want it fluid)
         )
         
         st.plotly_chart(fig, use_container_width=True)
+
         
         # --- Display Lean methods and Industry 4.0 tech usage ---
         

@@ -269,12 +269,10 @@ if file:
         else:
             st.warning("🛑 'Niveau de maturité Lean 4.0' not found in dataset.")
 
-    with tabs[5]:
-        # This will be the next module in your Streamlit app - called "🚀 Application Personnalisée"
+
+# This will be the next module in your Streamlit app - called "🚀 Application Personnalisée"
 # It will allow evaluating a single company (from dataset or user input)
 # and generate maturity prediction + roadmaps (maturity + technological)
-
-# --- Inside your app, after the last tab "Export" ---
 with tabs[5]:
     st.header("🚀 Application personnalisée pour une entreprise")
 

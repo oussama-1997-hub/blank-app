@@ -378,5 +378,3 @@ with tabs[5]:
         st.warning("Cette version préliminaire n'inclut que l'exemple. Les modes Dataset et Saisie manuelle seront ajoutés après validation.")
 
 
-else:
-    st.info("👈 Please upload a CSV file to begin.")

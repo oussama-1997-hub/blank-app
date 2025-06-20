@@ -10,4 +10,4 @@ fpdf
 kaleido
 pydotplus
 Pillow
-dtreeviz
+dtreeviz==1.4.0

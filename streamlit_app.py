@@ -49,7 +49,7 @@ if file:
 
     # --- Feature selection ---
    # --- Define dimensions and sub-dimensions ---
-        dimension_map = {
+   dimension_map = {
             "Leadership": [
                 "Leadership - Engagement Lean ",
                 "Leadership - Engagement DT",
@@ -97,7 +97,7 @@ if file:
     features = df[selected_features].dropna()
     scaler = StandardScaler()
     scaled_features = scaler.fit_transform(features)
-
+     
     # --- Cluster Tabs ---
     tabs = st.tabs(["📊 Clustering", "🧭 PCA", "📡 Radar", "🔥 Heatmap", "🌳 Tree", "📥 Export"])
 

@@ -95,7 +95,6 @@ if file:
     ax1.set_xlabel('K')
     ax1.set_ylabel('Inertia')
     st.pyplot(fig1)
-    elbow_fig = fig1
 
     # Silhouette plot
     fig2, ax2 = plt.subplots()
@@ -104,7 +103,6 @@ if file:
     ax2.set_xlabel('K')
     ax2.set_ylabel('Score')
     st.pyplot(fig2)
-    silhouette_fig = fig2
 
     final_k = st.selectbox("Select final K", list(range(k_range[0], k_range[1] + 1)))
     kmeans = KMeans(n_clusters=final_k, random_state=42, n_init=10)
@@ -137,7 +135,6 @@ if file:
     sns.scatterplot(data=df_pca, x='PCA1', y='PCA2', hue='Niveau de maturité Lean 4.0', palette='viridis', ax=ax3)
     ax3.set_title("PCA of Clusters")
     st.pyplot(fig3)
-    pca_fig = fig3
 
     # Heatmap
     avg_scores = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
@@ -162,7 +159,6 @@ if file:
     plt.xticks(rotation=0)
     plt.tight_layout()
     st.pyplot(fig)
-    heatmap_fig = fig
 
     # --- Sidebar: select dimensions to display in radar ---
     st.sidebar.markdown("### 🎯 Choisissez les dimensions à afficher dans le Radar Chart")
@@ -273,5 +269,3 @@ if file:
 
 else:
     st.info("👈 Upload a file to begin.")
-
-               

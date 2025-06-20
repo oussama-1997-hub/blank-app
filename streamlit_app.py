@@ -119,7 +119,7 @@ if file:
         ax3.set_title("PCA of Clusters")
         st.pyplot(fig3)
 
-        with tabs[2]:
+    with tabs[2]:
         st.header("📡 Radar Chart - Cluster Profiles")
         
         # Group by the label, not by cluster number

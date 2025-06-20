@@ -374,7 +374,7 @@ if file:
             r=company_values,
             theta=categories,
             fill='toself',
-            name=f"Entreprise: {selected_company}",
+            name=f"Entreprise: {entreprise}",
             line=dict(color='rgba(0, 0, 139, 1)', width=3),
             fillcolor='rgba(0, 0, 139, 0.3)'
         ))

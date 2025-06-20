@@ -258,7 +258,20 @@ if file:
                 st.info("ℹ️ No features with non-zero importance were found.")
 
             st.subheader("🎯 Visualize Decision Tree")
-            dot_data = export_graphviz(
+                        dot_data = export_graphviz(
                 clf,
                 out_file=None,
+                feature_names=X_train.columns,
+                class_names=[str(c) for c in clf.classes_],
+                filled=True,
+                rounded=True,
+                special_characters=True
+            )
+            st.graphviz_chart(dot_data)
+        else:
+            st.warning("The column 'Niveau Maturité' was not found in the dataset.")
+
+else:
+    st.info("👈 Upload a file to begin.")
+
                

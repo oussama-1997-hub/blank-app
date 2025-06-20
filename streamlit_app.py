@@ -380,7 +380,6 @@ if file:
         'Score Entreprise': entreprise.loc[[dim_sd for dim_sd in top_gaps.index]].values,
         'Moyenne Cluster 2': cluster_avg.loc['Niveau Intégré', top_gaps.index].values,
         'Écart': top_gaps.round(2).values  # ou juste top_gaps.round(2)
-        })
 
         st.table(gap_df)
 

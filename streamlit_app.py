@@ -270,8 +270,115 @@ if file:
             st.warning("🛑 'Niveau de maturité Lean 4.0' not found in dataset.")
 
     with tabs[5]:
-        st.header("📥 Export Results")
-        st.download_button("Download clustered dataset", data=df.to_csv(index=False), file_name="clustered_data.csv", mime="text/csv")
+        # This will be the next module in your Streamlit app - called "🚀 Application Personnalisée"
+# It will allow evaluating a single company (from dataset or user input)
+# and generate maturity prediction + roadmaps (maturity + technological)
+
+# --- Inside your app, after the last tab "Export" ---
+with tabs[5]:
+    st.header("🚀 Application personnalisée pour une entreprise")
+
+    st.markdown("""
+    Cette section permet de :
+    - Prédire le niveau de maturité Lean 4.0 d'une entreprise
+    - Détecter écarts entre outils utilisés et maturité
+    - Générer des feuilles de route personnalisées (outils et dimensions)
+    """)
+
+    # --- Load company data ---
+    source_option = st.radio("Source des données de l'entreprise :", ["Exemple Entreprise 5", "Depuis le dataset", "Saisie manuelle"])
+
+    if source_option == "Exemple Entreprise 5":
+        example_row = {
+            'Lean_QRQC': 1, 'Lean_5S': 1, 'Lean_Value Stream Mapping (VSM)': 1,
+            'Lean_TPM / TRS method': 1, 'Lean_Takt Time': 1,
+            'Tech_Intelligence Artificielle': 1, 'Tech_ERP': 1,
+            # Technologies/méthodes non utilisées seront 0 automatiquement
+        }
+        example_scores = {
+            'Leadership - Engagement Lean ': 4.0,
+            'Leadership - Engagement DT': 2.0,
+            'Leadership - Stratagie ': 2.0,
+            'Leadership - Communication': 3.0,
+            'Supply Chain - Collaboration inter-organisationnelle': 3.0,
+            'Supply Chain - Tracabilite': 2.0,
+            'Supply Chain - Impact sur les employees': 3.0,
+            'Opérations - Standardisation des processus': 2.0,
+            'Opérations - Juste-à-temps (JAT)': 3.0,
+            'Opérations - Gestion des résistances': 2.0,
+            'Technologies - Connectivité et gestion des données': 3.0,
+            'Technologies - Automatisation': 2.0,
+            'Technologies - Pilotage du changement': 3.0,
+            'Organisation apprenante  - Formation et développement des compétences': 3.0,
+            'Organisation apprenante  - Collaboration et Partage des Connaissances': 3.0,
+            'Organisation apprenante  - Flexibilité organisationnelle': 3.0
+        }
+
+        # Create DataFrame row
+        lean_tech_cols = [col for col in df.columns if col.startswith("Lean_") or col.startswith("Tech_")]
+        row_data = {col: example_row.get(col, 0) for col in lean_tech_cols}
+        subdim_cols = selected_features
+        row_data.update({col: example_scores.get(col, 0) for col in subdim_cols})
+        row_df = pd.DataFrame([row_data])
+
+        # --- Scale scores and predict cluster (maturity real) ---
+        scaled_input = scaler.transform(row_df[subdim_cols])
+        predicted_cluster = kmeans.predict(scaled_input)[0]
+        maturity_label = cluster_label_map.get(predicted_cluster, "Inconnu")
+
+        # --- Decision tree prediction (based on lean/tech) ---
+        tech_lean_input = row_df[lean_tech_cols].reindex(columns=X_train.columns, fill_value=0)
+        predicted_tree_label = clf.predict(tech_lean_input)[0]
+
+        st.subheader(f"📌 Niveau réel (par clustering) : **{maturity_label}**")
+        st.subheader(f"🌳 Niveau prédit (arbre de décision) : **{predicted_tree_label}**")
+
+        # --- Analyse des écarts ---
+        st.markdown("### 🌀 Analyse comparative des niveaux")
+        if maturity_label == predicted_tree_label:
+            scenario = "Scénario 3 : Aligné"
+            reco = "Améliorer en parallèle la maturité organisationnelle et l'adoption d'outils."
+        elif maturity_label == "Niveau Initial" and predicted_tree_label in ["Niveau Intégré", "Niveau Avancé"]:
+            scenario = "Scénario 2 : Outils avancés mais organisation faible"
+            reco = "Prioriser l'amélioration des sous-dimensions de maturité."
+        else:
+            scenario = "Scénario 1 : Retard technologique"
+            reco = "Renforcer l'adoption de technologies clés."
+
+        st.info(f"**{scenario}**\n\n✍️ **Recommandation principale** : {reco}")
+
+        # --- Roadmap sous-dimensions ---
+        st.markdown("### 🚀 Feuille de route d'amélioration de maturité")
+        avg_cluster = df[df['Niveau de maturité Lean 4.0'] == 'Niveau Intégré'][subdim_cols].mean()
+        gaps = avg_cluster - row_df[subdim_cols].iloc[0]
+        gap_df = pd.DataFrame({
+            'Sous-dimension': gaps.index,
+            'Score Entreprise': row_df[subdim_cols].iloc[0].values,
+            'Moyenne Cluster 2': avg_cluster.values,
+            'Ecart': gaps.values
+        }).sort_values(by='Ecart')
+
+        top_gaps = gap_df.nsmallest(5, 'Ecart')
+        st.dataframe(top_gaps)
+
+        # --- Roadmap outils ---
+        st.markdown("### 📆 Feuille de route technologique personnalisée")
+        cluster_df = df[df['Niveau de maturité Lean 4.0'] == 'Niveau Intégré']
+        adoption_rates = cluster_df[lean_tech_cols].mean()
+        not_used = row_df[lean_tech_cols].iloc[0] == 0
+        to_adopt = adoption_rates[not_used].sort_values(ascending=False)
+
+        tools_df = pd.DataFrame({
+            'Outil / Technologie': to_adopt.index,
+            'Taux d'adoption Cluster 2': to_adopt.values,
+            'Priorité': pd.cut(to_adopt.values, bins=[0, 0.2, 0.5, 1], labels=['Faible', 'Moyenne', 'Haute'])
+        })
+
+        st.dataframe(tools_df)
+
+    else:
+        st.warning("Cette version préliminaire n'inclut que l'exemple. Les modes Dataset et Saisie manuelle seront ajoutés après validation.")
+
 
 else:
     st.info("👈 Please upload a CSV file to begin.")

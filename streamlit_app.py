@@ -293,43 +293,6 @@ if file:
         default_idx = 4 if len(df) > 4 else 0  # entreprise 5 = index 4
         entreprise_idx = st.selectbox("Choisissez une entreprise (index):", entreprise_options, index=default_idx)
         entreprise = df.loc[entreprise_idx]
-                # --- 3b. Radar Chart personnalisé : Entreprise vs Cluster cible ---
-        st.markdown("### 📡 Radar Chart : Entreprise vs Cluster Cible")
-
-        try:
-            entreprise_scores_list = entreprise[selected_features].values.flatten().tolist()
-            cluster_target_mean = cluster_means.loc[next_cluster][selected_features].values.tolist()
-
-            fig_compare_radar = go.Figure()
-
-            fig_compare_radar.add_trace(go.Scatterpolar(
-                r=entreprise_scores_list,
-                theta=selected_features,
-                fill='toself',
-                name="Entreprise",
-                line=dict(color='rgba(255, 0, 0, 1)', width=3),
-                fillcolor='rgba(255, 0, 0, 0.3)'
-            ))
-
-            fig_compare_radar.add_trace(go.Scatterpolar(
-                r=cluster_target_mean,
-                theta=selected_features,
-                fill='toself',
-                name="Moyenne du cluster cible",
-                line=dict(color='rgba(0, 0, 139, 1)', width=3),
-                fillcolor='rgba(0, 0, 139, 0.3)'
-            ))
-
-            fig_compare_radar.update_layout(
-                polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
-                showlegend=True,
-                height=600
-            )
-
-            st.plotly_chart(fig_compare_radar)
-
-        except Exception as e:
-            st.error(f"Erreur lors de la génération du Radar Chart personnalisé : {e}")
 
         st.markdown("#### Scores de maturité sous-dimensions sélectionnées")
         entreprise_features = entreprise[selected_features].values.reshape(1, -1)
@@ -374,7 +337,43 @@ if file:
             st.success("✅ Scénario 3 : Niveau prédit = niveau réel (alignement)")
             st.write("• Améliorer en parallèle la maturité organisationnelle et l’adoption d’outils.")
             st.write("• Viser les outils du nœud parent dans l’arbre et les sous-dimensions où l’écart est le plus important.")
+                # --- 3b. Radar Chart personnalisé : Entreprise vs Cluster cible ---
+        st.markdown("### 📡 Radar Chart : Entreprise vs Cluster Cible")
 
+        try:
+            entreprise_scores_list = entreprise[selected_features].values.flatten().tolist()
+            cluster_target_mean = cluster_means.loc[next_cluster][selected_features].values.tolist()
+
+            fig_compare_radar = go.Figure()
+
+            fig_compare_radar.add_trace(go.Scatterpolar(
+                r=entreprise_scores_list,
+                theta=selected_features,
+                fill='toself',
+                name="Entreprise",
+                line=dict(color='rgba(255, 0, 0, 1)', width=3),
+                fillcolor='rgba(255, 0, 0, 0.3)'
+            ))
+
+            fig_compare_radar.add_trace(go.Scatterpolar(
+                r=cluster_target_mean,
+                theta=selected_features,
+                fill='toself',
+                name="Moyenne du cluster cible",
+                line=dict(color='rgba(0, 0, 139, 1)', width=3),
+                fillcolor='rgba(0, 0, 139, 0.3)'
+            ))
+
+            fig_compare_radar.update_layout(
+                polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
+                showlegend=True,
+                height=600
+            )
+
+            st.plotly_chart(fig_compare_radar)
+
+        except Exception as e:
+            st.error(f"Erreur lors de la génération du Radar Chart personnalisé : {e}")
         # --- 4. Feuille de route personnalisée ---
 
         st.markdown("### 🗺️ Feuille de route personnalisée")

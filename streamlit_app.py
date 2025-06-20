@@ -261,22 +261,29 @@ if file:
                 st.info("No features with importance found.")
 
             from dtreeviz.trees import dtreeviz
-            import tempfile
+            from sklearn.preprocessing import LabelEncoder
             from PIL import Image
+            import tempfile
             
-            st.subheader("🎯 Decision Tree Visualization (dtreeviz)")
+            # Encode class labels
+            le = LabelEncoder()
+            y_train_encoded = le.fit_transform(y_train)
             
-            # Create visualization
-            viz = dtreeviz(clf, X_train, y_train,
-                           feature_names=X_train.columns,
-                           class_names=list(clf.classes_),
-                           title="Decision Tree")
+            # Create the visualization
+            viz = dtreeviz(
+                clf,
+                X_train,
+                y_train_encoded,
+                feature_names=X_train.columns,
+                class_names=le.classes_.tolist(),
+                title="Decision Tree"
+            )
             
-            # Save to temporary file
+            # Render the image
             with tempfile.NamedTemporaryFile(suffix=".png") as f:
                 viz.save(f.name)
-                image = Image.open(f.name)
-                st.image(image, use_column_width=True)
+                st.image(Image.open(f.name), use_column_width=True)
+
         else:
             st.warning("🛑 'Niveau de maturité Lean 4.0' not found in dataset.")
 

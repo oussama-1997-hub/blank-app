@@ -298,6 +298,50 @@ if file:
         entreprise_features = entreprise[selected_features].values.reshape(1, -1)
         st.dataframe(pd.DataFrame(entreprise_features, columns=selected_features))
 
+        st.markdown("### 📡 Radar Chart : Entreprise vs Cluster Cible")
+
+        try:
+            # Moyenne du cluster cible
+            cluster_avg_target = df[df['cluster'] == next_cluster][selected_features].mean()
+
+            # Scores de l'entreprise
+            entreprise_scores = entreprise[selected_features]
+
+            # Garder uniquement les colonnes sans NaN
+            available_features = entreprise_scores.dropna().index.intersection(cluster_avg_target.dropna().index)
+
+            fig_radar = go.Figure()
+
+            # Trace pour l'entreprise
+            fig_radar.add_trace(go.Scatterpolar(
+                r=entreprise_scores[available_features].values,
+                theta=available_features,
+                fill='toself',
+                name='Entreprise étudiée',
+                line=dict(color='rgba(255, 0, 0, 1)', width=3),
+                fillcolor='rgba(255, 0, 0, 0.3)'
+            ))
+
+            # Trace pour le cluster cible
+            fig_radar.add_trace(go.Scatterpolar(
+                r=cluster_avg_target[available_features].values,
+                theta=available_features,
+                fill='toself',
+                name=f'Cluster cible (Niveau {cluster_label_map.get(next_cluster, "Inconnu")})',
+                line=dict(color='rgba(0, 0, 139, 1)', width=3),
+                fillcolor='rgba(0, 0, 139, 0.3)'
+            ))
+
+            fig_radar.update_layout(
+                polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
+                showlegend=True,
+                height=600
+            )
+
+            st.plotly_chart(fig_radar)
+
+        except Exception as e:
+            st.error(f"Erreur lors de l'affichage du radar personnalisé : {e}")
         # --- 1. Prédiction cluster KMeans (niveau réel) ---
         entreprise_scaled = scaler.transform(entreprise[selected_features].values.reshape(1, -1))
         predicted_cluster = kmeans.predict(entreprise_scaled)[0]

@@ -10,8 +10,6 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.graph_objects as go
-from fpdf import FPDF
-import io
 
 st.set_page_config(page_title="Lean 4.0 Cluster & Tree App", layout="wide")
 st.title("🔍 Lean 4.0 Clustering & Decision Tree Dashboard")
@@ -53,43 +51,6 @@ cols_to_exclude = [
     'Méthodes Lean ', 'Technologies industrie 4.0', 'cluster',
     'Cluster', 'Feature_Cluster', 'Niveau Maturité', 'Cluster Label'
 ]
-
-# --- Functions to save figures and create PDF ---
-
-def save_figures_to_files(elbow_fig, silhouette_fig, pca_fig, heatmap_fig, radar_fig):
-    elbow_fig.savefig("elbow.png", bbox_inches='tight')
-    silhouette_fig.savefig("silhouette.png", bbox_inches='tight')
-    pca_fig.savefig("pca.png", bbox_inches='tight')
-    heatmap_fig.savefig("heatmap.png", bbox_inches='tight')
-    radar_fig.write_image("radar.png")
-
-def create_pdf_report():
-    pdf = FPDF()
-    pdf.set_auto_page_break(auto=True, margin=15)
-    pdf.add_page()
-    pdf.set_font("Arial", "B", 16)
-    pdf.cell(0, 10, "Rapport Lean 4.0 - Clustering & Analyse", ln=True, align='C')
-
-    pdf.set_font("Arial", "", 12)
-    pdf.cell(0, 10, "Méthode Elbow", ln=True)
-    pdf.image("elbow.png", w=180)
-    
-    pdf.cell(0, 10, "Score de Silhouette", ln=True)
-    pdf.image("silhouette.png", w=180)
-
-    pdf.cell(0, 10, "Visualisation PCA", ln=True)
-    pdf.image("pca.png", w=180)
-
-    pdf.cell(0, 10, "Profil des Clusters (Radar Chart)", ln=True)
-    pdf.image("radar.png", w=180)
-
-    pdf.cell(0, 10, "Carte Thermique des Scores Moyens", ln=True)
-    pdf.image("heatmap.png", w=180)
-
-    pdf_output = io.BytesIO()
-    pdf.output(pdf_output)
-    pdf_output.seek(0)
-    return pdf_output
 
 # --- Sidebar: Upload file ---
 st.sidebar.header("📂 Upload your CSV file")
@@ -297,28 +258,7 @@ if file:
                 st.info("ℹ️ No features with non-zero importance were found.")
 
             st.subheader("🎯 Visualize Decision Tree")
-            from sklearn.tree import export_graphviz
             dot_data = export_graphviz(
                 clf,
                 out_file=None,
-                feature_names=X_train.columns,
-                class_names=[str(c) for c in clf.classes_],
-                filled=True, rounded=True,
-                special_characters=True
-            )
-            st.graphviz_chart(dot_data)
-        else:
-            st.warning("The column 'Niveau Maturité' was not found in the dataset.")
-
-    # --- Export PDF report button ---
-    st.markdown("---")
-    if st.button("📥 Exporter le rapport PDF"):
-        try:
-            save_figures_to_files(elbow_fig, silhouette_fig, pca_fig, heatmap_fig, fig_radar)
-            pdf_data = create_pdf_report()
-            st.download_button("Télécharger le rapport PDF", pdf_data, file_name="rapport_lean40.pdf", mime="application/pdf")
-        except Exception as e:
-            st.error(f"Erreur lors de la génération du rapport PDF : {e}")
-
-else:
-    st.info("👈 Upload a file to begin.")
+               

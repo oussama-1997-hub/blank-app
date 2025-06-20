@@ -90,7 +90,7 @@ if file:
     scaled_features = scaler.fit_transform(features)
 
     # --- Tabs for visualization ---
-    tabs = st.tabs(["📊 Clustering", "🧭 PCA", "📡 Radar", "🔥 Heatmap", "🌳 Decision Tree", "📥 Export"])
+    tabs = st.tabs(["📊 Clustering", "🧭 PCA", "📡 Radar", "🔥 Heatmaps", "🌳 Decision Tree", "📥 Export"])
 
     with tabs[0]:
         st.header("📊 KMeans Clustering")
@@ -123,7 +123,7 @@ if file:
         kmeans = KMeans(n_clusters=final_k, random_state=42, n_init=10)
         df['cluster'] = kmeans.fit_predict(scaled_features)
 
-        # Maturity label map (adjust these to match your cluster labels if needed)
+        # Maturity label map
         cluster_label_map = {
             0: 'Niveau Avancé',
             1: 'Niveau Initial',
@@ -197,33 +197,39 @@ if file:
             st.error(f"Erreur du Radar Chart : {e}")
 
     with tabs[3]:
-        st.header("🔥 Heatmap of Average Scores by Maturity Level")
+        st.header("🔥 Heatmaps of Average Scores, Lean Methods & Industry 4.0 Tech")
+
+        # Average survey scores heatmap (selected_features)
         avg_scores = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
-    
-        fig, ax = plt.subplots(figsize=(14, max(9, len(selected_features) * 0.5)))
-        sns.heatmap(avg_scores.T, cmap="YlGnBu", annot=True, fmt=".2f", linewidths=0.8, ax=ax)
-        ax.set_title("Average Scores by Maturity Level", fontsize=16)
-        st.pyplot(fig)
-    
-        # --- Heatmap for Lean Methods and Industry 4.0 Technologies ---
-        # Identify method and technology columns (adjust column names as per your dataset)
-        lean_methods_cols = [col for col in df.columns if col.startswith('Méthodes Lean')]
-        tech_cols = [col for col in df.columns if col.startswith('Technologies industrie')]
-    
-        # Combine all
-        method_tech_cols = lean_methods_cols + tech_cols
-    
-        if method_tech_cols:
-            avg_method_tech = df.groupby('Niveau de maturité Lean 4.0')[method_tech_cols].mean()
-    
-            st.subheader("🔥 Usage of Lean Methods & Industrie 4.0 Technologies by Maturity Level")
-            fig2, ax2 = plt.subplots(figsize=(14, max(6, len(method_tech_cols)*0.4)))
-            sns.heatmap(avg_method_tech.T, cmap="YlOrRd", annot=True, fmt=".2f", linewidths=0.8, ax=ax2)
-            ax2.set_title("Average Usage of Lean Methods & Industrie 4.0 Technologies", fontsize=16)
-            st.pyplot(fig2)
+
+        # Detect Lean and Tech dummy columns
+        lean_cols = [col for col in df.columns if col.startswith('Lean_')]
+        tech_cols = [col for col in df.columns if col.startswith('tech_')]
+
+        lean_avg = df.groupby('Niveau de maturité Lean 4.0')[lean_cols].mean() if lean_cols else pd.DataFrame()
+        tech_avg = df.groupby('Niveau de maturité Lean 4.0')[tech_cols].mean() if tech_cols else pd.DataFrame()
+
+        fig, axs = plt.subplots(3, 1, figsize=(16, 18))
+
+        sns.heatmap(avg_scores.T, cmap="YlGnBu", annot=True, fmt=".2f", linewidths=0.8, ax=axs[0])
+        axs[0].set_title("Average Survey Scores by Maturity Level", fontsize=16)
+
+        if lean_avg.empty:
+            axs[1].text(0.5, 0.5, "No Lean methods columns detected.", ha='center', va='center', fontsize=14)
+            axs[1].axis('off')
         else:
-            st.info("No Lean Methods or Industrie 4.0 Technology columns found in dataset.")
-    
+            sns.heatmap(lean_avg.T, cmap="Oranges", annot=True, fmt=".2f", linewidths=0.8, ax=axs[1])
+            axs[1].set_title("Average Lean Methods Usage by Maturity Level", fontsize=16)
+
+        if tech_avg.empty:
+            axs[2].text(0.5, 0.5, "No Industry 4.0 tech columns detected.", ha='center', va='center', fontsize=14)
+            axs[2].axis('off')
+        else:
+            sns.heatmap(tech_avg.T, cmap="PuRd", annot=True, fmt=".2f", linewidths=0.8, ax=axs[2])
+            axs[2].set_title("Average Industry 4.0 Technologies Usage by Maturity Level", fontsize=16)
+
+        plt.tight_layout()
+        st.pyplot(fig)
 
     with tabs[4]:
         st.header("🌳 Decision Tree Classification")

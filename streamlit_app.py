@@ -297,6 +297,90 @@ if file:
         st.markdown("#### Scores de maturité sous-dimensions sélectionnées")
         entreprise_features = entreprise[selected_features].values.reshape(1, -1)
         st.dataframe(pd.DataFrame(entreprise_features, columns=selected_features))
+        import plotly.graph_objects as go
+
+        # 1. Calculer les scores moyens par dimension (moyenne des sous-dimensions de chaque dimension)
+        dimension_map = {
+            "Leadership": [
+                "Leadership - Engagement Lean ",
+                "Leadership - Engagement DT",
+                "Leadership - Stratégie ",
+                "Leadership - Communication"
+            ],
+            "Supply Chain": [
+                "Supply Chain - Collaboration inter-organisationnelle",
+                "Supply Chain - Traçabilité",
+                "Supply Chain - Impact sur les employées"
+            ],
+            "Opérations": [
+                "Opérations - Standardisation des processus",
+                "Opérations - Juste-à-temps (JAT)",
+                "Opérations - Gestion des résistances"
+            ],
+            "Technologies": [
+                "Technologies - Connectivité et gestion des données",
+                "Technologies - Automatisation",
+                "Technologies - Pilotage du changement"
+            ],
+            "Organisation Apprenante": [
+                "Organisation apprenante  - Formation et développement des compétences",
+                "Organisation apprenante  - Collaboration et Partage des Connaissances",
+                "Organisation apprenante  - Flexibilité organisationnelle"
+            ]
+        }
+        
+        # Extraire les scores par dimension
+        dimension_scores = {}
+        for dim, subs in dimension_map.items():
+            # Assurer que toutes les sous-dimensions existent dans le dataframe entreprise
+            existing_subs = [col for col in subs if col in entreprise.index]
+            if existing_subs:
+                dimension_scores[dim] = entreprise.loc[existing_subs].mean()
+            else:
+                dimension_scores[dim] = 0
+        
+        # Radar Chart
+        categories = list(dimension_scores.keys())
+        values = list(dimension_scores.values())
+        values += values[:1]  # Pour fermer le cercle radar
+        
+        fig = go.Figure(
+            data=[
+                go.Scatterpolar(
+                    r=values,
+                    theta=categories + categories[:1],
+                    fill='toself',
+                    name=f"Niveau par dimension - {entreprise_name}"
+                )
+            ]
+        )
+        fig.update_layout(
+            polar=dict(radialaxis=dict(visible=True, range=[0,5])),
+            showlegend=True,
+            title=f"Niveau de maturité par dimension pour {entreprise_name}",
+            height=500
+        )
+        st.plotly_chart(fig)
+        
+        # 2. Afficher les méthodes Lean utilisées par l'entreprise
+        lean_cols = [col for col in df.columns if col.startswith('Lean_')]
+        lean_used = {col: (entreprise.get(col, 0) > 0.5) for col in lean_cols}
+        
+        st.markdown("### Méthodes Lean utilisées :")
+        for method, used in lean_used.items():
+            label = method.replace('Lean_', '').replace('_', ' ')
+            icon = "✅" if used else "❌"
+            st.write(f"{icon} {label}")
+        
+        # 3. Afficher les technologies Industrie 4.0 utilisées par l'entreprise
+        tech_cols = [col for col in df.columns if col.startswith('Tech_')]
+        tech_used = {col: (entreprise.get(col, 0) > 0.5) for col in tech_cols}
+        
+        st.markdown("### Technologies Industrie 4.0 utilisées :")
+        for tech, used in tech_used.items():
+            label = tech.replace('Tech_', '').replace('_', ' ')
+            icon = "✅" if used else "❌"
+            st.write(f"{icon} {label}")
 
         # --- 1. Prédiction cluster KMeans (niveau réel) ---
         entreprise_scaled = scaler.transform(entreprise[selected_features].values.reshape(1, -1))

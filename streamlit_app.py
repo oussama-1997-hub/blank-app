@@ -122,25 +122,21 @@ if file:
     with tabs[2]:
         st.header("📡 Radar Chart - Cluster Profiles")
     
-        if len(selected_features) == 0:
-            st.warning("⚠️ Please select at least one feature from the sidebar to view the radar chart.")
-        else:
-            cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
+        try:
+            cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean().dropna(axis=1, how='any')
+            available_features = cluster_avg.columns.tolist()
     
             if cluster_avg.empty:
-                st.warning("⚠️ Not enough data to display the radar chart. Some clusters may be missing.")
+                st.warning("No available data for radar chart after grouping. Please check selected features.")
             else:
                 fig_radar = go.Figure()
-    
                 for label in cluster_avg.index:
-                    values = cluster_avg.loc[label].fillna(0).values
-                    if not np.all(np.isnan(values)):
-                        fig_radar.add_trace(go.Scatterpolar(
-                            r=values,
-                            theta=selected_features,
-                            fill='toself',
-                            name=label
-                        ))
+                    fig_radar.add_trace(go.Scatterpolar(
+                        r=cluster_avg.loc[label].values,
+                        theta=available_features,
+                        fill='toself',
+                        name=label
+                    ))
     
                 fig_radar.update_layout(
                     polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
@@ -148,6 +144,10 @@ if file:
                     height=600
                 )
                 st.plotly_chart(fig_radar)
+    
+        except Exception as e:
+            st.error(f"⚠️ Radar chart error: {e}")
+
 
 
 

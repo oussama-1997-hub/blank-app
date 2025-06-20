@@ -357,15 +357,17 @@ if file:
         st.subheader("Priorités d'amélioration (plus grands écarts négatifs)")
 
         import numpy as np  # Make sure numpy is imported at the top
-
-        # Afficher top 5 gaps négatifs
+        # Assurez-vous que les écarts sont bien des valeurs numériques
         top_gaps = gaps_sorted.head(5)
+        
+        # Convertir les valeurs en float avant d'appliquer np.round
+        gap_values = pd.to_numeric(top_gaps.values, errors='coerce')
         gap_df = pd.DataFrame({
             'Sous-dimension': top_gaps.index,
-            'Écart': np.round(top_gaps.values, 2)
+            'Écart': np.round(gap_values, 2)
         })
+        
         st.table(gap_df)
-
 
         # 4b. Feuille de route technologique personnalisée
         st.subheader("Méthodes Lean & Technologies à adopter")

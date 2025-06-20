@@ -354,7 +354,7 @@ with tabs[5]:
         gap_df = pd.DataFrame({
             'Sous-dimension': gaps.index,
             'Score Entreprise': row_df[subdim_cols].iloc[0].values,
-            'Moyenne Cluster 2': avg_cluster.values,
+            "Moyenne Cluster 2": avg_cluster.values,
             'Ecart': gaps.values
         }).sort_values(by='Ecart')
 

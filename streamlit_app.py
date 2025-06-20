@@ -340,6 +340,8 @@ if file:
         # --- 3b. Radar Chart personnalisé : Entreprise vs Cluster cible ---
         cluster_means = df.groupby('cluster')[selected_features].mean()
         entreprise_scores = entreprise[selected_features]
+        target_cluster = predicted_cluster
+        next_cluster = target_cluster + 1 if target_cluster + 1 < final_k else target_cluster
         st.markdown("### 📡 Radar Chart : Entreprise vs Cluster Cible")
 
         try:
@@ -382,8 +384,7 @@ if file:
 
         # 4a. Calcul des gaps par sous-dimension (comparaison cluster cible vs entreprise)
         # Récupérer moyennes du cluster cible (niveau réel + 1 si possible)
-        target_cluster = predicted_cluster
-        next_cluster = target_cluster + 1 if target_cluster + 1 < final_k else target_cluster
+       
 
 
         # Calcul des écarts entre l'entreprise et le cluster cible

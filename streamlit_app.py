@@ -119,38 +119,34 @@ if file:
         ax3.set_title("PCA of Clusters")
         st.pyplot(fig3)
 
-   with tabs[2]:
-        st.header("📡 Radar Chart - Cluster Profiles")
-    
-        try:
-            cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean().dropna(axis=1, how='any')
-            available_features = cluster_avg.columns.tolist()
-    
-            if cluster_avg.empty:
-                st.warning("No available data for radar chart after grouping. Please check selected features.")
-            else:
-                fig_radar = go.Figure()
-                for label in cluster_avg.index:
-                    fig_radar.add_trace(go.Scatterpolar(
-                        r=cluster_avg.loc[label].values,
-                        theta=available_features,
-                        fill='toself',
-                        name=label
-                    ))
-    
-                fig_radar.update_layout(
-                    polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
-                    showlegend=True,
-                    height=600
-                )
-                st.plotly_chart(fig_radar)
-    
-        except Exception as e:
-            st.error(f"⚠️ Radar chart error: {e}")
-
-
-
-
+    with tabs[2]:
+            st.header("📡 Radar Chart - Cluster Profiles")
+        
+            try:
+                cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean().dropna(axis=1, how='any')
+                available_features = cluster_avg.columns.tolist()
+        
+                if cluster_avg.empty:
+                    st.warning("No available data for radar chart after grouping. Please check selected features.")
+                else:
+                    fig_radar = go.Figure()
+                    for label in cluster_avg.index:
+                        fig_radar.add_trace(go.Scatterpolar(
+                            r=cluster_avg.loc[label].values,
+                            theta=available_features,
+                            fill='toself',
+                            name=label
+                        ))
+        
+                    fig_radar.update_layout(
+                        polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
+                        showlegend=True,
+                        height=600
+                    )
+                    st.plotly_chart(fig_radar)
+        
+            except Exception as e:
+                st.error(f"⚠️ Radar chart error: {e}")
 
     with tabs[3]:
         st.header("🔥 Heatmap of Average Scores by Maturity Level")

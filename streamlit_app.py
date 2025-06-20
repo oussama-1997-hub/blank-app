@@ -373,10 +373,10 @@ if file:
             st.subheader("Comparaison des niveaux de maturité par dimension")
         
             # Moyenne des dimensions pour l’entreprise (exemple)
-            entreprise_avg = entreprise_scores.groupby('Dimension')['Score Entreprise'].mean()
+            entreprise_avg = company_dim_scores.groupby('Dimension')['Score Entreprise'].mean()
         
             # Moyenne des dimensions pour le Cluster 2 (cible)
-            cluster2_avg = entreprise_scores.groupby('Dimension')['Moyenne Cluster 2'].mean()
+            cluster2_avg = company_dim_scores.groupby('Dimension')['Moyenne Cluster 2'].mean()
         
             # Construction du radar chart
             fig_radar = go.Figure()
@@ -501,9 +501,9 @@ if file:
         next_cluster = target_cluster + 1 if target_cluster + 1 < final_k else target_cluster
 
         cluster_means = df.groupby('cluster')[selected_features].mean()
-        entreprise_scores = entreprise[selected_features]
+        company_dim_scores = entreprise[selected_features]
 
-        gaps = entreprise_scores - cluster_means.loc[next_cluster] 
+        gaps = company_dim_scores - cluster_means.loc[next_cluster] 
         gaps_sorted = gaps.sort_values()
 
         st.subheader("Priorités d'amélioration (plus grands écarts négatifs)")

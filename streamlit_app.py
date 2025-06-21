@@ -342,7 +342,15 @@ if file:
         cluster_means = df.groupby('cluster')[selected_features].mean()
         entreprise_scores = entreprise[selected_features]
         target_cluster = predicted_cluster
-        next_cluster = target_cluster + 1 if target_cluster + 1 < final_k else target_cluster
+        try:
+        current_index = maturity_order.index(target_cluster)
+        if current_index + 1 < len(maturity_order):
+            next_cluster = maturity_order[current_index + 1]
+        else:
+            next_cluster = target_cluster  # already at most advanced
+        except ValueError:
+            next_cluster = target_cluster  # fallback in case cluster not found
+
         st.markdown("### 📡 Radar Chart : Entreprise vs Cluster Cible")
         try:    
             entreprise_scores_list = entreprise[selected_features].values.flatten().tolist()

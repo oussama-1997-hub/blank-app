@@ -339,17 +339,15 @@ if file:
             st.write("• Améliorer en parallèle la maturité organisationnelle et l’adoption d’outils.")
             st.write("• Viser les outils du nœud parent dans l’arbre et les sous-dimensions où l’écart est le plus important.")
         # --- 3b. Radar Chart personnalisé : Entreprise vs Cluster cible ---
-        cluster_means = df.groupby('Niveau Maturité')[selected_features].mean()
+        cluster_means = df.groupby('cluster')[selected_features].mean()
         entreprise_scores = entreprise[selected_features]
         target_cluster = predicted_cluster
         next_cluster = target_cluster + 1 if target_cluster + 1 <= final_k else target_cluster
         st.markdown("### 📡 Radar Chart : Entreprise vs Cluster Cible")
-        try:
+        try:    
             entreprise_scores_list = entreprise[selected_features].values.flatten().tolist()
             cluster_target_mean = cluster_means.loc[next_cluster][selected_features].values.tolist()
-
             fig_compare_radar = go.Figure()
-
             fig_compare_radar.add_trace(go.Scatterpolar(
                 r=entreprise_scores_list,
                 theta=selected_features,

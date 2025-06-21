@@ -17,7 +17,7 @@ st.title("🔍 Lean 4.0 Clustering & Decision Tree Dashboard")
 
 # --- Sidebar Config ---
 st.sidebar.header("📂 Upload your Excel file")
-file = st.sidebar.file_uploader("Upload df_cleaned_with_dummies.csv", type="xlsx")
+file = st.sidebar.file_uploader("Upload df_cleaned_with_dummies.csv", type=["xlsx"])
 
 # --- Dimension to sub-dimensions mapping ---
 dimension_map = {

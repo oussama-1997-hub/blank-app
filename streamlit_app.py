@@ -480,22 +480,14 @@ if file:
                 return "Moyenne"
             else:
                 return "Faible"
-
-        # Calcul des écarts
-        gaps = entreprise_scores - cluster_means.loc[next_cluster]
-        negative_gaps = gaps[gaps < 0]
-        gaps_sorted = negative_gaps.sort_values()
         
-        # Conversion en float et calcul de priorité
         gap_values = pd.to_numeric(gaps_sorted.values, errors='coerce')
         gap_df = pd.DataFrame({
             'Sous-dimension': gaps_sorted.index,
-            'Écart': np.round(pd.to_numeric(gaps_sorted.values, errors='coerce'), 2),
-            'Priorité': [priorite_gap(val) for val in pd.to_numeric(gaps_sorted.values, errors='coerce')]
+            'Écart': np.round(gap_values, 2),
+            'Priorité': [priorite_gap(val) for val in gap_values]
         })
-
         
-        # Affichage stylisé avec heatmap
         st.subheader("🔻 Sous-dimensions avec un écart négatif (priorité d'amélioration)")
         st.dataframe(
             gap_df.style.background_gradient(
@@ -510,6 +502,7 @@ if file:
                 subset=['Priorité']
             )
         )
+
 
 
 

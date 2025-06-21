@@ -471,27 +471,37 @@ if file:
         st.subheader("🔻 Sous-dimensions avec un écart négatif (priorité d'amélioration)")
         
         # On affiche tous les écarts négatifs triés, sans limite
-        gap_values = pd.to_numeric(gaps_sorted.values, errors='coerce')
+        'Écart': np.round(pd.to_numeric(gaps_sorted.values, errors='coerce'), 2)
         # Calcul des priorités selon l’écart
-        def calculer_priorite(val):
+        def priorite_gap(val):
             if val <= -1.0:
                 return "Élevée"
             elif val <= -0.5:
                 return "Moyenne"
             else:
                 return "Faible"
+
+        # Calcul des écarts
+        gaps = entreprise_scores - cluster_means.loc[next_cluster]
+        negative_gaps = gaps[gaps < 0]
+        gaps_sorted = negative_gaps.sort_values()
         
+        # Conversion en float et calcul de priorité
+        gap_values = pd.to_numeric(gaps_sorted.values, errors='coerce')
         gap_df = pd.DataFrame({
             'Sous-dimension': gaps_sorted.index,
-            'Écart': np.round(gaps_sorted.values, 2),
-            'Priorité': [calculer_priorite(v) for v in gaps_sorted.values]
+            'Écart': np.round(gap_values, 2),
+            'Priorité': [priorite_gap(val) for val in gap_values]
         })
         
-        # Affichage avec coloration
+        # Affichage stylisé avec heatmap
+        st.subheader("🔻 Sous-dimensions avec un écart négatif (priorité d'amélioration)")
         st.dataframe(
             gap_df.style.background_gradient(
                 subset=['Écart'],
-                cmap='Reds_r'  # plus c’est rouge foncé, plus c’est important
+                cmap='YlOrRd',
+                low=0,
+                high=1
             ).applymap(
                 lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
                           'color: orange; font-weight: bold' if x == 'Moyenne' else

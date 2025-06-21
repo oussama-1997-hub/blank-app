@@ -490,9 +490,10 @@ if file:
         gap_values = pd.to_numeric(gaps_sorted.values, errors='coerce')
         gap_df = pd.DataFrame({
             'Sous-dimension': gaps_sorted.index,
-            'Écart': np.round(gap_values, 2),
-            'Priorité': [priorite_gap(val) for val in gap_values]
+            'Écart': np.round(pd.to_numeric(gaps_sorted.values, errors='coerce'), 2),
+            'Priorité': [priorite_gap(val) for val in pd.to_numeric(gaps_sorted.values, errors='coerce')]
         })
+
         
         # Affichage stylisé avec heatmap
         st.subheader("🔻 Sous-dimensions avec un écart négatif (priorité d'amélioration)")

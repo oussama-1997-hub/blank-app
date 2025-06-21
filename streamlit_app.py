@@ -91,7 +91,7 @@ if file:
     scaled_features = scaler.fit_transform(features)
 
     # --- Tabs for visualization ---
-    tabs = st.tabs(["📊 Clustering", "🧭 PCA", "📡 Radar", "🔥 Heatmaps", "🌳 Decision Tree", "⚙️ Application", "📥 Export"])
+    tabs = st.tabs(["📊 Clustering", "🧭 PCA", "📡 Radar", "🔥 Heatmaps", "🌳 Decision Tree", "⚙️ Application"])
 
         
     # ----- Clustering Tab -----

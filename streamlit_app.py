@@ -471,7 +471,6 @@ if file:
         st.subheader("🔻 Sous-dimensions avec un écart négatif (priorité d'amélioration)")
         
         # On affiche tous les écarts négatifs triés, sans limite
-        'Écart': np.round(pd.to_numeric(gaps_sorted.values, errors='coerce'), 2)
         # Calcul des priorités selon l’écart
         def priorite_gap(val):
             if val <= -1.0:

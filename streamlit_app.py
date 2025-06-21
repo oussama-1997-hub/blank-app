@@ -92,8 +92,7 @@ if file:
 
     # --- Tabs for visualization ---
     tabs = st.tabs(["📊 Clustering", "🧭 PCA", "📡 Radar", "🔥 Heatmaps", "🌳 Decision Tree", "⚙️ Application", "📥 Export"])
-    
-    with tabs[6]:
+
         
     # ----- Clustering Tab -----
     with tabs[0]:

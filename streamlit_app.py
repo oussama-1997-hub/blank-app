@@ -480,30 +480,28 @@ if file:
             else:
                 return "Faible"
         
-        gap_values = pd.to_numeric(gaps_sorted.values, errors='coerce')
-        gap_df = pd.DataFrame({
-            'Sous-dimension': gaps_sorted.index,
-            'Écart': np.round(gap_values, 2),
-            'Priorité': [priorite_gap(val) for val in gap_values]
-        })
-        
-        st.subheader("🔻 Sous-dimensions avec un écart négatif (priorité d'amélioration)")
-        st.dataframe(
-            gap_df.style.background_gradient(
-                subset=['Écart'],
-                cmap='YlOrRd',
-                low=0,
-                high=1
-            ).applymap(
-                lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
-                          'color: orange; font-weight: bold' if x == 'Moyenne' else
-                          'color: green;',
-                subset=['Priorité']
+            gap_values = pd.to_numeric(gaps_sorted.values, errors='coerce')
+            
+            gap_df = pd.DataFrame({
+                'Sous-dimension': gaps_sorted.index,
+                'Écart': np.round(gap_values, 2),
+                'Priorité': [priorite_gap(val) for val in gap_values]
+            })
+            
+            st.dataframe(
+                gap_df.style.background_gradient(
+                    subset=['Écart'],
+                    cmap='YlOrRd_r'  # 🔁 Inversé pour mettre jaune foncé sur gros écart
+                ).applymap(
+                    lambda x: 'color: red; font-weight: bold' if x == 'Élevée'
+                    else 'color: orange; font-weight: bold' if x == 'Moyenne'
+                    else 'color: green;',
+                    subset=['Priorité']
+                )
             )
-        )
-
-
-
+        
+        
+        
 
 
         # 4b. Feuille de route technologique personnalisée

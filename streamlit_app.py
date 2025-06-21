@@ -343,7 +343,7 @@ if file:
         entreprise_scores = entreprise[selected_features]
         target_cluster = predicted_cluster
         try:
-        current_index = maturity_order.index(target_cluster)
+            current_index = maturity_order.index(target_cluster)
         if current_index + 1 < len(maturity_order):
             next_cluster = maturity_order[current_index + 1]
         else:

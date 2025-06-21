@@ -129,7 +129,7 @@ if file:
         cluster_label_map = {
             1: 'Niveau Initial',
             2: 'Niveau Intégré',
-            3: 'Niveau Avancé'
+            0: 'Niveau Avancé'
         }
         df['Niveau de maturité Lean 4.0'] = df['cluster'].map(cluster_label_map)
 

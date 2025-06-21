@@ -341,9 +341,8 @@ if file:
         cluster_means = df.groupby('cluster')[selected_features].mean()
         entreprise_scores = entreprise[selected_features]
         target_cluster = predicted_cluster
-        next_cluster = target_cluster + 1 if target_cluster + 1 < final_k else target_cluster
+        next_cluster = target_cluster + 1 if target_cluster + 1 <= final_k else target_cluster
         st.markdown("### 📡 Radar Chart : Entreprise vs Cluster Cible")
-
         try:
             entreprise_scores_list = entreprise[selected_features].values.flatten().tolist()
             cluster_target_mean = cluster_means.loc[next_cluster][selected_features].values.tolist()

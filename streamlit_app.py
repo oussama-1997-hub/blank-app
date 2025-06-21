@@ -19,11 +19,6 @@ st.title("🔍 Lean 4.0 Clustering & Decision Tree Dashboard")
 st.sidebar.header("📂 Upload your Excel file")
 file = st.sidebar.file_uploader("Upload Excel file", type=["xlsx"])
 
-if file is not None:
-    df = pd.read_excel(file)
-    st.success("✅ Excel file uploaded successfully!")
-    st.dataframe(df.head())
-
 # --- Dimension to sub-dimensions mapping ---
 dimension_map = {
     "Leadership": [
@@ -59,8 +54,9 @@ exclude_cols = ['Indicateurs suivis', 'Zone investissement principale', 'Typolog
                 'cluster', 'Cluster', 'Feature_Cluster', 'Niveau Maturité', 'Cluster Label'] + sum(dimension_map.values(), [])
 
 if file:
-    df = pd.read_csv(file)
-    st.success("✅ File loaded successfully")
+    df = pd.read_excel(file)
+    st.success("✅ Excel file uploaded successfully!")
+    st.dataframe(df.head())
 
     # --- Sidebar: Select sub-dimensions grouped by dimension ---
     st.sidebar.markdown("### 📌 Sélectionner les sous-dimensions par dimension")

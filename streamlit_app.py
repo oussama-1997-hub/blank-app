@@ -94,66 +94,66 @@ if file:
     tabs = st.tabs(["📊 Clustering", "🧭 PCA", "📡 Radar", "🔥 Heatmaps", "🌳 Decision Tree", "⚙️ Application", "📥 Export"])
     
     with tabs[6]:
+        with st.expander("📈 Analyse de Fiabilité (Alpha de Cronbach)"):
+            st.subheader("✨ Analyse de la fiabilité des groupes de sous-dimensions")
         
-        st.subheader("✨ Analyse de la fiabilité des groupes de sous-dimensions")
-    
-        overall_alpha = 0.934
-        cronbach_data = {
-            "Leadership": {
-                "alpha": 0.931,
-                "items": {
-                    "Leadership - Communication": 0.992,
-                    "Leadership - Engagement Lean": 0.926,
-                    "Leadership - Stratégie": 0.901,
-                    "Leadership - Engagement DT": 0.868
-                }
-            },
-            "SupplyChain": {
-                "alpha": 0.863,
-                "items": {
-                    "Supply Chain - Impact sur les employées": 0.925,
-                    "Supply Chain - Traçabilité": 0.826,
-                    "Supply Chain - Collaboration inter-organisationnelle": 0.722
-                }
-            },
-            "Operations": {
-                "alpha": 0.867,
-                "items": {
-                    "Opérations - Juste-à-temps (JAT)": 0.931,
-                    "Opérations - Standardisation des processus": 0.831,
-                    "Opérations - Gestion des résistances": 0.754
-                }
-            },
-            "Technologies": {
-                "alpha": 0.888,
-                "items": {
-                    "Technologies - Connectivité et gestion des données": 0.904,
-                    "Technologies - Automatisation": 0.881,
-                    "Technologies - Pilotage du changement": 0.781
-                }
-            },
-            "OrgApprenante": {
-                "alpha": 0.854,
-                "items": {
-                    "Organisation apprenante  - Formation et développement des compétences": 0.876,
-                    "Organisation apprenante  - Collaboration et Partage des Connaissances": 0.799,
-                    "Organisation apprenante  - Flexibilité organisationnelle": 0.763
+            overall_alpha = 0.934
+            cronbach_data = {
+                "Leadership": {
+                    "alpha": 0.931,
+                    "items": {
+                        "Leadership - Communication": 0.992,
+                        "Leadership - Engagement Lean": 0.926,
+                        "Leadership - Stratégie": 0.901,
+                        "Leadership - Engagement DT": 0.868
+                    }
+                },
+                "SupplyChain": {
+                    "alpha": 0.863,
+                    "items": {
+                        "Supply Chain - Impact sur les employées": 0.925,
+                        "Supply Chain - Traçabilité": 0.826,
+                        "Supply Chain - Collaboration inter-organisationnelle": 0.722
+                    }
+                },
+                "Operations": {
+                    "alpha": 0.867,
+                    "items": {
+                        "Opérations - Juste-à-temps (JAT)": 0.931,
+                        "Opérations - Standardisation des processus": 0.831,
+                        "Opérations - Gestion des résistances": 0.754
+                    }
+                },
+                "Technologies": {
+                    "alpha": 0.888,
+                    "items": {
+                        "Technologies - Connectivité et gestion des données": 0.904,
+                        "Technologies - Automatisation": 0.881,
+                        "Technologies - Pilotage du changement": 0.781
+                    }
+                },
+                "OrgApprenante": {
+                    "alpha": 0.854,
+                    "items": {
+                        "Organisation apprenante  - Formation et développement des compétences": 0.876,
+                        "Organisation apprenante  - Collaboration et Partage des Connaissances": 0.799,
+                        "Organisation apprenante  - Flexibilité organisationnelle": 0.763
+                    }
                 }
             }
-        }
-    
-        st.success(f"Cronbach's Alpha global pour toutes les colonnes sélectionnées : {overall_alpha:.3f}")
-    
-        for group, values in cronbach_data.items():
-            st.markdown(f"#### Groupe : {group}")
-            st.write(f"✅ Alpha global : {values['alpha']:.3f}")
-    
-            item_df = pd.DataFrame({
-                "Sous-dimension": list(values["items"].keys()),
-                "Alpha si supprimée": list(values["items"].values())
-            })
-            st.dataframe(item_df, use_container_width=True)
-            st.markdown("---")
+        
+            st.success(f"Cronbach's Alpha global pour toutes les colonnes sélectionnées : {overall_alpha:.3f}")
+        
+            for group, values in cronbach_data.items():
+                st.markdown(f"#### Groupe : {group}")
+                st.write(f"✅ Alpha global : {values['alpha']:.3f}")
+        
+                item_df = pd.DataFrame({
+                    "Sous-dimension": list(values["items"].keys()),
+                    "Alpha si supprimée": list(values["items"].values())
+                })
+                st.dataframe(item_df, use_container_width=True)
+                st.markdown("---")
     # ----- Clustering Tab -----
     with tabs[0]:
         st.header("📊 KMeans Clustering")

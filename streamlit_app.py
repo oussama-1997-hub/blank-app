@@ -321,7 +321,7 @@ if file:
         st.markdown("### 🔍 Analyse comparative & recommandations")
 
         # Mapping label ordre pour comparer niveaux
-        label_order = {'Niveau Initial': 1, 'Niveau Intégré': 2, 'Niveau Avancé': 0}
+        label_order = {'Niveau Initial': 1, 'Niveau Intégré': 2, 'Niveau Avancé': 3}
 
         niveau_reel_ord = label_order.get(predicted_cluster_label, 0)
         niveau_pred_ord = label_order.get(predicted_dt, 0)
@@ -339,10 +339,10 @@ if file:
             st.write("• Améliorer en parallèle la maturité organisationnelle et l’adoption d’outils.")
             st.write("• Viser les outils du nœud parent dans l’arbre et les sous-dimensions où l’écart est le plus important.")
         # --- 3b. Radar Chart personnalisé : Entreprise vs Cluster cible ---
-        cluster_means = df.groupby('Cluster')[selected_features].mean()
+        cluster_means = df.groupby('cluster')[selected_features].mean()
         entreprise_scores = entreprise[selected_features]
         target_cluster = predicted_cluster
-        next_cluster = target_cluster + 1 if target_cluster + 1 <= final_k else target_cluster
+        next_cluster = target_cluster + 1 if target_cluster + 1 <= final_k else if (target_cluster=0 or target_cluster=3) target_cluster
         st.markdown("### 📡 Radar Chart : Entreprise vs Cluster Cible")
         try:    
             entreprise_scores_list = entreprise[selected_features].values.flatten().tolist()

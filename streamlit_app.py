@@ -472,12 +472,34 @@ if file:
         
         # On affiche tous les écarts négatifs triés, sans limite
         gap_values = pd.to_numeric(gaps_sorted.values, errors='coerce')
+        # Calcul des priorités selon l’écart
+        def calculer_priorite(val):
+            if val <= -1.0:
+                return "Élevée"
+            elif val <= -0.5:
+                return "Moyenne"
+            else:
+                return "Faible"
+        
         gap_df = pd.DataFrame({
             'Sous-dimension': gaps_sorted.index,
-            'Écart': np.round(gap_values, 2)
+            'Écart': np.round(gaps_sorted.values, 2),
+            'Priorité': [calculer_priorite(v) for v in gaps_sorted.values]
         })
         
-        st.table(gap_df)
+        # Affichage avec coloration
+        st.dataframe(
+            gap_df.style.background_gradient(
+                subset=['Écart'],
+                cmap='Reds_r'  # plus c’est rouge foncé, plus c’est important
+            ).applymap(
+                lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
+                          'color: orange; font-weight: bold' if x == 'Moyenne' else
+                          'color: green;',
+                subset=['Priorité']
+            )
+        )
+
 
 
 
@@ -501,24 +523,64 @@ if file:
         tech_to_adopt = tech_to_adopt.sort_values(ascending=False)
 
         # Affichage méthodes Lean à adopter
+        def priorite_adoption(val):
+            if val >= 0.7:
+                return "Élevée"
+            elif val >= 0.4:
+                return "Moyenne"
+            else:
+                return "Faible"
+        
         if not lean_to_adopt.empty:
             lean_df = pd.DataFrame({
                 "Méthode Lean": lean_to_adopt.index.str.replace('Lean_', ''),
-                "Taux d'adoption dans cluster cible": lean_to_adopt.values.round(2)
+                "Taux d'adoption dans cluster cible": lean_to_adopt.values.round(2),
+                "Priorité": [priorite_adoption(v) for v in lean_to_adopt.values]
             })
             st.write("### Méthodes Lean à adopter en priorité")
-            st.dataframe(lean_df)
+            st.dataframe(
+                lean_df.style.background_gradient(
+                    subset=['Taux d\'adoption dans cluster cible'],
+                    cmap='Oranges'
+                ).applymap(
+                    lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
+                              'color: orange; font-weight: bold' if x == 'Moyenne' else
+                              'color: green;',
+                    subset=['Priorité']
+                )
+            )
+
         else:
             st.info("Aucune méthode Lean prioritaire à adopter.")
 
         # Affichage technologies Industrie 4.0 à adopter
+        def priorite_adoption(val):
+            if val >= 0.7:
+                return "Élevée"
+            elif val >= 0.4:
+                return "Moyenne"
+            else:
+                return "Faible"
+        
         if not tech_to_adopt.empty:
             tech_df = pd.DataFrame({
                 "Technologie Industrie 4.0": tech_to_adopt.index.str.replace('Tech_', ''),
-                "Taux d'adoption dans cluster cible": tech_to_adopt.values.round(2)
+                "Taux d'adoption dans cluster cible": tech_to_adopt.values.round(2),
+                "Priorité": [priorite_adoption(v) for v in tech_to_adopt.values]
             })
+        
             st.write("### Technologies Industrie 4.0 à adopter en priorité")
-            st.dataframe(tech_df)
+            st.dataframe(
+                tech_df.style.background_gradient(
+                    subset=['Taux d\'adoption dans cluster cible'],
+                    cmap='Purples'
+                ).applymap(
+                    lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
+                              'color: orange; font-weight: bold' if x == 'Moyenne' else
+                              'color: green;',
+                    subset=['Priorité']
+                )
+            )
         else:
             st.info("Aucune technologie prioritaire à adopter.")
 

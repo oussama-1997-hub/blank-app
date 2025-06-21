@@ -94,6 +94,9 @@ if file:
     tabs = st.tabs(["📊 Clustering", "🧭 PCA", "📡 Radar", "🔥 Heatmaps", "🌳 Decision Tree", "⚙️ Application", "📥 Export"])
     
     with tabs[6]:
+        
+    # ----- Clustering Tab -----
+    with tabs[0]:
         with st.expander("📈 Analyse de Fiabilité (Alpha de Cronbach)"):
             st.subheader("✨ Analyse de la fiabilité des groupes de sous-dimensions")
         
@@ -154,8 +157,6 @@ if file:
                 })
                 st.dataframe(item_df, use_container_width=True)
                 st.markdown("---")
-    # ----- Clustering Tab -----
-    with tabs[0]:
         st.header("📊 KMeans Clustering")
         k_range = st.slider("Select K range", 2, 10, (2, 6))
 

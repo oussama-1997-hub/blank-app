@@ -321,7 +321,7 @@ if file:
         st.markdown("### 🔍 Analyse comparative & recommandations")
 
         # Mapping label ordre pour comparer niveaux
-        label_order = {'Niveau Initial': 1, 'Niveau Intégré': 2, 'Niveau Avancé': 3}
+        label_order = {'Niveau Initial': 1, 'Niveau Intégré': 2, 'Niveau Avancé': 0}
 
         niveau_reel_ord = label_order.get(predicted_cluster_label, 0)
         niveau_pred_ord = label_order.get(predicted_dt, 0)

@@ -547,29 +547,29 @@ if file:
                 return "Faible"
         
         if not lean_to_adopt.empty:
-          lean_df = pd.DataFrame({
+            lean_df = pd.DataFrame({
                 "Méthode Lean": lean_to_adopt.index.str.replace('Lean_', ''),
                 "Taux d'adoption dans cluster cible": lean_to_adopt.values.round(2),
                 "Tendance adoption": [
                     detect_trend(lean_by_level[col].tolist()) for col in lean_to_adopt.index
                 ]
             })
-
-         st.write("### Méthodes Lean à adopter en priorité")
-         st.dataframe(
+        
+            st.write("### Méthodes Lean à adopter en priorité")
+            st.dataframe(
                 lean_df.style.background_gradient(
-                    subset=['Taux d\'adoption dans cluster cible'],
+                    subset=["Taux d'adoption dans cluster cible"],
                     cmap='Oranges'
                 ).applymap(
                     lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
                               'color: orange; font-weight: bold' if x == 'Moyenne' else
                               'color: green;',
-                    subset=['Priorité']
+                    subset=['Tendance adoption']
                 )
             )
-
         else:
             st.info("Aucune méthode Lean prioritaire à adopter.")
+
 
         # Affichage technologies Industrie 4.0 à adopter
         def priorite_adoption(val):

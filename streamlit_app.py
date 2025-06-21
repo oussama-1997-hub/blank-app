@@ -347,10 +347,10 @@ if file:
 
         try:
             current_index = maturity_order.index(target_cluster)
-        if current_index + 1 < len(maturity_order):
-            next_cluster = maturity_order[current_index + 1]
-        else:
-            next_cluster = target_cluster  # Already at highest maturity
+            if current_index + 1 < len(maturity_order):
+                next_cluster = maturity_order[current_index + 1]
+            else:
+                next_cluster = target_cluster  # Already at highest maturity
         except ValueError:
             next_cluster = target_cluster  # fallback if cluster ID not in the list
     

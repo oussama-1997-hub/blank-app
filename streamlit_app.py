@@ -517,21 +517,6 @@ if file:
         lean_to_adopt = lean_cluster_mean[(lean_cluster_mean > 0) & (entreprise[lean_cluster_mean.index] == 0)]
         tech_to_adopt = tech_cluster_mean[(tech_cluster_mean > 0) & (entreprise[tech_cluster_mean.index] == 0)]
         # Ordre des niveaux de maturité
-        # Définir l'ordre des niveaux pour suivre la progression
-        label_order = ['Niveau Initial', 'Niveau Intégré', 'Niveau Avancé']
-        
-        # Moyennes par niveau pour chaque méthode Lean et techno
-        lean_by_level = df.groupby('Niveau de maturité Lean 4.0')[lean_cols].mean().reindex(label_order)
-        tech_by_level = df.groupby('Niveau de maturité Lean 4.0')[tech_cols].mean().reindex(label_order)
-        
-        # Fonction pour détecter la tendance d'adoption
-        def detect_trend(values):
-            if all(x <= y for x, y in zip(values, values[1:])):
-                return "↗️ Augmente"
-            elif all(x >= y for x, y in zip(values, values[1:])):
-                return "↘️ Diminue"
-            else:
-                return "→ Stable"
 
         # Trier par taux d'adoption décroissant
         lean_to_adopt = lean_to_adopt.sort_values(ascending=False)
@@ -550,26 +535,23 @@ if file:
             lean_df = pd.DataFrame({
                 "Méthode Lean": lean_to_adopt.index.str.replace('Lean_', ''),
                 "Taux d'adoption dans cluster cible": lean_to_adopt.values.round(2),
-                "Tendance adoption": [
-                    detect_trend(lean_by_level[col].tolist()) for col in lean_to_adopt.index
-                ]
+                "Priorité": [priorite_adoption(v) for v in lean_to_adopt.values]
             })
-        
             st.write("### Méthodes Lean à adopter en priorité")
             st.dataframe(
                 lean_df.style.background_gradient(
-                    subset=["Taux d'adoption dans cluster cible"],
+                    subset=['Taux d\'adoption dans cluster cible'],
                     cmap='Oranges'
                 ).applymap(
                     lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
                               'color: orange; font-weight: bold' if x == 'Moyenne' else
                               'color: green;',
-                    subset=['Tendance adoption']
+                    subset=['Priorité']
                 )
             )
+
         else:
             st.info("Aucune méthode Lean prioritaire à adopter.")
-
 
         # Affichage technologies Industrie 4.0 à adopter
         def priorite_adoption(val):
@@ -584,26 +566,23 @@ if file:
             tech_df = pd.DataFrame({
                 "Technologie Industrie 4.0": tech_to_adopt.index.str.replace('Tech_', ''),
                 "Taux d'adoption dans cluster cible": tech_to_adopt.values.round(2),
-                "Tendance adoption": [
-                    detect_trend(tech_by_level[col].tolist()) for col in tech_to_adopt.index
-                ]
+                "Priorité": [priorite_adoption(v) for v in tech_to_adopt.values]
             })
         
             st.write("### Technologies Industrie 4.0 à adopter en priorité")
             st.dataframe(
                 tech_df.style.background_gradient(
-                    subset=["Taux d'adoption dans cluster cible"],
+                    subset=['Taux d\'adoption dans cluster cible'],
                     cmap='Purples'
                 ).applymap(
                     lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
                               'color: orange; font-weight: bold' if x == 'Moyenne' else
                               'color: green;',
-                    subset=['Tendance adoption']
+                    subset=['Priorité']
                 )
             )
         else:
             st.info("Aucune technologie prioritaire à adopter.")
-
 
 
 

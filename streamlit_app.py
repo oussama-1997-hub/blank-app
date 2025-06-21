@@ -581,27 +581,29 @@ if file:
                 return "Faible"
         
         if not tech_to_adopt.empty:
-                tech_df = pd.DataFrame({
-                        "Technologie Industrie 4.0": tech_to_adopt.index.str.replace('Tech_', ''),
-                        "Taux d'adoption dans cluster cible": tech_to_adopt.values.round(2),
-                        "Tendance adoption": [
-                            detect_trend(tech_by_level[col].tolist()) for col in tech_to_adopt.index
-                        ]
-                    })
+            tech_df = pd.DataFrame({
+                "Technologie Industrie 4.0": tech_to_adopt.index.str.replace('Tech_', ''),
+                "Taux d'adoption dans cluster cible": tech_to_adopt.values.round(2),
+                "Tendance adoption": [
+                    detect_trend(tech_by_level[col].tolist()) for col in tech_to_adopt.index
+                ]
+            })
+        
             st.write("### Technologies Industrie 4.0 à adopter en priorité")
             st.dataframe(
                 tech_df.style.background_gradient(
-                    subset=['Taux d\'adoption dans cluster cible'],
+                    subset=["Taux d'adoption dans cluster cible"],
                     cmap='Purples'
                 ).applymap(
                     lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
                               'color: orange; font-weight: bold' if x == 'Moyenne' else
                               'color: green;',
-                    subset=['Priorité']
+                    subset=['Tendance adoption']
                 )
             )
         else:
             st.info("Aucune technologie prioritaire à adopter.")
+
 
 
 

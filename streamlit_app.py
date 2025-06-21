@@ -555,8 +555,8 @@ if file:
                 ]
             })
 
-            st.write("### Méthodes Lean à adopter en priorité")
-            st.dataframe(
+         st.write("### Méthodes Lean à adopter en priorité")
+         st.dataframe(
                 lean_df.style.background_gradient(
                     subset=['Taux d\'adoption dans cluster cible'],
                     cmap='Oranges'

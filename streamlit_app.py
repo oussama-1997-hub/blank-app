@@ -94,7 +94,7 @@ if file:
     tabs = st.tabs(["📊 Clustering", "🧭 PCA", "📡 Radar", "🔥 Heatmaps", "🌳 Decision Tree", "⚙️ Application", "📥 Export"])
     
     with tabs[6]:
-        with st.expander("📈 Analyse de Fiabilité (Alpha de Cronbach)"):
+    with st.expander("📈 Analyse de Fiabilité (Alpha de Cronbach)"):
         st.subheader("✨ Analyse de la fiabilité des groupes de sous-dimensions")
     
         overall_alpha = 0.934

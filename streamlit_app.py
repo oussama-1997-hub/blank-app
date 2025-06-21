@@ -521,12 +521,10 @@ if file:
             st.dataframe(tech_df)
         else:
             st.info("Aucune technologie prioritaire à adopter.")
-    # Add this block just before the Export Tab (tabs[6]) in your script
-# ----- Cronbach Alpha Tab -----
-   
-    # ----- Export Tab -----
+
+
 
 
 
 else:
-    st.info("⏳ Veuillez uploader un fichier CSV pour commencer.")
+    st.info("⏳ Veuillez uploader un fichier Excel pour commencer.")

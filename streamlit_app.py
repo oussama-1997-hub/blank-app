@@ -381,88 +381,88 @@ if file:
         # --- 3. Analyse comparative & scénarios ---
         # --- Analyse comparative et recommandations ---
         with st.container():
-        st.markdown("## 🧭 Guide d’utilisation personnalisé", unsafe_allow_html=True)
-        st.write("---")
-    
-        st.markdown("""
-        <div style="background-color:#f9f9f9;padding:15px;border-radius:10px;">
-        <h4>🧩 Ordre de priorité à suivre dans votre démarche Lean 4.0</h4>
-        <ul>
-            <li><b>Étape 1 :</b> Identification du scénario (retard techno / maturité / alignement)</li>
-            <li><b>Étape 2 :</b> Application des recommandations adaptées à votre profil</li>
-            <li><b>Étape 3 :</b> Suivi des feuilles de route proposées :
-                <ul>
-                    <li>📈 <b>Feuille de route technologique</b> : Technologies & méthodes Lean à adopter en priorité</li>
-                    <li>🧱 <b>Feuille de route de maturité</b> : Sous-dimensions Lean 4.0 à améliorer en priorité</li>
-                </ul>
-            </li>
-            <li><b>Étape 4 :</b> Implémentation progressive selon le scénario identifié</li>
-        </ul>
-        </div>
-        """, unsafe_allow_html=True)
-    
-        st.markdown("## 🔍 Analyse comparative et recommandations", unsafe_allow_html=True)
-        st.write("---")
-    
-        # Définir l’ordre des labels
-        label_order = {'Niveau Initial': 1, 'Niveau Intégré': 2, 'Niveau Avancé': 3}
-        niveau_reel_ord = label_order.get(predicted_cluster_label, 0)
-        niveau_pred_ord = label_order.get(predicted_dt, 0)
-    
-        col1, col2 = st.columns([4, 1])
-    
-        with col1:
-            if niveau_pred_ord < niveau_reel_ord:
-                st.markdown("### ⚠️ Scénario 1 : Retard technologique")
-                st.markdown("""
-                - Votre entreprise dispose d’une bonne maturité Lean 4.0, mais **n’a pas encore adopté les technologies associées à ce niveau**.
-                - Cela révèle un **retard technologique**.
-                
-                **🛠️ Recommandations :**
-                1. Prioriser les **technologies et méthodes Lean** utilisées dans votre groupe cible mais non encore adoptées.
-                2. Identifier les **nœuds parents** dans l’arbre de décision menant aux niveaux supérieurs.
-                3. Appliquer en priorité la **feuille de route technologique**.
-                4. Ensuite, renforcer la **maturité organisationnelle** avec la feuille de route Lean 4.0.
-                """)
-    
-            elif niveau_pred_ord > niveau_reel_ord:
-                st.markdown("### ⚠️ Scénario 2 : Avance technologique")
-                st.markdown("""
-                - Votre entreprise utilise des outils et technologies avancés, mais **n’a pas encore atteint la maturité Lean 4.0 correspondante**.
-                - Cela indique un **retard organisationnel**.
-    
-                **🛠️ Recommandations :**
-                1. Prioriser les **sous-dimensions Lean 4.0** à améliorer.
-                2. Se concentrer sur les **écarts les plus importants** par rapport à votre cluster cible.
-                3. Appliquer d’abord la **feuille de route Lean 4.0**.
-                4. Intégrer ensuite progressivement la **feuille de route technologique**.
-                """)
-    
-            else:
-                st.markdown("### ✅ Scénario 3 : Alignement stratégique")
-                st.markdown("""
-                - Votre entreprise est **alignée entre maturité Lean 4.0 et adoption technologique**. Bravo !
-    
-                **🛠️ Recommandations :**
-                1. Continuer à améliorer de manière équilibrée les **technologies et la maturité**.
-                2. Viser les **nœuds parents dans l’arbre de décision** ayant le plus d’influence sur votre avancement.
-                3. Appliquer la **feuille de route technologique** pour booster l’innovation.
-                4. Renforcer les sous-dimensions Lean 4.0 présentant les **plus grands gaps**.
-                """)
-    
-        with col2:
-            icon = "🚀" if niveau_pred_ord == niveau_reel_ord else ("⚡" if niveau_pred_ord > niveau_reel_ord else "🔧")
-            st.markdown(f"<h1 style='font-size:5rem;text-align:center'>{icon}</h1>", unsafe_allow_html=True)
-    
-        st.markdown("---")
-        st.markdown(
-            """
-            <div style="background:#f1f3f4;padding:15px;border-radius:10px;">
-            <b>🎯 En résumé :</b> Suivez la stratégie d’implémentation recommandée pour optimiser votre transition Lean 4.0 selon votre profil.
+            st.markdown("## 🧭 Guide d’utilisation personnalisé", unsafe_allow_html=True)
+            st.write("---")
+        
+            st.markdown("""
+            <div style="background-color:#f9f9f9;padding:15px;border-radius:10px;">
+            <h4>🧩 Ordre de priorité à suivre dans votre démarche Lean 4.0</h4>
+            <ul>
+                <li><b>Étape 1 :</b> Identification du scénario (retard techno / maturité / alignement)</li>
+                <li><b>Étape 2 :</b> Application des recommandations adaptées à votre profil</li>
+                <li><b>Étape 3 :</b> Suivi des feuilles de route proposées :
+                    <ul>
+                        <li>📈 <b>Feuille de route technologique</b> : Technologies & méthodes Lean à adopter en priorité</li>
+                        <li>🧱 <b>Feuille de route de maturité</b> : Sous-dimensions Lean 4.0 à améliorer en priorité</li>
+                    </ul>
+                </li>
+                <li><b>Étape 4 :</b> Implémentation progressive selon le scénario identifié</li>
+            </ul>
             </div>
-            """,
-            unsafe_allow_html=True
-        )
+            """, unsafe_allow_html=True)
+        
+            st.markdown("## 🔍 Analyse comparative et recommandations", unsafe_allow_html=True)
+            st.write("---")
+        
+            # Définir l’ordre des labels
+            label_order = {'Niveau Initial': 1, 'Niveau Intégré': 2, 'Niveau Avancé': 3}
+            niveau_reel_ord = label_order.get(predicted_cluster_label, 0)
+            niveau_pred_ord = label_order.get(predicted_dt, 0)
+        
+            col1, col2 = st.columns([4, 1])
+        
+            with col1:
+                if niveau_pred_ord < niveau_reel_ord:
+                    st.markdown("### ⚠️ Scénario 1 : Retard technologique")
+                    st.markdown("""
+                    - Votre entreprise dispose d’une bonne maturité Lean 4.0, mais **n’a pas encore adopté les technologies associées à ce niveau**.
+                    - Cela révèle un **retard technologique**.
+                    
+                    **🛠️ Recommandations :**
+                    1. Prioriser les **technologies et méthodes Lean** utilisées dans votre groupe cible mais non encore adoptées.
+                    2. Identifier les **nœuds parents** dans l’arbre de décision menant aux niveaux supérieurs.
+                    3. Appliquer en priorité la **feuille de route technologique**.
+                    4. Ensuite, renforcer la **maturité organisationnelle** avec la feuille de route Lean 4.0.
+                    """)
+        
+                elif niveau_pred_ord > niveau_reel_ord:
+                    st.markdown("### ⚠️ Scénario 2 : Avance technologique")
+                    st.markdown("""
+                    - Votre entreprise utilise des outils et technologies avancés, mais **n’a pas encore atteint la maturité Lean 4.0 correspondante**.
+                    - Cela indique un **retard organisationnel**.
+        
+                    **🛠️ Recommandations :**
+                    1. Prioriser les **sous-dimensions Lean 4.0** à améliorer.
+                    2. Se concentrer sur les **écarts les plus importants** par rapport à votre cluster cible.
+                    3. Appliquer d’abord la **feuille de route Lean 4.0**.
+                    4. Intégrer ensuite progressivement la **feuille de route technologique**.
+                    """)
+        
+                else:
+                    st.markdown("### ✅ Scénario 3 : Alignement stratégique")
+                    st.markdown("""
+                    - Votre entreprise est **alignée entre maturité Lean 4.0 et adoption technologique**. Bravo !
+        
+                    **🛠️ Recommandations :**
+                    1. Continuer à améliorer de manière équilibrée les **technologies et la maturité**.
+                    2. Viser les **nœuds parents dans l’arbre de décision** ayant le plus d’influence sur votre avancement.
+                    3. Appliquer la **feuille de route technologique** pour booster l’innovation.
+                    4. Renforcer les sous-dimensions Lean 4.0 présentant les **plus grands gaps**.
+                    """)
+        
+            with col2:
+                icon = "🚀" if niveau_pred_ord == niveau_reel_ord else ("⚡" if niveau_pred_ord > niveau_reel_ord else "🔧")
+                st.markdown(f"<h1 style='font-size:5rem;text-align:center'>{icon}</h1>", unsafe_allow_html=True)
+        
+            st.markdown("---")
+            st.markdown(
+                """
+                <div style="background:#f1f3f4;padding:15px;border-radius:10px;">
+                <b>🎯 En résumé :</b> Suivez la stratégie d’implémentation recommandée pour optimiser votre transition Lean 4.0 selon votre profil.
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
         # --- 3b. Radar Chart personnalisé : Entreprise vs Cluster cible ---
         cluster_means = df.groupby('cluster')[selected_features].mean()

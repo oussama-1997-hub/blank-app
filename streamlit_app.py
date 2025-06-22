@@ -13,6 +13,31 @@ import plotly.graph_objects as go
 import graphviz
 
 st.set_page_config(page_title="Lean 4.0 Cluster & Tree App", layout="wide")
+# 🌟 Page d'accueil - Présentation du site
+st.markdown("""
+    <div style="background-color: #f7f9fc; padding: 30px 20px; border-radius: 15px; box-shadow: 0px 2px 8px rgba(0,0,0,0.1);">
+        <h1 style="color: #004080; font-size: 32px; text-align: center; margin-bottom: 10px;">🚀 Optimisez votre transformation Lean 4.0 grâce à l’intelligence issue du terrain</h1>
+        <p style="font-size: 18px; color: #333333; text-align: center; max-width: 850px; margin: 0 auto;">
+            Bienvenue sur votre assistant intelligent Lean 4.0 – <strong>la première plateforme de recommandation</strong>
+            qui s’appuie sur <strong>des données réelles issues d’entreprises</strong> de différents secteurs et profils.
+            <br><br>
+            🎯 <strong>Ici, pas de théorie figée ni de jugement subjectif</strong> : nos suggestions sont basées sur
+            l’analyse de cas concrets et performants pour vous proposer une feuille de route <strong>personnalisée,
+            réaliste et actionnable</strong>.
+            <br><br>
+            Grâce à l’intelligence artificielle et à une base de connaissances issue du terrain :
+        </p>
+        <ul style="font-size: 17px; color: #444; line-height: 1.8; max-width: 850px; margin: 20px auto;">
+            <li>📊 Vous identifiez vos <strong>écarts de maturité</strong> par rapport à des entreprises similaires.</li>
+            <li>🛠️ Vous découvrez les <strong>méthodes Lean & technologies</strong> adaptées à votre profil.</li>
+            <li>🧭 Vous suivez une <strong>feuille de route claire et guidée</strong> vers l’excellence opérationnelle.</li>
+        </ul>
+        <p style="font-size: 17px; color: #333; text-align: center; margin-top: 20px;">
+            💡 Que vous soyez en phase de démarrage ou de perfectionnement, laissez-vous guider par la <strong>data</strong>, pas par la théorie.
+        </p>
+    </div>
+""", unsafe_allow_html=True)
+
 st.title("🔍 Lean 4.0 Clustering & Decision Tree Dashboard")
 
 # --- Sidebar Config ---

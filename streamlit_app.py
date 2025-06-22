@@ -379,84 +379,87 @@ if file:
         st.write(f"**Niveau prédit (arbre de décision) :** {predicted_dt}")
 
         # --- 3. Analyse comparative & scénarios ---
-        st.markdown("## 🔍 Analyse comparative & recommandations", unsafe_allow_html=True)
-        st.write("---")
-    
-        # 🔄 Ordre d’implémentation global (en tête)
-        st.markdown(
-            """
-            <div style="background:#f0f8ff;padding:15px;border-radius:8px;margin-bottom:20px">
-            <strong>🔄 Ordre d’implémentation global :</strong><br>
-            1. Diagnostiquer le scénario (retard techno, retard maturité ou alignement).<br>
-            2. Suivre la feuille de route adaptée :  
-               - Scénario 1 → <span style="color:#1f77b4">Technologie d’abord</span>, puis maturité.  
-               - Scénario 2 → <span style="color:#ff7f0e">Maturité d’abord</span>, puis technologie.  
-               - Scénario 3 → <span style="color:#2ca02c">Paralléliser maturité & technologie</span>.<br>
-            3. Respecter les priorités identifiées (nœuds parents, gaps, taux d’adoption).
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-    
-        # Préparer l’ordre des niveaux
-        label_order = {'Niveau Initial': 1, 'Niveau Intégré': 2, 'Niveau Avancé': 3}
-        niveau_reel_ord = label_order.get(predicted_cluster_label, 0)
-        niveau_pred_ord = label_order.get(predicted_dt, 0)
-    
-        col1, col2 = st.columns([3,1])
-    
-        with col1:
-            if niveau_pred_ord < niveau_reel_ord:
-                st.markdown("### ⚠️ Scénario 1 : Retard technologique")
-                st.markdown(
-                    """
-                    - L’entreprise adopte des technologies de niveau inférieur à sa maturité organisationnelle.  
-                    - Indique un **retard technologique** malgré une maturité Lean 4.0 élevée.
-                    """
-                )
-                st.markdown("**Recommandations :**")
-                st.markdown("""
-                1. Renforcer l’adoption technologique en priorisant les nœuds parents clés de l’arbre.  
-                2. Appliquer la **feuille de route technologique** par taux d’adoption.  
-                3. Puis suivre la **feuille de route maturité** pour combler les gaps.
-                """)
-    
-            elif niveau_pred_ord > niveau_reel_ord:
-                st.markdown("### ⚠️ Scénario 2 : Avance technologique")
-                st.markdown(
-                    """
-                    - L’entreprise utilise des technologies de niveau avancé,  
-                      mais sa maturité organisationnelle reste en retrait.  
-                    - Montre une **avance technologique** associée à un **retard de maturité**.
-                    """
-                )
-                st.markdown("**Recommandations :**")
-                st.markdown("""
-                1. Prioriser la **maturité Lean 4.0** via la feuille de route maturité.  
-                2. Cibler les sous-dimensions avec les écarts les plus marqués.  
-                3. Intégrer ensuite la feuille de route technologique.
-                """)
+        # --- Analyse comparative et recommandations ---
+        with st.container():
+            st.markdown("## 🔍 Analyse comparative & recommandations", unsafe_allow_html=True)
+            st.write("---")
+        
+            # 🔄 Ordre d’implémentation global (en tête)
+            st.markdown(
+                """
+                <div style="background:#f0f8ff;padding:15px;border-radius:8px;margin-bottom:20px">
+                <strong>🔄 Ordre d’implémentation global :</strong><br>
+                1. Diagnostiquer le scénario (retard techno, retard maturité ou alignement).<br>
+                2. Suivre la feuille de route adaptée :  
+                   - Scénario 1 → <span style="color:#1f77b4">Technologie d’abord</span>, puis maturité.  
+                   - Scénario 2 → <span style="color:#ff7f0e">Maturité d’abord</span>, puis technologie.  
+                   - Scénario 3 → <span style="color:#2ca02c">Paralléliser maturité & technologie</span>.<br>
+                3. Respecter les priorités identifiées (nœuds parents, gaps, taux d’adoption).
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+        
+            # Préparer l’ordre des niveaux
+            label_order = {'Niveau Initial': 1, 'Niveau Intégré': 2, 'Niveau Avancé': 3}
+            niveau_reel_ord = label_order.get(predicted_cluster_label, 0)
+            niveau_pred_ord = label_order.get(predicted_dt, 0)
+        
+            col1, col2 = st.columns([3,1])
+        
+            with col1:
+                if niveau_pred_ord < niveau_reel_ord:
+                    st.markdown("### ⚠️ Scénario 1 : Retard technologique")
+                    st.markdown(
+                        """
+                        - L’entreprise adopte des technologies de niveau inférieur à sa maturité organisationnelle.  
+                        - Indique un **retard technologique** malgré une maturité Lean 4.0 élevée.
+                        """
+                    )
+                    st.markdown("**Recommandations :**")
+                    st.markdown("""
+                    1. Renforcer l’adoption technologique en priorisant les nœuds parents clés de l’arbre.  
+                    2. Appliquer la **feuille de route technologique** par taux d’adoption.  
+                    3. Puis suivre la **feuille de route maturité** pour combler les gaps.
+                    """)
+        
+                elif niveau_pred_ord > niveau_reel_ord:
+                    st.markdown("### ⚠️ Scénario 2 : Avance technologique")
+                    st.markdown(
+                        """
+                        - L’entreprise utilise des technologies de niveau avancé,  
+                          mais sa maturité organisationnelle reste en retrait.  
+                        - Montre une **avance technologique** associée à un **retard de maturité**.
+                        """
+                    )
+                    st.markdown("**Recommandations :**")
+                    st.markdown("""
+                    1. Prioriser la **maturité Lean 4.0** via la feuille de route maturité.  
+                    2. Cibler les sous-dimensions avec les écarts les plus marqués.  
+                    3. Intégrer ensuite la feuille de route technologique.
+                    """)
+        
+                else:
+                    st.markdown("### ✅ Scénario 3 : Alignement")
+                    st.markdown(
+                        """
+                        - L’entreprise est **alignée** : maturité Lean 4.0 et adoption technologique correspondent.
+                        """
+                    )
+                    st.markdown("**Recommandations :**")
+                    st.markdown("""
+                    1. Cibler les leviers de maturité dans l’arbre de décision :  
+                       – Identifier les nœuds parents les plus influents.  
+                    2. Appliquer la **feuille de route technologique** pour consolider l’alignement.  
+                    3. Renforcer les sous-dimensions moins matures via la feuille de route de maturité.
+                    """)
+        
+            with col2:
+                icon = "🚀" if niveau_pred_ord == niveau_reel_ord else ("⚡" if niveau_pred_ord > niveau_reel_ord else "🔋")
+                st.markdown(f"<h1 style='font-size:4rem;text-align:center'>{icon}</h1>", unsafe_allow_html=True)
+        
+            st.write("---")
 
-            else:
-                st.markdown("### ✅ Scénario 3 : Alignement")
-                st.markdown(
-                    """
-                    - L’entreprise est **alignée** : maturité Lean 4.0 et adoption technologique correspondent.
-                    """
-                )
-                st.markdown("**Recommandations :**")
-                st.markdown("""
-                1. Cibler les leviers de maturité dans l’arbre de décision :  
-                   – Identifier les nœuds parents les plus influents.  
-                2. Appliquer la **feuille de route technologique** pour consolider l’alignement.  
-                3. Renforcer les sous-dimensions moins matures via la feuille de route de maturité.
-                """)
-
-        with col2:
-            icon = "🚀" if niveau_pred_ord == niveau_reel_ord else ("⚡" if niveau_pred_ord > niveau_reel_ord else "🔋")
-            st.markdown(f"<h1 style='font-size:4rem;text-align:center'>{icon}</h1>", unsafe_allow_html=True)
-
-        st.write("---")
         # --- 3b. Radar Chart personnalisé : Entreprise vs Cluster cible ---
         cluster_means = df.groupby('cluster')[selected_features].mean()
         entreprise_scores = entreprise[selected_features]

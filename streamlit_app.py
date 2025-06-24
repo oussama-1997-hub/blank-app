@@ -574,54 +574,54 @@ if file:
 
             st.plotly_chart(fig_compare_radar)
             st.markdown("### 📊 Radar Chart : Entreprise vs Cluster Cible (par Dimension)")
-                # 1. Dictionnaire des regroupements par dimensions
-                dimension_groups = {
-                    "Leadership": [col for col in selected_features if "Leadership" in col],
-                    "Opérations": [col for col in selected_features if "Opérations" in col],
-                    "Organisation apprenante": [col for col in selected_features if "Organisation apprenante" in col],
-                    "Technologies": [col for col in selected_features if "Technologies" in col],
-                    "Supply Chain": [col for col in selected_features if "Supply Chain" in col],
-                }
-                
-                # 2. Moyenne des sous-dimensions pour chaque dimension (Entreprise)
-                entreprise_dim_scores = {
-                    dim: entreprise[cols].mean(axis=1).values[0]
-                    for dim, cols in dimension_groups.items() if cols
-                }
-                
-                # 3. Moyenne des sous-dimensions pour chaque dimension (Cluster cible)
-                cluster_dim_scores = {
-                    dim: cluster_means.loc[next_cluster, cols].mean()
-                    for dim, cols in dimension_groups.items() if cols
-                }
-                
-                # 4. Construction du radar chart
-                fig_dim_compare = go.Figure()
-                fig_dim_compare.add_trace(go.Scatterpolar(
-                    r=list(entreprise_dim_scores.values()),
-                    theta=list(entreprise_dim_scores.keys()),
-                    fill='toself',
-                    name="Entreprise",
-                    line=dict(color='rgba(255, 0, 0, 1)', width=3),
-                    fillcolor='rgba(255, 0, 0, 0.3)'
-                ))
-                
-                fig_dim_compare.add_trace(go.Scatterpolar(
-                    r=list(cluster_dim_scores.values()),
-                    theta=list(cluster_dim_scores.keys()),
-                    fill='toself',
-                    name="Moyenne du cluster cible",
-                    line=dict(color='rgba(0, 0, 139, 1)', width=3),
-                    fillcolor='rgba(0, 0, 139, 0.3)'
-                ))
-                
-                fig_dim_compare.update_layout(
-                    polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
-                    showlegend=True,
-                    height=600
-                )
-                
-                st.plotly_chart(fig_dim_compare)
+            # 1. Dictionnaire des regroupements par dimensions
+            dimension_groups = {
+                "Leadership": [col for col in selected_features if "Leadership" in col],
+                "Opérations": [col for col in selected_features if "Opérations" in col],
+                "Organisation apprenante": [col for col in selected_features if "Organisation apprenante" in col],
+                "Technologies": [col for col in selected_features if "Technologies" in col],
+                "Supply Chain": [col for col in selected_features if "Supply Chain" in col],
+            }
+            
+            # 2. Moyenne des sous-dimensions pour chaque dimension (Entreprise)
+            entreprise_dim_scores = {
+                dim: entreprise[cols].mean(axis=1).values[0]
+                for dim, cols in dimension_groups.items() if cols
+            }
+            
+            # 3. Moyenne des sous-dimensions pour chaque dimension (Cluster cible)
+            cluster_dim_scores = {
+                dim: cluster_means.loc[next_cluster, cols].mean()
+                for dim, cols in dimension_groups.items() if cols
+            }
+            
+            # 4. Construction du radar chart
+            fig_dim_compare = go.Figure()
+            fig_dim_compare.add_trace(go.Scatterpolar(
+                r=list(entreprise_dim_scores.values()),
+                theta=list(entreprise_dim_scores.keys()),
+                fill='toself',
+                name="Entreprise",
+                line=dict(color='rgba(255, 0, 0, 1)', width=3),
+                fillcolor='rgba(255, 0, 0, 0.3)'
+            ))
+            
+            fig_dim_compare.add_trace(go.Scatterpolar(
+                r=list(cluster_dim_scores.values()),
+                theta=list(cluster_dim_scores.keys()),
+                fill='toself',
+                name="Moyenne du cluster cible",
+                line=dict(color='rgba(0, 0, 139, 1)', width=3),
+                fillcolor='rgba(0, 0, 139, 0.3)'
+            ))
+            
+            fig_dim_compare.update_layout(
+                polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
+                showlegend=True,
+                height=600
+            )
+            
+            st.plotly_chart(fig_dim_compare)
 
 
         except Exception as e:

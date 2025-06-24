@@ -574,7 +574,7 @@ if file:
 
             st.plotly_chart(fig_compare_radar)
             st.markdown("### 📊 Radar Chart : Entreprise vs Cluster Cible (par Dimension)")
-    
+
             dimension_groups = {
                 "Leadership": [col for col in selected_features if "Leadership" in col],
                 "Opérations": [col for col in selected_features if "Opérations" in col],
@@ -583,25 +583,31 @@ if file:
                 "Supply Chain": [col for col in selected_features if "Supply Chain" in col],
             }
             
-            def mean_across_cols(df, cols):
-                if len(cols) == 1:
-                    return df[cols[0]].iloc[0]
-                else:
-                    return df[cols].mean(axis=1).iloc[0]
+            def safe_mean(df, cols):
+                """
+                Retourne la moyenne sur axis=1 d'un sous-DataFrame,
+                en forçant à DataFrame même si une seule colonne.
+                """
+                # Sélection des colonnes sous forme de DataFrame
+                data = df[cols] if len(cols) > 1 else df[[cols[0]]]
+                # Calcul de la moyenne sur axis=1 (ligne) et prise de la première valeur
+                return data.mean(axis=1).iloc[0]
             
-            def mean_across_cols_cluster(df, cols, cluster_label):
-                if len(cols) == 1:
-                    return df.loc[cluster_label, cols[0]]
-                else:
-                    return df.loc[cluster_label, cols].mean()
+            def safe_mean_cluster(df, cols, cluster_label):
+                """
+                Même fonction pour cluster_means,
+                en forçant à DataFrame et calculant moyenne des colonnes.
+                """
+                data = df.loc[cluster_label, cols] if len(cols) > 1 else pd.DataFrame({cols[0]: [df.loc[cluster_label, cols[0]]]})
+                return data.mean(axis=1).iloc[0]
             
             entreprise_dim_scores = {
-                dim: mean_across_cols(entreprise, cols)
+                dim: safe_mean(entreprise, cols)
                 for dim, cols in dimension_groups.items() if cols
             }
             
             cluster_dim_scores = {
-                dim: mean_across_cols_cluster(cluster_means, cols, next_cluster)
+                dim: safe_mean_cluster(cluster_means, cols, next_cluster)
                 for dim, cols in dimension_groups.items() if cols
             }
             
@@ -630,6 +636,7 @@ if file:
             )
             
             st.plotly_chart(fig_dim_compare)
+
 
 
         except Exception as e:

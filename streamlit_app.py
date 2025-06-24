@@ -105,6 +105,11 @@ if file:
     
     df['Tech_Robots autonomes'] = df['Tech_Robots autonomes'] | df['Tech_Autonomous robots']
     df.drop(columns=['Tech_Autonomous robots'], inplace=True)
+
+    column_to_drop = 'Tech_Je ne sais pas'
+    df.drop(columns=[column_to_drop], inplace=True)
+
+    
     # --- Sidebar: Select sub-dimensions grouped by dimension ---
     st.sidebar.markdown("### 📌 Sélectionner les sous-dimensions par dimension")
     selected_features = []

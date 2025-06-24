@@ -574,6 +574,7 @@ if file:
 
             st.plotly_chart(fig_compare_radar)
             st.markdown("### 📊 Radar Chart : Entreprise vs Cluster Cible (par Dimension)")
+            
             # 1. Dictionnaire des regroupements par dimensions
             dimension_groups = {
                 "Leadership": [col for col in selected_features if "Leadership" in col],
@@ -584,16 +585,14 @@ if file:
             }
             
             # 2. Moyenne des sous-dimensions pour chaque dimension (Entreprise)
-           # 2. Moyenne des sous-dimensions pour chaque dimension (Entreprise)
             entreprise_dim_scores = {
                 dim: entreprise[cols].mean(axis=1).iloc[0] if len(cols) > 1 else entreprise[cols[0]].iloc[0]
                 for dim, cols in dimension_groups.items() if cols
             }
             
-                        
             # 3. Moyenne des sous-dimensions pour chaque dimension (Cluster cible)
             cluster_dim_scores = {
-                dim: cluster_means.loc[next_cluster, cols].mean()
+                dim: cluster_means.loc[next_cluster, cols].mean() if len(cols) > 1 else cluster_means.loc[next_cluster, cols[0]]
                 for dim, cols in dimension_groups.items() if cols
             }
             

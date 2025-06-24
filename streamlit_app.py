@@ -584,13 +584,26 @@ if file:
                 "Supply Chain": [col for col in selected_features if "Supply Chain" in col],
             }
             
-            def moyenne_par_dimension(df, cols):
+           def moyenne_par_dimension(df, cols):
                 if len(cols) > 1:
-                    # Plusieurs colonnes : moyenne ligne par ligne, puis première valeur
-                    return df[cols].mean().iloc[0]
+                    # df[cols] est DataFrame ou Series (si une colonne)
+                    # on récupère la première ligne avec .iloc[0], qui est une Series, puis on fait mean()
+                    # mais parfois ça renvoie directement une valeur scalar si une colonne, donc on force avec .mean()
+                    
+                    subset = df[cols]
+                    if isinstance(subset, pd.Series):
+                        # subset est Series donc on fait mean direct
+                        return subset.mean()
+                    else:
+                        # subset est DataFrame, on récupère la première ligne (Series) et on fait mean
+                        return subset.iloc[0].mean()
                 else:
-                    # Une seule colonne : valeur directe de la colonne (première ligne)
-                    return df[cols[0]].iloc[0]
+                    val = df[cols[0]]
+                    # val peut être une Series (colonne), on récupère la première valeur si c'est le cas
+                    if isinstance(val, pd.Series):
+                        return val.iloc[0]
+                    else:
+                        return val
             
             # Calcul des moyennes par dimension pour l'entreprise
             entreprise_dim_scores = {

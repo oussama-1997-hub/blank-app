@@ -587,7 +587,7 @@ if file:
             def moyenne_par_dimension(df, cols):
                 if len(cols) > 1:
                     # Plusieurs colonnes : moyenne ligne par ligne, puis première valeur
-                    return df[cols].mean(axis=1).iloc[0]
+                    return df[cols].mean().iloc[0]
                 else:
                     # Une seule colonne : valeur directe de la colonne (première ligne)
                     return df[cols[0]].iloc[0]

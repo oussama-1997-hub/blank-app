@@ -584,11 +584,13 @@ if file:
             }
             
             # 2. Moyenne des sous-dimensions pour chaque dimension (Entreprise)
+           # 2. Moyenne des sous-dimensions pour chaque dimension (Entreprise)
             entreprise_dim_scores = {
-                dim: entreprise[cols].mean(axis=1).values[0]
+                dim: entreprise[cols].mean(axis=1).iloc[0] if len(cols) > 1 else entreprise[cols[0]].iloc[0]
                 for dim, cols in dimension_groups.items() if cols
             }
             
+                        
             # 3. Moyenne des sous-dimensions pour chaque dimension (Cluster cible)
             cluster_dim_scores = {
                 dim: cluster_means.loc[next_cluster, cols].mean()

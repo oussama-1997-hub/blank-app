@@ -82,7 +82,29 @@ if file:
     df = pd.read_excel(file)
     st.success("✅ Excel file uploaded successfully!")
     st.dataframe(df.head())
-
+    # Lean methods
+    df['Lean_Méthode TPM / TRS'] = df['Lean_Méthode TPM / TRS'] | df['Lean_TPM / TRS method']
+    df.drop(columns=['Lean_TPM / TRS method'], inplace=True)
+    
+    df['Lean_DDMRP/ hoshin kanri'] = (
+        df['Lean_DDMRP/ hoshin kanri'] |
+        df['Lean_DDMRP'] |
+        df['Lean_Maki-Gami/Hoshin…etc']
+    )
+    df.drop(columns=['Lean_DDMRP', 'Lean_Maki-Gami/Hoshin…etc'], inplace=True)
+    
+    # Tech tools
+    df['Tech_Réalité augmentée'] = df['Tech_Réalité augmentée'] | df['Tech_Augmented reality']
+    df.drop(columns=['Tech_Augmented reality'], inplace=True)
+    
+    df['Tech_Systèmes cyber physiques'] = df['Tech_Systèmes cyber physiques'] | df['Tech_Cyber ​​physical systems']
+    df.drop(columns=['Tech_Cyber ​​physical systems'], inplace=True)
+    
+    df['Tech_Intelligence artificielle'] = df['Tech_Intelligence artificielle'] | df['Tech_Artificial intelligence']
+    df.drop(columns=['Tech_Artificial intelligence'], inplace=True)
+    
+    df['Tech_Robots autonomes'] = df['Tech_Robots autonomes'] | df['Tech_Autonomous robots']
+    df.drop(columns=['Tech_Autonomous robots'], inplace=True)
     # --- Sidebar: Select sub-dimensions grouped by dimension ---
     st.sidebar.markdown("### 📌 Sélectionner les sous-dimensions par dimension")
     selected_features = []

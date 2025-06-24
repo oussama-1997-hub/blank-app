@@ -574,8 +574,7 @@ if file:
 
             st.plotly_chart(fig_compare_radar)
             st.markdown("### 📊 Radar Chart : Entreprise vs Cluster Cible (par Dimension)")
-
-            # Regroupement des colonnes par dimension
+            
             dimension_groups = {
                 "Leadership": [col for col in selected_features if "Leadership" in col],
                 "Opérations": [col for col in selected_features if "Opérations" in col],
@@ -584,43 +583,32 @@ if file:
                 "Supply Chain": [col for col in selected_features if "Supply Chain" in col],
             }
             
-               def moyenne_par_dimension(df, cols):
-                    if len(cols) > 1:
-                        # df[cols] est DataFrame ou Series (si une colonne)
-                        # on récupère la première ligne avec .iloc[0], qui est une Series, puis on fait mean()
-                        # mais parfois ça renvoie directement une valeur scalar si une colonne, donc on force avec .mean()
-                        
-                        subset = df[cols]
-                        if isinstance(subset, pd.Series):
-                            # subset est Series donc on fait mean direct
-                            return subset.mean()
-                        else:
-                            # subset est DataFrame, on récupère la première ligne (Series) et on fait mean
-                            return subset.iloc[0].mean()
+            def moyenne_par_dimension(df, cols):
+                if len(cols) > 1:
+                    subset = df[cols]
+                    if isinstance(subset, pd.Series):
+                        return subset.mean()
                     else:
-                        val = df[cols[0]]
-                        # val peut être une Series (colonne), on récupère la première valeur si c'est le cas
-                        if isinstance(val, pd.Series):
-                            return val.iloc[0]
-                        else:
-                            return val
+                        return subset.iloc[0].mean()
+                else:
+                    val = df[cols[0]]
+                    if isinstance(val, pd.Series):
+                        return val.iloc[0]
+                    else:
+                        return val
             
-            # Calcul des moyennes par dimension pour l'entreprise
             entreprise_dim_scores = {
                 dim: moyenne_par_dimension(entreprise, cols)
                 for dim, cols in dimension_groups.items() if cols
             }
             
-            # Pour cluster_means, on récupère un DataFrame avec une seule ligne (cluster ciblé)
             cluster_subset = cluster_means.loc[[next_cluster]]
             
-            # Calcul des moyennes par dimension pour le cluster cible
             cluster_dim_scores = {
                 dim: moyenne_par_dimension(cluster_subset, cols)
                 for dim, cols in dimension_groups.items() if cols
             }
             
-            # Création du radar chart
             fig_dim_compare = go.Figure()
             fig_dim_compare.add_trace(go.Scatterpolar(
                 r=list(entreprise_dim_scores.values()),
@@ -646,7 +634,6 @@ if file:
             )
             
             st.plotly_chart(fig_dim_compare)
-
 
 
 

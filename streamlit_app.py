@@ -359,11 +359,11 @@ if file:
         
         # 🔁 Map Cluster values to ordered maturity levels
         cluster_mapping = {1: "Niveau Initial", 2: "Niveau Intégré", 3: "Niveau Avancé"}
-        df['Niveau de maturité Lean 4.0'] = df['Cluster'].map(cluster_mapping)
+        df['Niveau Maturité'] = df['Cluster'].map(cluster_mapping)
         
         # 🔁 Set ordered categorical type for consistent ordering
-        ordered_maturity = CategoricalDtype(categories=["Initial", "Émergé", "Avancé"], ordered=True)
-        df['Niveau de maturité Lean 4.0'] = df['Niveau de maturité Lean 4.0'].astype(ordered_maturity)
+        ordered_maturity = CategoricalDtype(categories=["Niveau Initial", "Niveau Intégré", "Niveau Avancé"], ordered=True)
+        df['Niveau Maturité'] = df['Niveau Maturité'].astype(ordered_maturity)
         
         # 👇 You can select features to visualize (replace with your actual list)
         selected_features = [col for col in df.columns if col.startswith('Q') or col.startswith('Dim_')]

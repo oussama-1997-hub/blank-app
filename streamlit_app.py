@@ -273,7 +273,7 @@ if file:
     with tabs[2]:
         st.header("📡 Radar Chart - Profils par Dimension")
         try:
-            cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features_for_radar].mean().dropna(axis=1, how='any')
+            cluster_avg = df.groupby('Cluster')[selected_features_for_radar].mean().dropna(axis=1, how='any')
             available_features = cluster_avg.columns.tolist()
 
             custom_colors = {
@@ -325,7 +325,7 @@ if file:
             dimension_avg = pd.DataFrame(index=df['Niveau de maturité Lean 4.0'].unique())
             for dim, cols in dimension_groups.items():
                 if cols:
-                    dimension_avg[dim] = df.groupby('Niveau de maturité Lean 4.0')[cols].mean().mean(axis=1)
+                    dimension_avg[dim] = df.groupby('Cluster')[cols].mean().mean(axis=1)
             dimension_avg = dimension_avg.dropna()
     
             if dimension_avg.empty:
@@ -358,14 +358,14 @@ if file:
         st.header("🔥 Heatmaps of Average Scores, Lean Methods & Industry 4.0 Tech")
 
         # Average survey scores heatmap (selected_features)
-        avg_scores = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
+        avg_scores = df.groupby('Cluster')[selected_features].mean()
 
         # Detect Lean and Tech dummy columns
         tech_cols = [col for col in df.columns if col.startswith('Tech_')]
         lean_cols = [col for col in df.columns if col.startswith('Lean_')]
 
-        lean_avg = df.groupby('Niveau de maturité Lean 4.0')[lean_cols].mean() if lean_cols else pd.DataFrame()
-        tech_avg = df.groupby('Niveau de maturité Lean 4.0')[tech_cols].mean() if tech_cols else pd.DataFrame()
+        lean_avg = df.groupby('Cluster')[lean_cols].mean() if lean_cols else pd.DataFrame()
+        tech_avg = df.groupby('Cluster')[tech_cols].mean() if tech_cols else pd.DataFrame()
 
         fig, axs = plt.subplots(3, 1, figsize=(16, 18))
 

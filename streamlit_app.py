@@ -83,9 +83,10 @@ if file:
     st.success("✅ Excel file uploaded successfully!")
     st.dataframe(df.head())
     # Lean methods
+    """
     df['Lean_Méthode TPM / TRS'] = df['Lean_Méthode TPM / TRS'] | df['Lean_TPM / TRS method']
     df.drop(columns=['Lean_TPM / TRS method'], inplace=True)
-    
+
     df['Lean_DDMRP/ hoshin kanri'] = (
         df['Lean_DDMRP/ hoshin kanri'] |
         df['Lean_DDMRP'] |
@@ -108,7 +109,7 @@ if file:
 
     column_to_drop = 'Tech_Je ne sais pas'
     df.drop(columns=[column_to_drop], inplace=True)
-
+    """
     
     # --- Sidebar: Select sub-dimensions grouped by dimension ---
     st.sidebar.markdown("### 📌 Sélectionner les sous-dimensions par dimension")

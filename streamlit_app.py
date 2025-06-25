@@ -354,7 +354,12 @@ if file:
 
     # ----- Heatmaps Tab -----
     with tabs[3]:
-        
+        import streamlit as st
+        import pandas as pd
+        import seaborn as sns
+        import matplotlib.pyplot as plt
+        from pandas.api.types import CategoricalDtype
+
         # Assuming df is your DataFrame already loaded
         
         # 🔁 Map Cluster values to ordered maturity levels

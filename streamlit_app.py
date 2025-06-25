@@ -371,14 +371,14 @@ if file:
         st.header("🔥 Heatmaps of Average Scores, Lean Methods & Industry 4.0 Tech")
         
         # 🔹 Average scores
-        avg_scores = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
+        avg_scores = df.groupby('Niveau Maturité')[selected_features].mean()
         
         # 🔹 Detect Lean and Tech columns
         tech_cols = [col for col in df.columns if col.startswith('Tech_')]
         lean_cols = [col for col in df.columns if col.startswith('Lean_')]
         
-        lean_avg = df.groupby('Niveau de maturité Lean 4.0')[lean_cols].mean() if lean_cols else pd.DataFrame()
-        tech_avg = df.groupby('Niveau de maturité Lean 4.0')[tech_cols].mean() if tech_cols else pd.DataFrame()
+        lean_avg = df.groupby('Niveau Maturité')[lean_cols].mean() if lean_cols else pd.DataFrame()
+        tech_avg = df.groupby('Niveau Maturité')[tech_cols].mean() if tech_cols else pd.DataFrame()
         
         # 🔹 Create 3 stacked heatmaps
         fig, axs = plt.subplots(3, 1, figsize=(16, 18))

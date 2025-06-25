@@ -354,39 +354,59 @@ if file:
 
     # ----- Heatmaps Tab -----
     with tabs[3]:
+        
+        # Assuming df is your DataFrame already loaded
+        
+        # 🔁 Map Cluster values to ordered maturity levels
+        cluster_mapping = {1: "Niveau Initial", 2: "Niveau Intégré", 3: "Niveau Avancé"}
+        df['Niveau de maturité Lean 4.0'] = df['Cluster'].map(cluster_mapping)
+        
+        # 🔁 Set ordered categorical type for consistent ordering
+        ordered_maturity = CategoricalDtype(categories=["Initial", "Émergé", "Avancé"], ordered=True)
+        df['Niveau de maturité Lean 4.0'] = df['Niveau de maturité Lean 4.0'].astype(ordered_maturity)
+        
+        # 👇 You can select features to visualize (replace with your actual list)
+        selected_features = [col for col in df.columns if col.startswith('Q') or col.startswith('Dim_')]
+        
         st.header("🔥 Heatmaps of Average Scores, Lean Methods & Industry 4.0 Tech")
-
-        # Average survey scores heatmap (selected_features)
+        
+        # 🔹 Average scores
         avg_scores = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
-
-        # Detect Lean and Tech dummy columns
+        
+        # 🔹 Detect Lean and Tech columns
         tech_cols = [col for col in df.columns if col.startswith('Tech_')]
         lean_cols = [col for col in df.columns if col.startswith('Lean_')]
-
+        
         lean_avg = df.groupby('Niveau de maturité Lean 4.0')[lean_cols].mean() if lean_cols else pd.DataFrame()
         tech_avg = df.groupby('Niveau de maturité Lean 4.0')[tech_cols].mean() if tech_cols else pd.DataFrame()
-
+        
+        # 🔹 Create 3 stacked heatmaps
         fig, axs = plt.subplots(3, 1, figsize=(16, 18))
-
+        
+        # 📊 1. Survey average scores
         sns.heatmap(avg_scores.T, cmap="YlGnBu", annot=True, fmt=".2f", linewidths=0.8, ax=axs[0])
         axs[0].set_title("Average Survey Scores by Maturity Level", fontsize=16)
-
+        
+        # 📊 2. Lean methods
         if lean_avg.empty:
             axs[1].text(0.5, 0.5, "No Lean methods columns detected.", ha='center', va='center', fontsize=14)
             axs[1].axis('off')
         else:
             sns.heatmap(lean_avg.T, cmap="Oranges", annot=True, fmt=".2f", linewidths=0.8, ax=axs[1])
             axs[1].set_title("Average Lean Methods Usage by Maturity Level", fontsize=16)
-
+        
+        # 📊 3. Industry 4.0 technologies
         if tech_avg.empty:
             axs[2].text(0.5, 0.5, "No Industry 4.0 tech columns detected.", ha='center', va='center', fontsize=14)
             axs[2].axis('off')
         else:
             sns.heatmap(tech_avg.T, cmap="PuRd", annot=True, fmt=".2f", linewidths=0.8, ax=axs[2])
             axs[2].set_title("Average Industry 4.0 Technologies Usage by Maturity Level", fontsize=16)
-
+        
+        # Layout and display
         plt.tight_layout()
         st.pyplot(fig)
+
 
     # ----- Decision Tree Tab -----
     with tabs[4]:

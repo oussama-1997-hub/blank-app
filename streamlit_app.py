@@ -15,6 +15,11 @@ import graphviz
 st.set_page_config(page_title="Lean 4.0 Cluster & Tree App", layout="wide")
 # 🌟 Page d'accueil - Présentation du site
 st.markdown("""
+    hide_github_icon = “”"
+    
+    .css-1jc7ptx, .e1ewe7hr3, .viewerBadge_container__1QSob, .styles_viewerBadge__1yB5_, .viewerBadge_link__1S137, .viewerBadge_text__1JaDK{ display: none; } #MainMenu{ visibility: hidden; } footer { visibility: hidden; } header { visibility: hidden; }
+    “”"
+    st.markdown(hide_github_icon, unsafe_allow_html=True)
     <div style="background-color: #f7f9fc; padding: 30px 20px; border-radius: 15px; box-shadow: 0px 2px 8px rgba(0,0,0,0.1);">
         <h1 style="color: #004080; font-size: 32px; text-align: center; margin-bottom: 10px;">🚀 Optimisez votre transformation Lean 4.0 grâce à l’intelligence issue du terrain</h1>
         <p style="font-size: 18px; color: #333333; text-align: center; max-width: 850px; margin: 0 auto;">

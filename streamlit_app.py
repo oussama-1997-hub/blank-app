@@ -13,8 +13,16 @@ import plotly.graph_objects as go
 import graphviz
 
 st.set_page_config(page_title="Lean 4.0 Cluster & Tree App", layout="wide")
+
 # 🌟 Page d'accueil - Présentation du site
 st.markdown("""
+    <style>
+    hide_github_icon = “”"
+        
+        .css-1jc7ptx, .e1ewe7hr3, .viewerBadge_container__1QSob, .styles_viewerBadge__1yB5_, .viewerBadge_link__1S137, .viewerBadge_text__1JaDK{ display: none; } #MainMenu{ visibility: hidden; } footer { visibility: hidden; } header { visibility: hidden; }
+        “”"
+        st.markdown(hide_github_icon, unsafe_allow_html=True)
+    </style>
     <div style="background-color: #f7f9fc; padding: 30px 20px; border-radius: 15px; box-shadow: 0px 2px 8px rgba(0,0,0,0.1);">
         <h1 style="color: #004080; font-size: 32px; text-align: center; margin-bottom: 10px;">🚀 Optimisez votre transformation Lean 4.0 grâce à l’intelligence issue du terrain</h1>
         <p style="font-size: 18px; color: #333333; text-align: center; max-width: 850px; margin: 0 auto;">
@@ -139,7 +147,14 @@ if file:
         selected_features_for_radar.extend(dimension_map[dim])
 
     # --- Prepare features for clustering ---
-    features = df[selected_features].dropna()
+    available_selected_features = [col for col in selected_features if col in df.columns]
+    if len(available_selected_features) < len(selected_features):
+        missing = list(set(selected_features) - set(df.columns))
+        st.warning(f"⚠️ Colonnes manquantes dans le fichier : {missing}")
+    if not available_selected_features:
+        st.stop()
+    
+    features = df[available_selected_features].dropna()
     scaler = StandardScaler()
     scaled_features = scaler.fit_transform(features)
 
@@ -273,7 +288,7 @@ if file:
     with tabs[2]:
         st.header("📡 Radar Chart - Profils par Dimension")
         try:
-            cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features_for_radar].mean().dropna(axis=1, how='any')
+            cluster_avg = df.groupby('Cluster')[selected_features_for_radar].mean().dropna(axis=1, how='any')
             available_features = cluster_avg.columns.tolist()
 
             custom_colors = {
@@ -325,7 +340,7 @@ if file:
             dimension_avg = pd.DataFrame(index=df['Niveau de maturité Lean 4.0'].unique())
             for dim, cols in dimension_groups.items():
                 if cols:
-                    dimension_avg[dim] = df.groupby('Niveau de maturité Lean 4.0')[cols].mean().mean(axis=1)
+                    dimension_avg[dim] = df.groupby('Cluster')[cols].mean().mean(axis=1)
             dimension_avg = dimension_avg.dropna()
     
             if dimension_avg.empty:
@@ -358,14 +373,14 @@ if file:
         st.header("🔥 Heatmaps of Average Scores, Lean Methods & Industry 4.0 Tech")
 
         # Average survey scores heatmap (selected_features)
-        avg_scores = df.groupby('Niveau de maturité Lean 4.0')[selected_features].mean()
+        avg_scores = df.groupby('Cluster')[selected_features].mean()
 
         # Detect Lean and Tech dummy columns
         tech_cols = [col for col in df.columns if col.startswith('Tech_')]
         lean_cols = [col for col in df.columns if col.startswith('Lean_')]
 
-        lean_avg = df.groupby('Niveau de maturité Lean 4.0')[lean_cols].mean() if lean_cols else pd.DataFrame()
-        tech_avg = df.groupby('Niveau de maturité Lean 4.0')[tech_cols].mean() if tech_cols else pd.DataFrame()
+        lean_avg = df.groupby('Cluster')[lean_cols].mean() if lean_cols else pd.DataFrame()
+        tech_avg = df.groupby('Cluster')[tech_cols].mean() if tech_cols else pd.DataFrame()
 
         fig, axs = plt.subplots(3, 1, figsize=(16, 18))
 

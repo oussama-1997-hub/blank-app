@@ -288,7 +288,7 @@ if file:
     with tabs[2]:
         st.header("📡 Radar Chart - Profils par Dimension")
         try:
-            cluster_avg = df.groupby('Cluster')[selected_features_for_radar].mean().dropna(axis=1, how='any')
+            cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features_for_radar].mean().dropna(axis=1, how='any')
             available_features = cluster_avg.columns.tolist()
 
             custom_colors = {
@@ -325,44 +325,6 @@ if file:
                     height=600
                 )
                 st.plotly_chart(fig_radar)
-
-                # === 2. Radar chart par dimension ===
-            st.subheader("📊 Radar Chart - Profils par *Dimension*")
-    
-            dimension_groups = {
-                "Leadership": [col for col in selected_features_for_radar if "Leadership" in col],
-                "Opérations": [col for col in selected_features_for_radar if "Opérations" in col],
-                "Organisation apprenante": [col for col in selected_features_for_radar if "Organisation apprenante" in col],
-                "Technologies": [col for col in selected_features_for_radar if "Technologies" in col],
-                "Supply Chain": [col for col in selected_features_for_radar if "Supply Chain" in col],
-            }
-    
-            dimension_avg = pd.DataFrame(index=df['Niveau de maturité Lean 4.0'].unique())
-            for dim, cols in dimension_groups.items():
-                if cols:
-                    dimension_avg[dim] = df.groupby('Cluster')[cols].mean().mean(axis=1)
-            dimension_avg = dimension_avg.dropna()
-    
-            if dimension_avg.empty:
-                st.warning("Pas de données disponibles pour le radar des dimensions.")
-            else:
-                fig_dim_radar = go.Figure()
-                for label in dimension_avg.index:
-                    fig_dim_radar.add_trace(go.Scatterpolar(
-                        r=dimension_avg.loc[label].values,
-                        theta=dimension_avg.columns,
-                        fill='toself',
-                        name=label,
-                        line=dict(color=custom_colors[label]['line'], width=3),
-                        fillcolor=custom_colors[label]['fill']
-                    ))
-                fig_dim_radar.update_layout(
-                    polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
-                    showlegend=True,
-                    height=600
-                )
-                st.plotly_chart(fig_dim_radar)
-
 
         except Exception as e:
             st.error(f"Erreur du Radar Chart : {e}")

@@ -147,7 +147,14 @@ if file:
         selected_features_for_radar.extend(dimension_map[dim])
 
     # --- Prepare features for clustering ---
-    features = df[selected_features]
+    available_selected_features = [col for col in selected_features if col in df.columns]
+    if len(available_selected_features) < len(selected_features):
+        missing = list(set(selected_features) - set(df.columns))
+        st.warning(f"⚠️ Colonnes manquantes dans le fichier : {missing}")
+    if not available_selected_features:
+        st.stop()
+    
+    features = df[available_selected_features].dropna()
     scaler = StandardScaler()
     scaled_features = scaler.fit_transform(features)
 

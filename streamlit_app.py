@@ -328,7 +328,7 @@ if file:
 
             st.subheader("📊 Radar Chart - Profils par *Dimension*")
         
-                dimension_groups = {
+            dimension_groups = {
                     "Leadership": [col for col in selected_features_for_radar if "Leadership" in col],
                     "Opérations": [col for col in selected_features_for_radar if "Opérations" in col],
                     "Organisation apprenante": [col for col in selected_features_for_radar if "Organisation apprenante" in col],
@@ -336,15 +336,15 @@ if file:
                     "Supply Chain": [col for col in selected_features_for_radar if "Supply Chain" in col],
                 }
         
-                dimension_avg = pd.DataFrame(index=df['Niveau de maturité Lean 4.0'].unique())
-                for dim, cols in dimension_groups.items():
-                    if cols:
-                        dimension_avg[dim] = df.groupby('Cluster')[cols].mean().mean(axis=1)
+            dimension_avg = pd.DataFrame(index=df['Niveau de maturité Lean 4.0'].unique())
+            for dim, cols in dimension_groups.items():
+                if cols:
+                    dimension_avg[dim] = df.groupby('Cluster')[cols].mean().mean(axis=1)
                 dimension_avg = dimension_avg.dropna()
         
-                if dimension_avg.empty:
-                    st.warning("Pas de données disponibles pour le radar des dimensions.")
-                else:
+            if dimension_avg.empty:
+                st.warning("Pas de données disponibles pour le radar des dimensions.")
+            else:
                     fig_dim_radar = go.Figure()
                     for label in dimension_avg.index:
                         fig_dim_radar.add_trace(go.Scatterpolar(

@@ -288,7 +288,7 @@ if file:
     with tabs[2]:
         st.header("📡 Radar Chart - Profils par Dimension")
         try:
-            cluster_avg = df.groupby('Cluster')[selected_features_for_radar].mean().dropna(axis=1, how='any')
+            cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features_for_radar].mean().dropna(axis=1, how='any')
             available_features = cluster_avg.columns.tolist()
 
             custom_colors = {
@@ -340,7 +340,7 @@ if file:
             dimension_avg = pd.DataFrame(index=df['Niveau de maturité Lean 4.0'].unique())
             for dim, cols in dimension_groups.items():
                 if cols:
-                    dimension_avg[dim] = df.groupby('Cluster')[cols].mean().mean(axis=1)
+                    dimension_avg[dim] = df.groupby('Niveau de maturité Lean 4.0')[cols].mean().mean(axis=1)
             dimension_avg = dimension_avg.dropna()
     
             if dimension_avg.empty:

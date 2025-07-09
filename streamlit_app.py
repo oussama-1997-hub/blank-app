@@ -55,7 +55,7 @@ file = st.sidebar.file_uploader("Upload Excel file", type=["xlsx"])
 # --- Dimension to sub-dimensions mapping ---
 dimension_map = {
     "Leadership": [
-        "Leadership - Engagement Lean ",
+        "Leadership - Engagement Lean",
         "Leadership - Engagement DT",
         "Leadership - Stratégie ",
         "Leadership - Communication"

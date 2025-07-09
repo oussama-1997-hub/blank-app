@@ -147,7 +147,7 @@ if file:
         selected_features_for_radar.extend(dimension_map[dim])
 
     # --- Prepare features for clustering ---
-    features = df[selected_features].dropna()
+
     scaler = StandardScaler()
     scaled_features = scaler.fit_transform(features)
 

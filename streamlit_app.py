@@ -147,14 +147,7 @@ if file:
         selected_features_for_radar.extend(dimension_map[dim])
 
     # --- Prepare features for clustering ---
-    available_selected_features = [col for col in selected_features if col in df.columns]
-    if len(available_selected_features) < len(selected_features):
-        missing = list(set(selected_features) - set(df.columns))
-        st.warning(f"⚠️ Colonnes manquantes dans le fichier : {missing}")
-    if not available_selected_features:
-        st.stop()
-    
-    features = df[available_selected_features].dropna()
+    features = df[selected_features].dropna()
     scaler = StandardScaler()
     scaled_features = scaler.fit_transform(features)
 
@@ -288,7 +281,7 @@ if file:
     with tabs[2]:
         st.header("📡 Radar Chart - Profils par Dimension")
         try:
-            cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features_for_radar].mean().dropna(axis=1, how='any')
+            cluster_avg = df.groupby('Cluster')[selected_features_for_radar].mean().dropna(axis=1, how='any')
             available_features = cluster_avg.columns.tolist()
 
             custom_colors = {
@@ -326,16 +319,17 @@ if file:
                 )
                 st.plotly_chart(fig_radar)
 
+                # === 2. Radar chart par dimension ===
             st.subheader("📊 Radar Chart - Profils par *Dimension*")
-        
+    
             dimension_groups = {
-                    "Leadership": [col for col in selected_features_for_radar if "Leadership" in col],
-                    "Opérations": [col for col in selected_features_for_radar if "Opérations" in col],
-                    "Organisation apprenante": [col for col in selected_features_for_radar if "Organisation apprenante" in col],
-                    "Technologies": [col for col in selected_features_for_radar if "Technologies" in col],
-                    "Supply Chain": [col for col in selected_features_for_radar if "Supply Chain" in col],
-                }
-        
+                "Leadership": [col for col in selected_features_for_radar if "Leadership" in col],
+                "Opérations": [col for col in selected_features_for_radar if "Opérations" in col],
+                "Organisation apprenante": [col for col in selected_features_for_radar if "Organisation apprenante" in col],
+                "Technologies": [col for col in selected_features_for_radar if "Technologies" in col],
+                "Supply Chain": [col for col in selected_features_for_radar if "Supply Chain" in col],
+            }
+    
             dimension_avg = pd.DataFrame(index=df['Niveau de maturité Lean 4.0'].unique())
             for dim, cols in dimension_groups.items():
                 if cols:

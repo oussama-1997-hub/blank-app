@@ -901,43 +901,58 @@ if file:
         tech_to_adopt = tech_to_adopt.sort_values(ascending=False)
 
         # Affichage méthodes Lean à adopter
-        def priorite_adoption(val):
-            if val >= 0.7:
-                return "Élevée"
-            elif val >= 0.4:
-                return "Moyenne"
-            else:
-                return "Faible"
+        # --- Lean mapping for display names ---
+        mapping_lean_columns_to_display = {
+            'Lean_QRQC': 'QRQC',
+            'Lean_DDMRP/ hoshin kanri': 'DDMRP / Hoshin Kanri',
+            'Lean_5S': '5S',
+            'Lean_Heijunka': 'Heijunka',
+            'Lean_Maki-Gami/Hoshin…etc': 'Maki-Gami / Hoshin',
+            'Lean_Value Stream Mapping (VSM)': 'Value Stream Mapping (VSM)',
+            'Lean_Kaizen': 'Kaizen',
+            'Lean_DDMRP': 'DDMRP',
+            'Lean_Méthode TPM / TRS': 'Méthode TPM / TRS',
+            'Lean_Kata': 'Kata',
+            'Lean_Just in time': 'Juste à temps (JAT)',
+            'Lean_QRAP': 'QRAP',
+            'Lean_TPM / TRS method': 'TPM / TRS',
+            'Lean_6 sigma': '6 Sigma',
+            'Lean_Poka Yoke': 'Poka Yoke',
+            'Lean_Takt Time': 'Takt Time',
+            'Lean_Kanban': 'Kanban',
+            'Lean_GEMBA': 'Gemba'
+        }
+       
+        # Create display names list for lean_to_adopt
+        lean_methods_display = [mapping_lean_columns_to_display.get(col, col.replace('Lean_', '')) for col in lean_to_adopt.index]
         
-        if not lean_to_adopt.empty:
-            lean_methods = lean_to_adopt.index.str.replace('Lean_', '')
-            lean_df = pd.DataFrame({
-                "Méthode Lean": lean_methods,
-                "Taux d'adoption dans cluster cible": lean_to_adopt.values.round(2),
-                "Priorité": [priorite_adoption(v) for v in lean_to_adopt.values],
-                "Technologies support associées": [lean_support.get(m.strip(), "—") for m in lean_methods]
-            })
+        # Create support tech list matching display names or empty if not found
+        technologies_support = [lean_to_tech_support.get(method, "") for method in lean_methods_display]
         
-            st.markdown("### 🛠️ Méthodes Lean à adopter en priorité avec leurs technologies associées")
-            
-            styled_df = lean_df.style\
-                .background_gradient(subset=["Taux d'adoption dans cluster cible"], cmap="Oranges")\
-                .applymap(
-                    lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
-                              'color: orange; font-weight: bold' if x == 'Moyenne' else
-                              'color: green;',
-                    subset=["Priorité"]
-                )\
-                .set_properties(**{'text-align': 'center'})\
-                .set_table_styles([{
-                    'selector': 'th',
-                    'props': [('text-align', 'center')]
-                }])
+        # Build the DataFrame with the new column
+        lean_df = pd.DataFrame({
+            "Méthode Lean": lean_methods_display,
+            "Technologies support": technologies_support,
+            "Taux d'adoption dans cluster cible": lean_to_adopt.values.round(2),
+            "Priorité": [priorite_adoption(v) for v in lean_to_adopt.values]
+        })
         
-            st.dataframe(styled_df, use_container_width=True)
-        
-        else:
-            st.info("Aucune méthode Lean prioritaire à adopter.")
+        # Display the styled DataFrame
+        st.markdown("### 🛠️ Méthodes Lean à adopter en priorité")
+        styled_lean_df = lean_df.style\
+            .background_gradient(subset=["Taux d'adoption dans cluster cible"], cmap="Oranges")\
+            .applymap(
+                lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
+                          'color: orange; font-weight: bold' if x == 'Moyenne' else
+                          'color: green;',
+                subset=["Priorité"]
+            )\
+            .set_properties(**{'text-align': 'center'})\
+            .set_table_styles([{
+                'selector': 'th',
+                'props': [('text-align', 'center')]
+            }])
+        st.dataframe(styled_lean_df, use_container_width=True)
         # Affichage technologies Industrie 4.0 à adopter
         def priorite_adoption(val):
             if val >= 0.7:

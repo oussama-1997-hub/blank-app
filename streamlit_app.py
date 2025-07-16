@@ -482,6 +482,31 @@ if file:
         features_dt_new.columns = [col.strip() for col in features_dt_new.columns]  # optional cleaning
         features_dt_new = features_dt_new.select_dtypes(include=[np.number]).fillna(0)
         features_dt_array = features_dt_new.values.reshape(1, -1)  # final input to model
+                st.markdown("### 🛠️ Méthodes Lean & Technologies Industrie 4.0 adoptées")
+
+        # Détection automatique des colonnes de méthodes Lean et technologies
+        lean_cols = [col for col in df.columns if col.startswith('Lean_')]
+        tech_cols = [col for col in df.columns if col.startswith('Tech_')]
+
+        lean_adopted = [col.replace('Lean_', '') for col in lean_cols if entreprise.get(col, 0) == 1]
+        tech_adopted = [col.replace('Tech_', '') for col in tech_cols if entreprise.get(col, 0) == 1]
+
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("#### ✅ Méthodes Lean utilisées")
+            if lean_adopted:
+                for method in lean_adopted:
+                    st.markdown(f"- {method}")
+            else:
+                st.info("Aucune méthode Lean détectée.")
+
+        with col2:
+            st.markdown("#### ✅ Technologies Industrie 4.0 utilisées")
+            if tech_adopted:
+                for tech in tech_adopted:
+                    st.markdown(f"- {tech}")
+            else:
+                st.info("Aucune technologie 4.0 détectée.")
 
 
         predicted_dt = clf.predict(features_dt_new)[0]

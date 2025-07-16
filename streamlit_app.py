@@ -941,7 +941,20 @@ if file:
         # Create support tech list matching display names or empty if not found
         technologies_support = [lean_to_tech_support.get(method, "") for method in lean_methods_display]
         
-        # Build the DataFrame with the new column
+     # Définition de la fonction priorite_adoption
+        def priorite_adoption(val):
+            if val >= 0.7:
+                return "Élevée"
+            elif val >= 0.4:
+                return "Moyenne"
+            else:
+                return "Faible"
+        
+        # Supposons que lean_to_adopt, lean_methods_display, et technologies_support sont déjà calculés correctement
+        # lean_methods_display = lean_to_adopt.index.str.replace('Lean_', '').tolist()
+        # technologies_support = [lean_to_tech_support.get(meth, "") for meth in lean_methods_display]
+        
+        # Construire le DataFrame
         lean_df = pd.DataFrame({
             "Méthode Lean": lean_methods_display,
             "Technologies support": technologies_support,

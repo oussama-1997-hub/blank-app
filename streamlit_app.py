@@ -902,6 +902,18 @@ if file:
 
         # Affichage méthodes Lean à adopter
         # --- Lean mapping for display names ---
+        lean_to_tech_support = {
+            "Juste à temps (JAT)": "Robots autonomes, WMS, RFID",
+            "Takt Time": "Big Data & Analytics, Systèmes cyber-physiques, ERP, WMS",
+            "Heijunka": "WMS, MES",
+            "Méthode TPM / TRS": "MES, RFID",
+            "Poka Yoke": "Simulation, Robots autonomes, ERP",
+            "Kaizen": "MES, RFID, Big Data & Analytics, Fabrication additive (Impression 3D)",
+            "Kanban": "Fabrication additive (Impression 3D)",
+            "Value Stream Mapping (VSM)": "Systèmes cyber-physiques, RFID, WMS",
+            "QRQC": "Intelligence artificielle",
+            # Add others if needed or leave blank
+        }
         mapping_lean_columns_to_display = {
             'Lean_QRQC': 'QRQC',
             'Lean_DDMRP/ hoshin kanri': 'DDMRP / Hoshin Kanri',

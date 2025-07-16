@@ -901,10 +901,10 @@ if file:
         # Affichage méthodes Lean à adopter
         # --- Lean mapping for display names ---
         lean_to_tech_support = {
-            "Juste à temps (JAT)": "Robots autonomes, WMS, RFID",
+            "Juste à temps": "Robots autonomes, WMS, RFID",
             "Takt Time": "Big Data & Analytics, Systèmes cyber-physiques, ERP, WMS",
             "Heijunka": "WMS, MES",
-            "TPM / TRS": "MES, RFID",
+            "Méthode TPM / TRS": "MES, RFID",
             "Poka Yoke": "Simulation, Robots autonomes, ERP",
             "Kaizen": "MES, RFID, Big Data & Analytics, Fabrication additive (Impression 3D)",
             "Kanban": "Fabrication additive (Impression 3D)",

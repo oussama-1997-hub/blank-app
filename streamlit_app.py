@@ -468,31 +468,75 @@ if file:
         st.markdown("#### Scores de maturité sous-dimensions sélectionnées")
         entreprise_features = entreprise[selected_features].values.reshape(1, -1)
         st.dataframe(pd.DataFrame(entreprise_features, columns=selected_features))
-        st.markdown("### 🛠️ Méthodes Lean & Technologies Industrie 4.0 adoptées")
-
-        # Détection automatique des colonnes de méthodes Lean et technologies
+        import streamlit as st
+        import pandas as pd
+        
+        # Style du tableau
+        st.markdown("""
+            <style>
+            .stDataFrame div {
+                font-size: 14px;
+            }
+            .lean-tech-card {
+                padding: 1rem;
+                background-color: #f9f9f9;
+                border-radius: 1rem;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+                margin-bottom: 1rem;
+            }
+            .lean-title {
+                font-weight: bold;
+                font-size: 18px;
+                margin-bottom: 0.5rem;
+            }
+            .lean-list {
+                margin: 0;
+                padding-left: 1rem;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+        
+        # Titre clair
+        st.markdown("## 📊 Scores de maturité - Sous-dimensions sélectionnées")
+        entreprise_features = entreprise[selected_features].values.reshape(1, -1)
+        df_scores = pd.DataFrame(entreprise_features, columns=selected_features)
+        st.dataframe(df_scores.style.set_properties(**{
+            'background-color': '#ffffff',
+            'color': '#000000',
+            'border-color': 'transparent'
+        }), use_container_width=True)
+        
+        # Section Méthodes & Technologies
+        st.markdown("## 🛠️ Méthodes Lean & Technologies Industrie 4.0 utilisées")
+        
+        # Détection des colonnes
         lean_cols = [col for col in df.columns if col.startswith('Lean_')]
         tech_cols = [col for col in df.columns if col.startswith('Tech_')]
-    
+        
         lean_adopted = [col.replace('Lean_', '') for col in lean_cols if entreprise.get(col, 0) == 1]
         tech_adopted = [col.replace('Tech_', '') for col in tech_cols if entreprise.get(col, 0) == 1]
-    
+        
+        # Deux colonnes côte à côte
         col1, col2 = st.columns(2)
+        
         with col1:
-            st.markdown("#### ✅ Méthodes Lean utilisées")
+            st.markdown('<div class="lean-tech-card">', unsafe_allow_html=True)
+            st.markdown('<div class="lean-title">✅ Méthodes Lean utilisées</div>', unsafe_allow_html=True)
             if lean_adopted:
-                for method in lean_adopted:
-                    st.markdown(f"- {method}")
+                st.markdown('<ul class="lean-list">' + ''.join([f"<li>🧩 {method}</li>" for method in lean_adopted]) + '</ul>', unsafe_allow_html=True)
             else:
                 st.info("Aucune méthode Lean détectée.")
-    
+            st.markdown('</div>', unsafe_allow_html=True)
+        
         with col2:
-            st.markdown("#### ✅ Technologies Industrie 4.0 utilisées")
+            st.markdown('<div class="lean-tech-card">', unsafe_allow_html=True)
+            st.markdown('<div class="lean-title">🔧 Technologies Industrie 4.0 utilisées</div>', unsafe_allow_html=True)
             if tech_adopted:
-                for tech in tech_adopted:
-                    st.markdown(f"- {tech}")
+                st.markdown('<ul class="lean-list">' + ''.join([f"<li>💡 {tech}</li>" for tech in tech_adopted]) + '</ul>', unsafe_allow_html=True)
             else:
                 st.info("Aucune technologie 4.0 détectée.")
+            st.markdown('</div>', unsafe_allow_html=True)
+
             
         # --- 1. Prédiction cluster KMeans (niveau réel) ---
         entreprise_scaled = scaler.transform(entreprise[selected_features].values.reshape(1, -1))

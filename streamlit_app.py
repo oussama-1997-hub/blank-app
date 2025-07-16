@@ -793,9 +793,7 @@ if file:
 
         # 4a. Calcul des gaps par sous-dimension (comparaison cluster cible vs entreprise)
         # Récupérer moyennes du cluster cible (niveau réel + 1 si possible)
-       
-
-
+    
         # Calcul des écarts entre l'entreprise et le cluster cible
 
         gaps = entreprise_scores - cluster_means.loc[next_cluster]
@@ -902,7 +900,7 @@ if file:
 
         # Affichage méthodes Lean à adopter
         # --- Lean mapping for display names ---
-          lean_to_tech_support = {
+        lean_to_tech_support = {
             "Juste à temps (JAT)": "Robots autonomes, WMS, RFID",
             "Takt Time": "Big Data & Analytics, Systèmes cyber-physiques, ERP, WMS",
             "Heijunka": "WMS, MES",

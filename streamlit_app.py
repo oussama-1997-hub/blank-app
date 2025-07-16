@@ -520,7 +520,7 @@ if file:
                              .set_properties(**{'text-align': 'center'})
                              .set_table_styles([{
                                  'selector': 'th',
-                                 'props': [('text-align', 'center'), ('background-color': '#f5f5f5')]
+                                 'props': [('text-align', 'center'), ('background-color', '#f5f5f5')]
                              }]),
                              use_container_width=True)
             else:

@@ -458,21 +458,46 @@ if file:
             st.error("Veuillez d'abord exécuter les tabs Clustering et Decision Tree pour entraîner les modèles.")
             st.stop()
 
-        # Affichage sélection d'entreprise à tester : par défaut entreprise 5 (index=4 si zero-based)
+        # Affichage sélection d'entreprise à tester : par défaut entreprise 5 (index=5 si zero-based)
         st.markdown("### Sélection de l'entreprise à évaluer")
         entreprise_options = list(df.index)
-        default_idx = 4 if len(df) > 4 else 0  # entreprise 5 = index 4
+        default_idx = 4 if len(df) > 4 else 0  # entreprise 5 = index 5
         entreprise_idx = st.selectbox("Choisissez une entreprise (index):", entreprise_options, index=default_idx)
         entreprise = df.loc[entreprise_idx]
 
         st.markdown("#### Scores de maturité sous-dimensions sélectionnées")
         entreprise_features = entreprise[selected_features].values.reshape(1, -1)
         st.dataframe(pd.DataFrame(entreprise_features, columns=selected_features))
+        st.markdown("### 🛠️ Méthodes Lean & Technologies Industrie 4.0 adoptées")
+
+            # Détection automatique des colonnes de méthodes Lean et technologies
+            lean_cols = [col for col in df.columns if col.startswith('Lean_')]
+            tech_cols = [col for col in df.columns if col.startswith('Tech_')]
+    
+            lean_adopted = [col.replace('Lean_', '') for col in lean_cols if entreprise.get(col, 0) == 1]
+            tech_adopted = [col.replace('Tech_', '') for col in tech_cols if entreprise.get(col, 0) == 1]
+    
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown("#### ✅ Méthodes Lean utilisées")
+                if lean_adopted:
+                    for method in lean_adopted:
+                        st.markdown(f"- {method}")
+                else:
+                    st.info("Aucune méthode Lean détectée.")
+    
+            with col2:
+                st.markdown("#### ✅ Technologies Industrie 4.0 utilisées")
+                if tech_adopted:
+                    for tech in tech_adopted:
+                        st.markdown(f"- {tech}")
+                else:
+                    st.info("Aucune technologie 4.0 détectée.")
         # --- 1. Prédiction cluster KMeans (niveau réel) ---
         entreprise_scaled = scaler.transform(entreprise[selected_features].values.reshape(1, -1))
         predicted_cluster = kmeans.predict(entreprise_scaled)[0]
         predicted_cluster_label = cluster_label_map.get(predicted_cluster, "Inconnu")
-
+       
         st.write(f"**Niveau réel (KMeans cluster) prédit :** {predicted_cluster_label}")
 
         # --- 2. Prédiction arbre de décision (niveau prédit) ---
@@ -508,32 +533,7 @@ if file:
             </ul>
             </div>
             """, unsafe_allow_html=True)
-            st.markdown("### 🛠️ Méthodes Lean & Technologies Industrie 4.0 adoptées")
-
-            # Détection automatique des colonnes de méthodes Lean et technologies
-            lean_cols = [col for col in df.columns if col.startswith('Lean_')]
-            tech_cols = [col for col in df.columns if col.startswith('Tech_')]
-    
-            lean_adopted = [col.replace('Lean_', '') for col in lean_cols if entreprise.get(col, 0) == 1]
-            tech_adopted = [col.replace('Tech_', '') for col in tech_cols if entreprise.get(col, 0) == 1]
-    
-            col1, col2 = st.columns(2)
-            with col1:
-                st.markdown("#### ✅ Méthodes Lean utilisées")
-                if lean_adopted:
-                    for method in lean_adopted:
-                        st.markdown(f"- {method}")
-                else:
-                    st.info("Aucune méthode Lean détectée.")
-    
-            with col2:
-                st.markdown("#### ✅ Technologies Industrie 4.0 utilisées")
-                if tech_adopted:
-                    for tech in tech_adopted:
-                        st.markdown(f"- {tech}")
-                else:
-                    st.info("Aucune technologie 4.0 détectée.")
-        
+            
             st.markdown("## 🔍 Analyse comparative et recommandations", unsafe_allow_html=True)
             st.write("---")
         

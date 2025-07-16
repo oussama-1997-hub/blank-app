@@ -1006,55 +1006,6 @@ if file:
             )
         else:
             st.info("Aucune technologie prioritaire à adopter.")
-    import streamlit as st
-    import streamlit.components.v1 as components
-    
-    def capture_streamlit_screenshot():
-        st.markdown(
-            """
-            <style>
-                #captureButton {
-                    background-color: #4CAF50;
-                    border: none;
-                    color: white;
-                    padding: 10px 20px;
-                    text-align: center;
-                    text-decoration: none;
-                    display: inline-block;
-                    font-size: 16px;
-                    border-radius: 8px;
-                    margin-top: 10px;
-                    cursor: pointer;
-                }
-            </style>
-            <button id="captureButton">📸 Capture Screenshot</button>
-    
-            <script>
-            async function captureScreenshot() {
-                const stApp = window.parent.document.querySelector('.main');
-                const html2canvas = (await import('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js')).default;
-                html2canvas(stApp).then(canvas => {
-                    const imgData = canvas.toDataURL('image/png');
-                    const link = document.createElement('a');
-                    link.href = imgData;
-                    link.download = 'streamlit_screenshot.png';
-                    link.click();
-                });
-            }
-    
-            const button = window.parent.document.getElementById('captureButton');
-            if (button) {
-                button.addEventListener('click', captureScreenshot);
-            }
-            </script>
-            """,
-            unsafe_allow_html=True
-        )
-    
-    # Example usage
-    capture_streamlit_screenshot()
-
-
 
 
 

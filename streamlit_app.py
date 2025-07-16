@@ -465,57 +465,68 @@ if file:
         entreprise_idx = st.selectbox("Choisissez une entreprise (index):", entreprise_options, index=default_idx)
         entreprise = df.loc[entreprise_idx]
 
-        st.markdown("### 🧮 Scores de maturité des sous-dimensions")
-
-        # Dictionnaire pour regrouper par dimension
+        # === Affichage des scores de maturité (par groupe de sous-dimensions) ===
+        
+        # Données des sous-dimensions de l'entreprise
+        entreprise_features = entreprise[selected_features].values.flatten()
+        scores_dict = dict(zip(selected_features, entreprise_features))
+        
+        # Groupes par dimension (selon les noms réels)
         groupes = {
-            "Stratégie / Leadership": [
+            "Stratégie - Leadership": [
                 "Leadership - Engagement Lean ",
                 "Leadership - Engagement DT",
                 "Leadership - Stratégie ",
-                "Leadership - Communication",
+                "Leadership - Communication"
             ],
             "Supply Chain": [
                 "Supply Chain - Collaboration inter-organisationnelle",
                 "Supply Chain - Traçabilité",
-                "Supply Chain - Impact sur les employées",
+                "Supply Chain - Impact sur les employées"
             ],
             "Opérations": [
                 "Opérations - Standardisation des processus",
                 "Opérations - Juste-à-temps (JAT)",
-                "Opérations - Gestion des résistances",
+                "Opérations - Gestion des résistances"
             ],
             "Technologies": [
                 "Technologies - Connectivité et gestion des données",
                 "Technologies - Automatisation",
-                "Technologies - Pilotage du changement",
+                "Technologies - Pilotage du changement"
             ],
-            "Organisation apprenante": [
+            "Organisation Apprenante": [
                 "Organisation apprenante  - Formation et développement des compétences",
                 "Organisation apprenante  - Collaboration et Partage des Connaissances",
-                "Organisation apprenante  - Flexibilité organisationnelle",
+                "Organisation apprenante  - Flexibilité organisationnelle"
             ]
         }
         
-        # Construction du tableau de données structuré
-        table_data = []
-        for groupe, sous_dims in groupes.items():
-            for sous_dim in sous_dims:
-                score = entreprise[sous_dim].values[0] if sous_dim in entreprise.columns else "N/A"
-                table_data.append({"Dimension": groupe, "Sous-dimension": sous_dim.strip(), "Score": score})
+        # Construction du tableau final
+        rows = []
+        for dim, sous_dims in groupes.items():
+            for sd in sous_dims:
+                score = scores_dict.get(sd, "N/A")
+                rows.append({
+                    "Dimension": dim,
+                    "Sous-dimension": sd.strip(),
+                    "Score": round(score, 2) if isinstance(score, (int, float)) else score
+                })
         
-        df_scores = pd.DataFrame(table_data)
+        df_scores = pd.DataFrame(rows)
         
-        # Affichage avec style compact et alignement centré
-        def style_table(df):
+        # Affichage stylisé
+        def stylize(df):
             return df.style.set_properties(**{
-                'text-align': 'center'
-            }).set_table_styles([{
-                'selector': 'th',
-                'props': [('text-align', 'center'), ('background-color', '#f0f0f0')]
-            }])
+                'text-align': 'center',
+                'vertical-align': 'middle',
+                'font-size': '14px'
+            }).set_table_styles([
+                {'selector': 'th', 'props': [('text-align', 'center'), ('background-color', '#f0f0f0')]},
+                {'selector': 'td', 'props': [('text-align', 'center')]}
+            ])
         
-        st.table(style_table(df_scores))
+        st.dataframe(stylize(df_scores), use_container_width=True)
+
 
         # --- Affichage clair des méthodes Lean et Tech 4.0 adoptées ---
         st.markdown("### 🛠️ Méthodes Lean & Technologies Industrie 4.0 adoptées")

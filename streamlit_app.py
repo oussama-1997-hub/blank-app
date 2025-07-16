@@ -528,25 +528,47 @@ if file:
         st.dataframe(stylize(df_scores), use_container_width=True)
 
 
-        # --- Affichage clair des méthodes Lean et Tech 4.0 adoptées ---
         st.markdown("### 🛠️ Méthodes Lean & Technologies Industrie 4.0 adoptées")
-        # Colonnes détectées automatiquement
+        
+        # Identification des colonnes binaires
         lean_cols = [col for col in df.columns if col.startswith('Lean_')]
         tech_cols = [col for col in df.columns if col.startswith('Tech_')]
         
-        # Méthodes/technologies utilisées (valeur == 1)
+        # Liste des méthodes/tech adoptées
         lean_adopted = [col.replace('Lean_', '') for col in lean_cols if entreprise.get(col, 0) == 1]
         tech_adopted = [col.replace('Tech_', '') for col in tech_cols if entreprise.get(col, 0) == 1]
         
-        # Création des DataFrames pour affichage
-        df_lean = pd.DataFrame({"Méthodes Lean utilisées": lean_adopted}) if lean_adopted else pd.DataFrame({"Méthodes Lean utilisées": ["Aucune"]})
-        df_tech = pd.DataFrame({"Technologies Industrie 4.0 utilisées": tech_adopted}) if tech_adopted else pd.DataFrame({"Technologies Industrie 4.0 utilisées": ["Aucune"]})
-        
+        # Création des tableaux stylisés
         col1, col2 = st.columns(2)
+        
         with col1:
-            st.dataframe(df_lean, use_container_width=True)
+            st.markdown("#### ✅ Méthodes Lean utilisées")
+            if lean_adopted:
+                lean_df = pd.DataFrame({"Méthode Lean": lean_adopted})
+                st.dataframe(lean_df.style
+                             .set_properties(**{'text-align': 'center'})
+                             .set_table_styles([{
+                                 'selector': 'th',
+                                 'props': [('text-align', 'center'), ('background-color', '#f5f5f5')]
+                             }]),
+                             use_container_width=True)
+            else:
+                st.info("Aucune méthode Lean détectée.")
+        
         with col2:
-            st.dataframe(df_tech, use_container_width=True)
+            st.markdown("#### ✅ Technologies Industrie 4.0 utilisées")
+            if tech_adopted:
+                tech_df = pd.DataFrame({"Technologie 4.0": tech_adopted})
+                st.dataframe(tech_df.style
+                             .set_properties(**{'text-align': 'center'})
+                             .set_table_styles([{
+                                 'selector': 'th',
+                                 'props': [('text-align', 'center'), ('background-color', '#f5f5f5')]
+                             }]),
+                             use_container_width=True)
+            else:
+                st.info("Aucune technologie 4.0 détectée.")
+
 
             
         # --- 1. Prédiction cluster KMeans (niveau réel) ---

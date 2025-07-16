@@ -465,77 +465,66 @@ if file:
         entreprise_idx = st.selectbox("Choisissez une entreprise (index):", entreprise_options, index=default_idx)
         entreprise = df.loc[entreprise_idx]
 
-        st.markdown("#### Scores de maturité sous-dimensions sélectionnées")
-        entreprise_features = entreprise[selected_features].values.reshape(1, -1)
-        st.dataframe(pd.DataFrame(entreprise_features, columns=selected_features))
-        import streamlit as st
         import pandas as pd
+        import streamlit as st
         
-        # Style du tableau
-        st.markdown("""
-            <style>
-            .stDataFrame div {
-                font-size: 14px;
-            }
-            .lean-tech-card {
-                padding: 1rem;
-                background-color: #f9f9f9;
-                border-radius: 1rem;
-                box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-                margin-bottom: 1rem;
-            }
-            .lean-title {
-                font-weight: bold;
-                font-size: 18px;
-                margin-bottom: 0.5rem;
-            }
-            .lean-list {
-                margin: 0;
-                padding-left: 1rem;
-            }
-            </style>
-        """, unsafe_allow_html=True)
-        
-        # Titre clair
-        st.markdown("## 📊 Scores de maturité - Sous-dimensions sélectionnées")
+        # --- Affichage clair des scores de maturité par sous-dimension ---
+        st.markdown("### 📊 Scores de maturité par sous-dimension")
         entreprise_features = entreprise[selected_features].values.reshape(1, -1)
-        df_scores = pd.DataFrame(entreprise_features, columns=selected_features)
-        st.dataframe(df_scores.style.set_properties(**{
-            'background-color': '#ffffff',
-            'color': '#000000',
-            'border-color': 'transparent'
-        }), use_container_width=True)
+        entreprise_scores = pd.DataFrame({
+            "Sous-dimension": selected_features,
+            "Score (1 à 5)": entreprise[selected_features].values
+        })
+        st.dataframe(entreprise_scores.style
+                     .highlight_max(axis=0, color='lightgreen')
+                     .set_properties(**{'text-align': 'center'})
+                     .set_table_styles([{
+                         'selector': 'th',
+                         'props': [('text-align', 'center'), ('background-color', '#f0f2f6')]
+                     }]),
+                     use_container_width=True)
         
-        # Section Méthodes & Technologies
-        st.markdown("## 🛠️ Méthodes Lean & Technologies Industrie 4.0 utilisées")
+        # --- Affichage clair des méthodes Lean et Tech 4.0 adoptées ---
+        st.markdown("### 🛠️ Méthodes Lean & Technologies Industrie 4.0 adoptées")
         
-        # Détection des colonnes
+        # Identification des colonnes binaires
         lean_cols = [col for col in df.columns if col.startswith('Lean_')]
         tech_cols = [col for col in df.columns if col.startswith('Tech_')]
         
+        # Liste des méthodes/tech adoptées
         lean_adopted = [col.replace('Lean_', '') for col in lean_cols if entreprise.get(col, 0) == 1]
         tech_adopted = [col.replace('Tech_', '') for col in tech_cols if entreprise.get(col, 0) == 1]
         
-        # Deux colonnes côte à côte
+        # Création des tableaux stylisés
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown('<div class="lean-tech-card">', unsafe_allow_html=True)
-            st.markdown('<div class="lean-title">✅ Méthodes Lean utilisées</div>', unsafe_allow_html=True)
+            st.markdown("#### ✅ Méthodes Lean utilisées")
             if lean_adopted:
-                st.markdown('<ul class="lean-list">' + ''.join([f"<li>🧩 {method}</li>" for method in lean_adopted]) + '</ul>', unsafe_allow_html=True)
+                lean_df = pd.DataFrame({"Méthode Lean": lean_adopted})
+                st.dataframe(lean_df.style
+                             .set_properties(**{'text-align': 'center'})
+                             .set_table_styles([{
+                                 'selector': 'th',
+                                 'props': [('text-align', 'center'), ('background-color', '#f5f5f5')]
+                             }]),
+                             use_container_width=True)
             else:
                 st.info("Aucune méthode Lean détectée.")
-            st.markdown('</div>', unsafe_allow_html=True)
         
         with col2:
-            st.markdown('<div class="lean-tech-card">', unsafe_allow_html=True)
-            st.markdown('<div class="lean-title">🔧 Technologies Industrie 4.0 utilisées</div>', unsafe_allow_html=True)
+            st.markdown("#### ✅ Technologies Industrie 4.0 utilisées")
             if tech_adopted:
-                st.markdown('<ul class="lean-list">' + ''.join([f"<li>💡 {tech}</li>" for tech in tech_adopted]) + '</ul>', unsafe_allow_html=True)
+                tech_df = pd.DataFrame({"Technologie 4.0": tech_adopted})
+                st.dataframe(tech_df.style
+                             .set_properties(**{'text-align': 'center'})
+                             .set_table_styles([{
+                                 'selector': 'th',
+                                 'props': [('text-align', 'center'), ('background-color': '#f5f5f5')]
+                             }]),
+                             use_container_width=True)
             else:
                 st.info("Aucune technologie 4.0 détectée.")
-            st.markdown('</div>', unsafe_allow_html=True)
 
             
         # --- 1. Prédiction cluster KMeans (niveau réel) ---

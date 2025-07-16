@@ -465,53 +465,57 @@ if file:
         entreprise_idx = st.selectbox("Choisissez une entreprise (index):", entreprise_options, index=default_idx)
         entreprise = df.loc[entreprise_idx]
 
-        import streamlit as st
-        import pandas as pd
-        
-        # Exemple fictif : suppose que `entreprise` contient toutes les colonnes des sous-dimensions avec leurs scores
-        # Et que tu as une variable `selected_features` contenant la liste des sous-dimensions à afficher
-        
-        # Création d’un dictionnaire de regroupement par dimension principale
+        st.markdown("### 🧮 Scores de maturité des sous-dimensions")
+
+        # Dictionnaire pour regrouper par dimension
         groupes = {
-            "Stratégie": ["Engagement du Leadership", "Culture d'Amélioration Continue", "Communication et Collaboration", "Shared Change Vision"],
-            "Supply Chain": ["Visibilité et traçabilité", "Collaboration inter-organisationnelle", "Flexibilité et agilité", "Human-Centric Supply Chain Management"],
-            "Opérations": ["Cartographie de la chaîne de valeur (VSM)", "Standardisation et optimisation des processus", "Gestion des flux et Juste-à-temps (JAT)", "Facilitating Adaptation and Change in Digital Process Implementation"],
-            "Technologies": ["Connectivité et gestion des données", "Automatisation, intégration et sécurité", "Fabrication avancée et simulation", "Ease of Use and Instructional Clarity"],
-            "Compétences et culture": ["Formation continue", "Développement des compétences numériques", "Implication et engagement des employés", "Valorisation Humaine et Environnementale du Lean 4.0"],
-            "Synergie Lean-Industrie 4.0": ["Pilotage Stratégique Lean des Technologies Industrie 4.0", "Optimisation des Flux Physiques par les Technologies de l'Industrie 4.0", "Utilisation des Données pour l'Amélioration Continue", "Participative Lean 4.0 Practices"],
-            "Performance opérationnelle": ["Coût", "Délai", "Qualité", "Responsabilité Sociétale (RSE)"]
+            "Stratégie / Leadership": [
+                "Leadership - Engagement Lean ",
+                "Leadership - Engagement DT",
+                "Leadership - Stratégie ",
+                "Leadership - Communication",
+            ],
+            "Supply Chain": [
+                "Supply Chain - Collaboration inter-organisationnelle",
+                "Supply Chain - Traçabilité",
+                "Supply Chain - Impact sur les employées",
+            ],
+            "Opérations": [
+                "Opérations - Standardisation des processus",
+                "Opérations - Juste-à-temps (JAT)",
+                "Opérations - Gestion des résistances",
+            ],
+            "Technologies": [
+                "Technologies - Connectivité et gestion des données",
+                "Technologies - Automatisation",
+                "Technologies - Pilotage du changement",
+            ],
+            "Organisation apprenante": [
+                "Organisation apprenante  - Formation et développement des compétences",
+                "Organisation apprenante  - Collaboration et Partage des Connaissances",
+                "Organisation apprenante  - Flexibilité organisationnelle",
+            ]
         }
         
-        # Générer le tableau réorganisé par groupe
-        data_maturite = []
-        
-        for dimension, sous_dims in groupes.items():
+        # Construction du tableau de données structuré
+        table_data = []
+        for groupe, sous_dims in groupes.items():
             for sous_dim in sous_dims:
-                if sous_dim in selected_features:
-                    score = entreprise[sous_dim] if sous_dim in entreprise else "-"
-                    data_maturite.append({
-                        "Dimension": dimension,
-                        "Sous-dimension": sous_dim,
-                        "Score": round(score, 2) if isinstance(score, (int, float)) else "-"
-                    })
+                score = entreprise[sous_dim].values[0] if sous_dim in entreprise.columns else "N/A"
+                table_data.append({"Dimension": groupe, "Sous-dimension": sous_dim.strip(), "Score": score})
         
-        df_affichage = pd.DataFrame(data_maturite)
+        df_scores = pd.DataFrame(table_data)
         
-        # Affichage stylisé
-        st.markdown("#### 📊 Scores de maturité des sous-dimensions (groupés par dimension)")
-        st.dataframe(
-            df_affichage.style
-            .set_properties(**{
-                'text-align': 'center',
-                'border': '1px solid #ddd',
-                'font-size': '14px'
-            })
-            .set_table_styles([
-                {'selector': 'th', 'props': [('text-align', 'center'), ('background-color', '#f0f0f0')]}
-            ]),
-            use_container_width=True,
-            height=min(600, 45 + 25 * len(df_affichage))  # ajuste dynamiquement la hauteur
-        )
+        # Affichage avec style compact et alignement centré
+        def style_table(df):
+            return df.style.set_properties(**{
+                'text-align': 'center'
+            }).set_table_styles([{
+                'selector': 'th',
+                'props': [('text-align', 'center'), ('background-color', '#f0f0f0')]
+            }])
+        
+        st.table(style_table(df_scores))
 
         # --- Affichage clair des méthodes Lean et Tech 4.0 adoptées ---
         st.markdown("### 🛠️ Méthodes Lean & Technologies Industrie 4.0 adoptées")

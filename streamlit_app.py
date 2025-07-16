@@ -1006,53 +1006,69 @@ if file:
             )
         else:
             st.info("Aucune technologie prioritaire à adopter.")
-        import streamlit as st
-        import streamlit.components.v1 as components
+    import streamlit as st
+    import streamlit.components.v1 as components
         
-        def capture_streamlit_screenshot():
-            st.markdown(
-                """
-                <style>
-                    #captureButton {
-                        background-color: #4CAF50;
-                        border: none;
-                        color: white;
-                        padding: 10px 20px;
-                        text-align: center;
-                        text-decoration: none;
-                        display: inline-block;
-                        font-size: 16px;
-                        border-radius: 8px;
-                        margin-top: 10px;
-                        cursor: pointer;
-                    }
-                </style>
-                <button id="captureButton">📸 Capture Screenshot</button>
-        
-                <script>
-                async function captureScreenshot() {
-                    const stApp = window.parent.document.querySelector('.main');
-                    const html2canvas = (await import('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js')).default;
-                    html2canvas(stApp).then(canvas => {
-                        const imgData = canvas.toDataURL('image/png');
-                        const link = document.createElement('a');
-                        link.href = imgData;
-                        link.download = 'streamlit_screenshot.png';
-                        link.click();
-                    });
-                }
-        
-                const button = window.parent.document.getElementById('captureButton');
-                if (button) {
-                    button.addEventListener('click', captureScreenshot);
-                }
-                </script>
-                """,
-                unsafe_allow_html=True
-            )
-        
-        # Example usage
-        capture_streamlit_screenshot()
+    def capture_all_tabs_screenshots(tab_ids):
+        # Include html2canvas + jszip
+        script = f"""
+        <script>
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    
+        async function captureAllTabs() {{
+            const html2canvas = (await import('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js')).default;
+            const JSZip = (await import('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js')).default;
+            const zip = new JSZip();
+    
+            const tabs = {tab_ids};
+            for (let i = 0; i < tabs.length; i++) {{
+                const tabButton = window.parent.document.querySelector(`[data-testid="stTabs"] button:nth-child(${i+1})`);
+                if (tabButton) {{
+                    tabButton.click();
+                    await delay(1000);  // wait for tab to load
+                    const content = window.parent.document.querySelector('.main');
+                    const canvas = await html2canvas(content);
+                    const dataUrl = canvas.toDataURL('image/png');
+                    const imgData = dataUrl.split(',')[1];
+                    zip.file(tabs[i] + ".png", imgData, {{base64: true}});
+                }}
+            }}
+    
+            const content = await zip.generateAsync({{type:"blob"}});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = "all_screenshots.zip";
+            link.click();
+        }}
+    
+        const btn = window.parent.document.getElementById("captureAllTabs");
+        if (btn) {{
+            btn.addEventListener('click', captureAllTabs);
+        }}
+        </script>
+        """
+    
+        st.markdown("""
+            <style>
+            #captureAllTabs {
+                background-color: #2c6ef2;
+                color: white;
+                padding: 10px 20px;
+                font-size: 16px;
+                border-radius: 8px;
+                border: none;
+                margin-top: 10px;
+                cursor: pointer;
+            }
+            </style>
+            <button id="captureAllTabs">📥 Capture All Tabs and Download ZIP</button>
+        """, unsafe_allow_html=True)
+    
+        components.html(script, height=0)
+    
+    # Example usage
+    tab_names = ["Maturité", "Feuilles de Route", "Décision Tree", "Clustering", "Dashboard"]
+    capture_all_tabs_screenshots(tab_names)        
         
 
 

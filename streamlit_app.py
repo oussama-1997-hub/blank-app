@@ -589,7 +589,7 @@ if file:
         predicted_dt = clf.predict(features_dt_new)[0]
         st.write(f"**Niveau prédit (arbre de décision) :** {predicted_dt}")
 
-         # --- 3. Analyse comparative & scénarios ---
+        # --- 3. Analyse comparative & scénarios ---
         # --- Analyse comparative et recommandations ---
         with st.container():
             st.markdown("## 🧭 Guide d’utilisation personnalisé", unsafe_allow_html=True)
@@ -611,7 +611,7 @@ if file:
             </ul>
             </div>
             """, unsafe_allow_html=True)
-        
+            
             st.markdown("## 🔍 Analyse comparative et recommandations", unsafe_allow_html=True)
             st.write("---")
         
@@ -721,6 +721,69 @@ if file:
             )
 
             st.plotly_chart(fig_compare_radar)
+            st.markdown("### 📊 Radar Chart : Entreprise vs Cluster Cible (par Dimension)")
+            
+            dimension_groups = {
+                "Leadership": [col for col in selected_features if "Leadership" in col],
+                "Opérations": [col for col in selected_features if "Opérations" in col],
+                "Organisation apprenante": [col for col in selected_features if "Organisation apprenante" in col],
+                "Technologies": [col for col in selected_features if "Technologies" in col],
+                "Supply Chain": [col for col in selected_features if "Supply Chain" in col],
+            }
+            
+            def moyenne_par_dimension(df, cols):
+                if len(cols) > 1:
+                    subset = df[cols]
+                    if isinstance(subset, pd.Series):
+                        return subset.mean()
+                    else:
+                        return subset.iloc[0].mean()
+                else:
+                    val = df[cols[0]]
+                    if isinstance(val, pd.Series):
+                        return val.iloc[0]
+                    else:
+                        return val
+            
+            entreprise_dim_scores = {
+                dim: moyenne_par_dimension(entreprise, cols)
+                for dim, cols in dimension_groups.items() if cols
+            }
+            
+            cluster_subset = cluster_means.loc[[next_cluster]]
+            
+            cluster_dim_scores = {
+                dim: moyenne_par_dimension(cluster_subset, cols)
+                for dim, cols in dimension_groups.items() if cols
+            }
+            
+            fig_dim_compare = go.Figure()
+            fig_dim_compare.add_trace(go.Scatterpolar(
+                r=list(entreprise_dim_scores.values()),
+                theta=list(entreprise_dim_scores.keys()),
+                fill='toself',
+                name="Entreprise",
+                line=dict(color='rgba(255, 0, 0, 1)', width=3),
+                fillcolor='rgba(255, 0, 0, 0.3)'
+            ))
+            fig_dim_compare.add_trace(go.Scatterpolar(
+                r=list(cluster_dim_scores.values()),
+                theta=list(cluster_dim_scores.keys()),
+                fill='toself',
+                name="Moyenne du cluster cible",
+                line=dict(color='rgba(0, 0, 139, 1)', width=3),
+                fillcolor='rgba(0, 0, 139, 0.3)'
+            ))
+            
+            fig_dim_compare.update_layout(
+                polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
+                showlegend=True,
+                height=600
+            )
+            
+            st.plotly_chart(fig_dim_compare)
+
+
 
         except Exception as e:
             st.error(f"Erreur lors de la génération du Radar Chart personnalisé : {e}")
@@ -866,5 +929,4 @@ if file:
 
 else:
     st.info("⏳ Veuillez uploader un fichier Excel pour commencer.")
-
 

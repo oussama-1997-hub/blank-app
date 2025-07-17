@@ -599,17 +599,17 @@ if file:
             <div style="background-color:#f9f9f9;padding:15px;border-radius:10px;">
             <h4>🧩 Ordre de priorité à suivre dans votre démarche Lean 4.0</h4>
             <ul>
-                <li><b>Étape 1 :</b> Identification du scénario (retard techno / maturité / alignement)</li>
-                <li><b>Étape 2 :</b> Application des recommandations adaptées à votre profil</li>
-                <li><b>Étape 3 :</b> Suivi des feuilles de route proposées :
+                <li><b>Étape 1 :</b> Identification de votre scénario d’adoption (retard technologique / alignement / retard organisationnel)</li>
+                <li><b>Étape 2 :</b> Repérage des premières actions prioritaires à mener via les <b>nœuds parents de l’arbre de décision</b></li>
+                <li><b>Étape 3 :</b> Génération de <b>feuilles de route personnalisées</b> :
                     <ul>
-                        <li>📈 <b>Feuille de route technologique</b> : Technologies & méthodes Lean à adopter en priorité</li>
-                        <li>🧱 <b>Feuille de route de maturité</b> : Sous-dimensions Lean 4.0 à améliorer en priorité</li>
+                        <li>📈 <b>Technologique</b> : Technologies & méthodes Lean à adopter en priorité</li>
+                        <li>🧱 <b>Maturité Lean 4.0</b> : Sous-dimensions organisationnelles à améliorer en priorité</li>
                     </ul>
                 </li>
-                <li><b>Étape 4 :</b> Implémentation progressive selon le scénario identifié</li>
+                <li><b>Étape 4 :</b> Suivi et mise en œuvre progressive de ces feuilles de route en fonction du scénario identifié</li>
             </ul>
-            </div>
+            </div>    
             """, unsafe_allow_html=True)
             
             st.markdown("## 🔍 Analyse comparative et recommandations", unsafe_allow_html=True)

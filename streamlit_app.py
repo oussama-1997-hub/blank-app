@@ -465,6 +465,13 @@ if file:
         entreprise_idx = st.selectbox("Choisissez une entreprise (index):", entreprise_options, index=default_idx)
         entreprise = df.loc[entreprise_idx]
 
+        entreprise_features = entreprise[selected_features].values.reshape(1, -1)
+        st.dataframe(pd.DataFrame(entreprise_features, columns=selected_features))
+        # --- 1. Prédiction cluster KMeans (niveau réel) ---
+        entreprise_scaled = scaler.transform(entreprise[selected_features].values.reshape(1, -1))
+        predicted_cluster = kmeans.predict(entreprise_scaled)[0]
+        predicted_cluster_label = cluster_label_map.get(predicted_cluster, "Inconnu")
+        
         # === Affichage des scores de maturité (par groupe de sous-dimensions) ===
         
         # Données des sous-dimensions de l'entreprise

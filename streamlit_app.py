@@ -842,7 +842,7 @@ if file:
 
 
         # 4b. Feuille de route technologique personnalisée
-         st.subheader("Méthodes Lean & Technologies à adopter")
+        st.subheader("Méthodes Lean & Technologies à adopter")
         # Dictionnaire : Méthode Lean → Technologies support et interprétation
         lean_support = {
             "Juste à temps (JAT)": {

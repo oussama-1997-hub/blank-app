@@ -842,7 +842,46 @@ if file:
 
 
         # 4b. Feuille de route technologique personnalisée
-        st.subheader("Méthodes Lean & Technologies à adopter")
+         st.subheader("Méthodes Lean & Technologies à adopter")
+        # Dictionnaire : Méthode Lean → Technologies support et interprétation
+        lean_support = {
+            "Juste à temps (JAT)": {
+                "Technologies": "Robots autonomes, WMS, RFID",
+                "Interprétation": "Les robots et WMS automatisent la logistique interne, tandis que la RFID assure un suivi en temps réel des flux."
+            },
+            "Takt Time": {
+                "Technologies": "Big Data & Analytics, Systèmes cyber-physiques, ERP, WMS",
+                "Interprétation": "L’analyse des données permet d’ajuster le Takt Time selon la demande. Les autres technologies permettent la synchronisation."
+            },
+            "Heijunka": {
+                "Technologies": "WMS, MES",
+                "Interprétation": "Le lissage de la production repose sur une gestion fine des stocks (WMS) et le suivi des exécutions (MES)."
+            },
+            "TPM / TRS": {
+                "Technologies": "MES, RFID",
+                "Interprétation": "MES et RFID permettent de surveiller la disponibilité des équipements, facilitant la mise en œuvre du TPM."
+            },
+            "Poka Yoke": {
+                "Technologies": "Simulation, Robots autonomes, ERP",
+                "Interprétation": "Simulation pour concevoir sans erreurs, robots pour tâches répétitives, ERP pour intégrer les contrôles qualité."
+            },
+            "Kaizen": {
+                "Technologies": "MES, RFID, Big Data & Analytics, Fabrication additive (Impression 3D)",
+                "Interprétation": "Ces technologies soutiennent les cycles Kaizen en automatisant les suivis et en accélérant les tests."
+            },
+            "Kanban": {
+                "Technologies": "Fabrication additive (Impression 3D)",
+                "Interprétation": "L’impression 3D permet une production réactive pour alimenter un système Kanban flexible."
+            },
+            "Value Stream Mapping (VSM)": {
+                "Technologies": "Systèmes cyber-physiques, RFID, WMS",
+                "Interprétation": "Ces technologies enrichissent la VSM avec des données terrain sur les flux physiques et stocks."
+            },
+            "QRQC": {
+                "Technologies": "Intelligence artificielle",
+                "Interprétation": "L’IA aide à détecter automatiquement les anomalies, renforçant l’efficacité des boucles QRQC."
+            }
+        }
 
         # Définir colonnes Lean et Tech disponibles (dummy columns)
         lean_cols = [col for col in df.columns if col.startswith('Lean_')]
@@ -862,6 +901,47 @@ if file:
         tech_to_adopt = tech_to_adopt.sort_values(ascending=False)
 
         # Affichage méthodes Lean à adopter
+        # --- Lean mapping for display names ---
+        lean_to_tech_support = {
+            "Juste à temps": "Robots autonomes, WMS, RFID",
+            "Takt Time": "Big Data & Analytics, Systèmes cyber-physiques, ERP, WMS",
+            "Heijunka": "WMS, MES",
+            "Méthode TPM / TRS": "MES, RFID",
+            "Poka Yoke": "Simulation, Robots autonomes, ERP",
+            "Kaizen": "MES, RFID, Big Data & Analytics, Fabrication additive (Impression 3D)",
+            "Kanban": "Fabrication additive (Impression 3D)",
+            "Value Stream Mapping (VSM)": "Systèmes cyber-physiques, RFID, WMS",
+            "QRQC": "Intelligence artificielle"
+        }
+
+        mapping_lean_columns_to_display = {
+            'Lean_QRQC': 'QRQC',
+            'Lean_DDMRP/ hoshin kanri': 'DDMRP / Hoshin Kanri',
+            'Lean_5S': '5S',
+            'Lean_Heijunka': 'Heijunka',
+            'Lean_Maki-Gami/Hoshin…etc': 'Maki-Gami / Hoshin',
+            'Lean_Value Stream Mapping (VSM)': 'Value Stream Mapping (VSM)',
+            'Lean_Kaizen': 'Kaizen',
+            'Lean_DDMRP': 'DDMRP',
+            'Lean_Méthode TPM / TRS': 'Méthode TPM / TRS',
+            'Lean_Kata': 'Kata',
+            'Lean_Just in time': 'Juste à temps (JAT)',
+            'Lean_QRAP': 'QRAP',
+            'Lean_TPM / TRS method': 'TPM / TRS',
+            'Lean_6 sigma': '6 Sigma',
+            'Lean_Poka Yoke': 'Poka Yoke',
+            'Lean_Takt Time': 'Takt Time',
+            'Lean_Kanban': 'Kanban',
+            'Lean_GEMBA': 'Gemba'
+        }
+       
+        # Create display names list for lean_to_adopt
+        lean_methods_display = [mapping_lean_columns_to_display.get(col, col.replace('Lean_', '')) for col in lean_to_adopt.index]
+        
+        # Create support tech list matching display names or empty if not found
+        technologies_support = [lean_to_tech_support.get(method, "") for method in lean_methods_display]
+        
+     # Définition de la fonction priorite_adoption
         def priorite_adoption(val):
             if val >= 0.7:
                 return "Élevée"
@@ -870,28 +950,34 @@ if file:
             else:
                 return "Faible"
         
-        if not lean_to_adopt.empty:
-            lean_df = pd.DataFrame({
-                "Méthode Lean": lean_to_adopt.index.str.replace('Lean_', ''),
-                "Taux d'adoption dans cluster cible": lean_to_adopt.values.round(2),
-                "Priorité": [priorite_adoption(v) for v in lean_to_adopt.values]
-            })
-            st.write("### Méthodes Lean à adopter en priorité")
-            st.dataframe(
-                lean_df.style.background_gradient(
-                    subset=['Taux d\'adoption dans cluster cible'],
-                    cmap='Oranges'
-                ).applymap(
-                    lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
-                              'color: orange; font-weight: bold' if x == 'Moyenne' else
-                              'color: green;',
-                    subset=['Priorité']
-                )
-            )
-
-        else:
-            st.info("Aucune méthode Lean prioritaire à adopter.")
-
+        # Supposons que lean_to_adopt, lean_methods_display, et technologies_support sont déjà calculés correctement
+        # lean_methods_display = lean_to_adopt.index.str.replace('Lean_', '').tolist()
+        # technologies_support = [lean_to_tech_support.get(meth, "") for meth in lean_methods_display]
+        
+        # Construire le DataFrame
+        lean_df = pd.DataFrame({
+            "Méthode Lean": lean_methods_display,
+            "Technologies support": technologies_support,
+            "Taux d'adoption dans cluster cible": lean_to_adopt.values.round(2),
+            "Priorité": [priorite_adoption(v) for v in lean_to_adopt.values]
+        })
+        
+        # Display the styled DataFrame
+        st.markdown("### 🛠️ Méthodes Lean à adopter en priorité")
+        styled_lean_df = lean_df.style\
+            .background_gradient(subset=["Taux d'adoption dans cluster cible"], cmap="Oranges")\
+            .applymap(
+                lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
+                          'color: orange; font-weight: bold' if x == 'Moyenne' else
+                          'color: green;',
+                subset=["Priorité"]
+            )\
+            .set_properties(**{'text-align': 'center'})\
+            .set_table_styles([{
+                'selector': 'th',
+                'props': [('text-align', 'center')]
+            }])
+        st.dataframe(styled_lean_df, use_container_width=True)
         # Affichage technologies Industrie 4.0 à adopter
         def priorite_adoption(val):
             if val >= 0.7:

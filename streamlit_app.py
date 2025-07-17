@@ -932,5 +932,3 @@ else:
 
 
 
-else:
-    st.info("⏳ Veuillez uploader un fichier Excel pour commencer.")

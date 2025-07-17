@@ -448,22 +448,22 @@ if file:
     # ----- Application Tab (nouveau) -----
     with tabs[5]:
         st.header("⚙️ Application : Évaluation & Feuille de Route Personnalisée")
-        
-                # Préparation des modèles à utiliser (KMeans et Decision Tree entraînés)
-                # On reprend kmeans et clf déjà entraînés dans les tabs précédents :
-                # Pour éviter erreurs, on retient final_k et clf entraînés dans la portée globale
-                # Mais comme on a défini kmeans et clf dans les tabs précédents, on doit s'assurer qu'ils sont bien définis ici
-        
-                if 'kmeans' not in locals() or 'clf' not in locals():
-                    st.error("Veuillez d'abord exécuter les tabs Clustering et Decision Tree pour entraîner les modèles.")
-                    st.stop()
-        
-                # Affichage sélection d'entreprise à tester : par défaut entreprise 5 (index=4 si zero-based)
-                st.markdown("### Sélection de l'entreprise à évaluer")
-                entreprise_options = list(df.index)
-                default_idx = 4 if len(df) > 4 else 0  # entreprise 5 = index 4
-                entreprise_idx = st.selectbox("Choisissez une entreprise (index):", entreprise_options, index=default_idx)
-                entreprise = df.loc[entreprise_idx]
+
+        # Préparation des modèles à utiliser (KMeans et Decision Tree entraînés)
+        # On reprend kmeans et clf déjà entraînés dans les tabs précédents :
+        # Pour éviter erreurs, on retient final_k et clf entraînés dans la portée globale
+        # Mais comme on a défini kmeans et clf dans les tabs précédents, on doit s'assurer qu'ils sont bien définis ici
+
+        if 'kmeans' not in locals() or 'clf' not in locals():
+            st.error("Veuillez d'abord exécuter les tabs Clustering et Decision Tree pour entraîner les modèles.")
+            st.stop()
+
+        # Affichage sélection d'entreprise à tester : par défaut entreprise 5 (index=4 si zero-based)
+        st.markdown("### Sélection de l'entreprise à évaluer")
+        entreprise_options = list(df.index)
+        default_idx = 4 if len(df) > 4 else 0  # entreprise 5 = index 4
+        entreprise_idx = st.selectbox("Choisissez une entreprise (index):", entreprise_options, index=default_idx)
+        entreprise = df.loc[entreprise_idx]
 
         # === Affichage des scores de maturité (par groupe de sous-dimensions) ===
         

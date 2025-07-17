@@ -286,7 +286,7 @@ if file:
 
     # ----- Radar Chart Tab -----
     with tabs[2]:
-        st.header("📡 Radar Chart - Profils par Dimension")
+        st.header("📡 Radar Chart - Profils par *Sous-Dimension*")
         try:
             cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features_for_radar].mean().dropna(axis=1, how='any')
             available_features = cluster_avg.columns.tolist()

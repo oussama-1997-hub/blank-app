@@ -789,7 +789,7 @@ if file:
             st.error(f"Erreur lors de la génération du Radar Chart personnalisé : {e}")
         # --- 4. Feuille de route personnalisée ---
 
-       st.markdown("### 🗺️ Feuille de route personnalisée")
+        st.markdown("### 🗺️ Feuille de route personnalisée")
 
         # 4a. Calcul des gaps par sous-dimension (comparaison cluster cible vs entreprise)
         # Récupérer moyennes du cluster cible (niveau réel + 1 si possible)

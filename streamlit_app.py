@@ -479,7 +479,7 @@ if file:
 
         entreprise_features = entreprise[selected_features].values.flatten()
         scores_dict = dict(zip(selected_features, entreprise_features))
-        
+        st.markdown("### 📊 Scores de maturité par sous-dimension")
         # Groupes par dimension (selon les noms réels)
         groupes = {
             "Stratégie - Leadership": [

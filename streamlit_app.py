@@ -830,7 +830,7 @@ if file:
         st.dataframe(
         gap_df.style.background_gradient(
                     subset=['Écart'],
-                    cmap="YlGnBu"  # 🔁 Inversé pour mettre jaune foncé sur gros écart
+                    cmap='YlOrRd_r'  # 🔁 Inversé pour mettre jaune foncé sur gros écart
                 ).applymap(
                     lambda x: 'color: red; font-weight: bold' if x == 'Élevée'
                     else 'color: orange; font-weight: bold' if x == 'Moyenne'
@@ -998,7 +998,7 @@ if file:
             st.dataframe(
                 tech_df.style.background_gradient(
                     subset=['Taux d\'adoption dans cluster cible'],
-                    cmap='"PuRd"'
+                    cmap='Purples'
                 ).applymap(
                     lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
                               'color: orange; font-weight: bold' if x == 'Moyenne' else

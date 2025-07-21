@@ -286,7 +286,7 @@ if file:
 
     # ----- Radar Chart Tab -----
     with tabs[2]:
-        st.header("📡 Radar Chart - Profils par *Sous-Dimension*")
+        st.header("📡 Radar Chart - Profils par Dimension")
         try:
             cluster_avg = df.groupby('Niveau de maturité Lean 4.0')[selected_features_for_radar].mean().dropna(axis=1, how='any')
             available_features = cluster_avg.columns.tolist()
@@ -458,10 +458,10 @@ if file:
             st.error("Veuillez d'abord exécuter les tabs Clustering et Decision Tree pour entraîner les modèles.")
             st.stop()
 
-        # Affichage sélection d'entreprise à tester : par défaut entreprise 5 (index=4 si zero-based)
+        # Affichage sélection d'entreprise à tester : par défaut entreprise 5 (index=5 si zero-based)
         st.markdown("### Sélection de l'entreprise à évaluer")
         entreprise_options = list(df.index)
-        default_idx = 4 if len(df) > 4 else 0  # entreprise 5 = index 4
+        default_idx = 4 if len(df) > 4 else 0  # entreprise 5 = index 5
         entreprise_idx = st.selectbox("Choisissez une entreprise (index):", entreprise_options, index=default_idx)
         entreprise = df.loc[entreprise_idx]
 
@@ -599,17 +599,17 @@ if file:
             <div style="background-color:#f9f9f9;padding:15px;border-radius:10px;">
             <h4>🧩 Ordre de priorité à suivre dans votre démarche Lean 4.0</h4>
             <ul>
-                <li><b>Étape 1 :</b> Identification de votre scénario d’adoption (retard technologique / alignement / retard organisationnel)</li>
-                <li><b>Étape 2 :</b> Repérage des premières actions prioritaires à mener via les <b>nœuds parents de l’arbre de décision</b></li>
-                <li><b>Étape 3 :</b> Génération de <b>feuilles de route personnalisées</b> :
+                <li><b>Étape 1 :</b> Identification du scénario (retard techno / maturité / alignement)</li>
+                <li><b>Étape 2 :</b> Application des recommandations adaptées à votre profil</li>
+                <li><b>Étape 3 :</b> Suivi des feuilles de route proposées :
                     <ul>
-                        <li>📈 <b>Technologique</b> : Technologies & méthodes Lean à adopter en priorité</li>
-                        <li>🧱 <b>Maturité Lean 4.0</b> : Sous-dimensions organisationnelles à améliorer en priorité</li>
+                        <li>📈 <b>Feuille de route technologique</b> : Technologies & méthodes Lean à adopter en priorité</li>
+                        <li>🧱 <b>Feuille de route de maturité</b> : Sous-dimensions Lean 4.0 à améliorer en priorité</li>
                     </ul>
                 </li>
-                <li><b>Étape 4 :</b> Suivi et mise en œuvre progressive de ces feuilles de route en fonction du scénario identifié</li>
+                <li><b>Étape 4 :</b> Implémentation progressive selon le scénario identifié</li>
             </ul>
-            </div>    
+            </div>
             """, unsafe_allow_html=True)
             
             st.markdown("## 🔍 Analyse comparative et recommandations", unsafe_allow_html=True)
@@ -926,6 +926,6 @@ if file:
 
 
 
+
 else:
     st.info("⏳ Veuillez uploader un fichier Excel pour commencer.")
-

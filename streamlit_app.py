@@ -468,6 +468,15 @@ if file:
         # === Affichage des scores de maturité (par groupe de sous-dimensions) ===
         
         # Données des sous-dimensions de l'entreprise
+        # Affichage des infos générales : secteur et taille
+        secteur = entreprise["Secteur Regroupé"].values[0] if "Secteur Regroupé" in entreprise.columns else "N/A"
+        taille = entreprise["taille_categorie"].values[0] if "taille_categorie" in entreprise.columns else "N/A"
+        
+        st.markdown("### 🏭 Informations générales sur l'entreprise")
+        st.markdown(f"- **Secteur d'activité :** {secteur}")
+        st.markdown(f"- **Taille de l'entreprise :** {taille}")
+        st.write("---")
+
         entreprise_features = entreprise[selected_features].values.flatten()
         scores_dict = dict(zip(selected_features, entreprise_features))
         

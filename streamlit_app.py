@@ -469,8 +469,8 @@ if file:
         
         # Données des sous-dimensions de l'entreprise
         # Affichage des infos générales : secteur et taille
-        secteur = df["Secteur Regroupé"].values[0] if "Secteur Regroupé" in entreprise.columns else "N/A"
-        taille = df["taille_categorie"].values[0] if "taille_categorie" in entreprise.columns else "N/A"
+        secteur = df["Secteur Regroupé"].values[0] if "Secteur Regroupé" in df.columns else "N/A"
+        taille = df["taille_categorie"].values[0] if "taille_categorie" in df.columns else "N/A"
         
         st.markdown("### 🏭 Informations générales sur l'entreprise")
         st.markdown(f"- **Secteur d'activité :** {secteur}")

@@ -89,8 +89,10 @@ exclude_cols = ['Indicateurs suivis', 'Zone investissement principale', 'Typolog
 if file:
     df = pd.read_excel(file)
     st.success("✅ Excel file uploaded successfully!")
-    st.dataframe(df.head())
-    # Lean methods
+    
+    from PIL import Image
+    image = Image.open("MM lean 4.0.png")
+    st.image(image, use_column_width=True, caption="🧭 Modèle de Maturité Lean 4.0")
     
     # df['Lean_Méthode TPM / TRS'] = df['Lean_Méthode TPM / TRS'] | df['Lean_TPM / TRS method']
     # df.drop(columns=['Lean_TPM / TRS method'], inplace=True)

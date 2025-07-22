@@ -96,14 +96,14 @@ if file:
     
     # Charger et redimensionner l'image
     image = Image.open("MM lean 4.0.png")
-    resized_image = image.resize((int(image.width * 0.8), int(image.height * 0.8)), Image.ANTIALIAS)
+    resized_image = image.resize((int(image.width * 0.8), int(image.height * 0.8)), Image.LANCZOS)
     
-    # Convertir en base64 pour HTML inline
+    # Convertir en base64 pour l'affichage HTML
     buffered = BytesIO()
     resized_image.save(buffered, format="PNG")
     img_b64 = base64.b64encode(buffered.getvalue()).decode()
     
-    # Affichage HTML centré
+    # Affichage centré
     st.markdown(
         f"""
         <div style='text-align: center;'>
@@ -113,6 +113,7 @@ if file:
         """,
         unsafe_allow_html=True
     )
+
     # df['Lean_Méthode TPM / TRS'] = df['Lean_Méthode TPM / TRS'] | df['Lean_TPM / TRS method']
     # df.drop(columns=['Lean_TPM / TRS method'], inplace=True)
 

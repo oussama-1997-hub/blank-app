@@ -86,7 +86,7 @@ exclude_cols = ['Indicateurs suivis', 'Zone investissement principale', 'Typolog
                 'Type de flux', 'Pays ', 'Méthodes Lean ', 'Technologies industrie 4.0',
                 'cluster', 'Cluster', 'Feature_Cluster', 'Niveau Maturité', 'Cluster Label'] + sum(dimension_map.values(), [])
 
-    github_url = "https://raw.githubusercontent.com/oussama-1997-hub/blank-app/blob/main/processed_df.xlsx"
+github_url = "https://raw.githubusercontent.com/oussama-1997-hub/blank-app/blob/main/processed_df.xlsx"
     
     @st.cache_data
     def load_data():

@@ -91,8 +91,24 @@ if file:
     st.success("✅ Excel file uploaded successfully!")
     
     from PIL import Image
+    # Charger l'image
     image = Image.open("MM lean 4.0.png")
-    st.image(image, width=700, caption="🧭 Modèle de Maturité Lean 4.0")
+    
+    # Redimensionner (ex: 80% de la taille d'origine)
+    new_width = int(image.width * 0.8)
+    new_height = int(image.height * 0.8)
+    resized_image = image.resize((new_width, new_height), Image.ANTIALIAS)
+    
+    # Affichage centré via HTML
+    st.markdown(
+        f"""
+        <div style='text-align: center;'>
+            <img src="data:image/png;base64,{Image.open('MM lean 4.0.png').resize((new_width, new_height)).convert('RGB').tobytes().hex()}" width="{new_width}">
+            <p style='font-size:18px; color:#444;'>🧭 Modèle de Maturité Lean 4.0</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
     
     # df['Lean_Méthode TPM / TRS'] = df['Lean_Méthode TPM / TRS'] | df['Lean_TPM / TRS method']
     # df.drop(columns=['Lean_TPM / TRS method'], inplace=True)

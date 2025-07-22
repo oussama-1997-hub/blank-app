@@ -92,7 +92,7 @@ if file:
     
     from PIL import Image
     image = Image.open("MM lean 4.0.png")
-    st.image(image, use_column_width=True, caption="🧭 Modèle de Maturité Lean 4.0")
+    st.image(image, width=700, caption="🧭 Modèle de Maturité Lean 4.0")
     
     # df['Lean_Méthode TPM / TRS'] = df['Lean_Méthode TPM / TRS'] | df['Lean_TPM / TRS method']
     # df.drop(columns=['Lean_TPM / TRS method'], inplace=True)

@@ -86,9 +86,15 @@ exclude_cols = ['Indicateurs suivis', 'Zone investissement principale', 'Typolog
                 'Type de flux', 'Pays ', 'Méthodes Lean ', 'Technologies industrie 4.0',
                 'cluster', 'Cluster', 'Feature_Cluster', 'Niveau Maturité', 'Cluster Label'] + sum(dimension_map.values(), [])
 
-if file:
-    df = pd.read_excel(file)
-    st.success("✅ Excel file uploaded successfully!")
+    github_url = "https://raw.githubusercontent.com/oussama-1997-hub/blank-app/blob/main/processed_df.xlsx"
+    
+    @st.cache_data
+    def load_data():
+        return pd.read_excel(github_url)
+    
+    df = load_data()
+    st.success("✅ Excel file loaded successfully from GitHub!")
+
     
     from PIL import Image
     import base64

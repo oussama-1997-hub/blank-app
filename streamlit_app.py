@@ -86,19 +86,7 @@ exclude_cols = ['Indicateurs suivis', 'Zone investissement principale', 'Typolog
                 'Type de flux', 'Pays ', 'Méthodes Lean ', 'Technologies industrie 4.0',
                 'cluster', 'Cluster', 'Feature_Cluster', 'Niveau Maturité', 'Cluster Label'] + sum(dimension_map.values(), [])
 
-# 📌 Corriger les styles CSS sans désactiver la sidebar
-hide_streamlit_style = """
-    <style>
-    .viewerBadge_container__1QSob,
-    .styles_viewerBadge__1yB5_,
-    .viewerBadge_link__1S137,
-    .viewerBadge_text__1JaDK,
-    #MainMenu, footer {
-        visibility: hidden;
-    }
-    </style>
-"""
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 use_github = st.sidebar.checkbox("📂 Use database from GitHub instead of uploading")
 
 if use_github:

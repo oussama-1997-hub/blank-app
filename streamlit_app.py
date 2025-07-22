@@ -91,25 +91,28 @@ if file:
     st.success("✅ Excel file uploaded successfully!")
     
     from PIL import Image
-    # Charger l'image
+    import base64
+    from io import BytesIO
+    
+    # Charger et redimensionner l'image
     image = Image.open("MM lean 4.0.png")
+    resized_image = image.resize((int(image.width * 0.8), int(image.height * 0.8)), Image.ANTIALIAS)
     
-    # Redimensionner (ex: 80% de la taille d'origine)
-    new_width = int(image.width * 0.8)
-    new_height = int(image.height * 0.8)
-    resized_image = image.resize((new_width, new_height), Image.ANTIALIAS)
+    # Convertir en base64 pour HTML inline
+    buffered = BytesIO()
+    resized_image.save(buffered, format="PNG")
+    img_b64 = base64.b64encode(buffered.getvalue()).decode()
     
-    # Affichage centré via HTML
+    # Affichage HTML centré
     st.markdown(
         f"""
         <div style='text-align: center;'>
-            <img src="data:image/png;base64,{Image.open('MM lean 4.0.png').resize((new_width, new_height)).convert('RGB').tobytes().hex()}" width="{new_width}">
+            <img src="data:image/png;base64,{img_b64}" style="width:80%; max-width:900px;">
             <p style='font-size:18px; color:#444;'>🧭 Modèle de Maturité Lean 4.0</p>
         </div>
         """,
         unsafe_allow_html=True
     )
-    
     # df['Lean_Méthode TPM / TRS'] = df['Lean_Méthode TPM / TRS'] | df['Lean_TPM / TRS method']
     # df.drop(columns=['Lean_TPM / TRS method'], inplace=True)
 

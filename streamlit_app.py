@@ -617,7 +617,7 @@ if use_github:
         predicted_cluster = kmeans.predict(entreprise_scaled)[0]
         predicted_cluster_label = cluster_label_map.get(predicted_cluster, "Inconnu")
        
-        st.write(f"**Niveau de maturité organisationnelle estimé par K-means à partir du modèle de maturité :** {predicted_cluster_label}")
+        st.write(f"**Niveau de maturité organisationnelle prédite via K-means sur la base du modèle de maturité :** {predicted_cluster_label}")
 
         # --- 2. Prédiction arbre de décision (niveau prédit) ---
         # Préparer features DT (technos et lean dummies)
@@ -628,7 +628,7 @@ if use_github:
         features_dt_array = features_dt_new.values.reshape(1, -1)  # final input to model
         
         predicted_dt = clf.predict(features_dt_new)[0]
-        st.write(f"**Niveau de maturité technologique prédite par arbre de décision selon technologies avancées et méthodes Lean** {predicted_dt}")
+        st.write(f"**Niveau de maturité technologique prédite par arbre de décision selon technologies avancées et méthodes Lean adoptées:** {predicted_dt}")
 
         # --- 3. Analyse comparative & scénarios ---
         # --- Analyse comparative et recommandations ---

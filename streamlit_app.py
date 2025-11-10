@@ -480,6 +480,81 @@ if use_github:
     # ----- Application Tab (nouveau) -----
     with tabs[5]:
         st.header("⚙️ Application : Évaluation & Feuille de Route Personnalisée")
+                import streamlit as st
+        import pandas as pd
+        import numpy as np
+        from sklearn.decomposition import PCA
+        import plotly.express as px
+        
+        # --- Assume you already have:
+        # df: DataFrame with all companies
+        # scaled_features: standardized numeric features (numpy array)
+        # new_company_scaled: scaled features for the new company (1xN array)
+        # new_company_name: string
+        
+        # Perform PCA
+        pca = PCA(n_components=2)
+        pca_result = pca.fit_transform(scaled_features)
+        df_pca = pd.DataFrame(pca_result, columns=['PCA1', 'PCA2'])
+        df_pca['label'] = df['Niveau de maturité Lean 4.0']
+        df_pca['Company'] = df['Company']
+        
+        # Get coordinates of the new company in PCA space
+        new_company_pca = pca.transform(new_company_scaled.reshape(1, -1))
+        new_x, new_y = new_company_pca[0]
+        
+        # --- PCA Component loadings (to show meaning of each PC)
+        loadings = pd.DataFrame(
+            pca.components_.T,
+            columns=['PCA1', 'PCA2'],
+            index=df.drop(['Niveau de maturité Lean 4.0', 'Company'], axis=1).columns
+        )
+        # Sort by absolute contribution for better display
+        top_features_pc1 = loadings['PCA1'].abs().sort_values(ascending=False).head(5)
+        top_features_pc2 = loadings['PCA2'].abs().sort_values(ascending=False).head(5)
+        
+        # --- Visualization with Plotly
+        fig = px.scatter(
+            df_pca,
+            x='PCA1', y='PCA2',
+            color='label',
+            hover_name='Company',
+            title='🧭 PCA Cluster Visualization with New Company',
+        )
+        
+        # Add the new company point
+        fig.add_scatter(
+            x=[new_x], y=[new_y],
+            mode='markers+text',
+            marker=dict(size=12, color='red', symbol='star'),
+            text=[new_company_name],
+            textposition='top center',
+            name='New Company'
+        )
+        
+        # Annotate component meaning
+        fig.add_annotation(
+            x=df_pca['PCA1'].min(),
+            y=df_pca['PCA2'].max(),
+            text=f"**PCA1 ≈** {', '.join(top_features_pc1.index.tolist())}",
+            showarrow=False, align='left', bgcolor='rgba(255,255,255,0.7)'
+        )
+        fig.add_annotation(
+            x=df_pca['PCA1'].max(),
+            y=df_pca['PCA2'].min(),
+            text=f"**PCA2 ≈** {', '.join(top_features_pc2.index.tolist())}",
+            showarrow=False, align='right', bgcolor='rgba(255,255,255,0.7)'
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Optionally display numeric contributions
+        with st.expander("📊 View PCA Component Contributions"):
+            st.write("**PCA1 loadings (most influential variables):**")
+            st.dataframe(loadings.sort_values(by='PCA1', key=abs, ascending=False).head(10))
+            st.write("**PCA2 loadings (most influential variables):**")
+            st.dataframe(loadings.sort_values(by='PCA2', key=abs, ascending=False).head(10))
+
 
         # Préparation des modèles à utiliser (KMeans et Decision Tree entraînés)
         # On reprend kmeans et clf déjà entraînés dans les tabs précédents :
@@ -1050,82 +1125,6 @@ if use_github:
       
         else:
             st.info("Aucune technologie prioritaire à adopter.")
-
-        import streamlit as st
-        import pandas as pd
-        import numpy as np
-        from sklearn.decomposition import PCA
-        import plotly.express as px
-        
-        # --- Assume you already have:
-        # df: DataFrame with all companies
-        # scaled_features: standardized numeric features (numpy array)
-        # new_company_scaled: scaled features for the new company (1xN array)
-        # new_company_name: string
-        
-        # Perform PCA
-        pca = PCA(n_components=2)
-        pca_result = pca.fit_transform(scaled_features)
-        df_pca = pd.DataFrame(pca_result, columns=['PCA1', 'PCA2'])
-        df_pca['label'] = df['Niveau de maturité Lean 4.0']
-        df_pca['Company'] = df['Company']
-        
-        # Get coordinates of the new company in PCA space
-        new_company_pca = pca.transform(new_company_scaled.reshape(1, -1))
-        new_x, new_y = new_company_pca[0]
-        
-        # --- PCA Component loadings (to show meaning of each PC)
-        loadings = pd.DataFrame(
-            pca.components_.T,
-            columns=['PCA1', 'PCA2'],
-            index=df.drop(['Niveau de maturité Lean 4.0', 'Company'], axis=1).columns
-        )
-        # Sort by absolute contribution for better display
-        top_features_pc1 = loadings['PCA1'].abs().sort_values(ascending=False).head(5)
-        top_features_pc2 = loadings['PCA2'].abs().sort_values(ascending=False).head(5)
-        
-        # --- Visualization with Plotly
-        fig = px.scatter(
-            df_pca,
-            x='PCA1', y='PCA2',
-            color='label',
-            hover_name='Company',
-            title='🧭 PCA Cluster Visualization with New Company',
-        )
-        
-        # Add the new company point
-        fig.add_scatter(
-            x=[new_x], y=[new_y],
-            mode='markers+text',
-            marker=dict(size=12, color='red', symbol='star'),
-            text=[new_company_name],
-            textposition='top center',
-            name='New Company'
-        )
-        
-        # Annotate component meaning
-        fig.add_annotation(
-            x=df_pca['PCA1'].min(),
-            y=df_pca['PCA2'].max(),
-            text=f"**PCA1 ≈** {', '.join(top_features_pc1.index.tolist())}",
-            showarrow=False, align='left', bgcolor='rgba(255,255,255,0.7)'
-        )
-        fig.add_annotation(
-            x=df_pca['PCA1'].max(),
-            y=df_pca['PCA2'].min(),
-            text=f"**PCA2 ≈** {', '.join(top_features_pc2.index.tolist())}",
-            showarrow=False, align='right', bgcolor='rgba(255,255,255,0.7)'
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Optionally display numeric contributions
-        with st.expander("📊 View PCA Component Contributions"):
-            st.write("**PCA1 loadings (most influential variables):**")
-            st.dataframe(loadings.sort_values(by='PCA1', key=abs, ascending=False).head(10))
-            st.write("**PCA2 loadings (most influential variables):**")
-            st.dataframe(loadings.sort_values(by='PCA2', key=abs, ascending=False).head(10))
-
 
 
 

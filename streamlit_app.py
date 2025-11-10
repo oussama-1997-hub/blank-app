@@ -1047,6 +1047,10 @@ if use_github:
                     subset=['Priorité']
                 )
             )
+      
+        else:
+            st.info("Aucune technologie prioritaire à adopter.")
+
         import streamlit as st
         import pandas as pd
         import numpy as np
@@ -1121,8 +1125,6 @@ if use_github:
             st.dataframe(loadings.sort_values(by='PCA1', key=abs, ascending=False).head(10))
             st.write("**PCA2 loadings (most influential variables):**")
             st.dataframe(loadings.sort_values(by='PCA2', key=abs, ascending=False).head(10))
-        else:
-            st.info("Aucune technologie prioritaire à adopter.")
 
 
 

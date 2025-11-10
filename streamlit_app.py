@@ -480,7 +480,7 @@ if use_github:
     # ----- Application Tab (nouveau) -----
     with tabs[5]:
         st.header("⚙️ Application : Évaluation & Feuille de Route Personnalisée")
-                import streamlit as st
+        import streamlit as st
         import pandas as pd
         import numpy as np
         from sklearn.decomposition import PCA

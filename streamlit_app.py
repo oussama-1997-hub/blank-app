@@ -457,30 +457,19 @@ if use_github:
 
         if target_col in df.columns:
             # Columns to remove based on prefix
-            #cols_prefix_to_remove = df.filter(regex=r'^(Secteur|taille)').columns.tolist()
-            #exclude_cols = (
-             #   exclude_cols + cols_prefix_to_remove
-            #)
-            #features_dt = df.drop(columns=exclude_cols, errors='ignore')
-            #features_dt = features_dt.select_dtypes(include=[np.number])
-            fetures_dt= ['Lean_QRQC', 'Lean_DDMRP/ hoshin kanri', 'Lean_5S', 'Lean_Heijunka',
-               'Lean_Value Stream Mapping (VSM)', 'Lean_Kaizen',
-               'Lean_Méthode TPM / TRS', 'Lean_Kata', 'Lean_QRAP', 'Lean_6 sigma',
-               'Lean_Poka Yoke', 'Lean_Takt Time', 'Lean_Kanban', 'Lean_GEMBA',
-               'Tech_Simulation', 'Tech_Fabrication additive (Impression 3D)',
-               'Tech_Cloud computing', 'Tech_Robots autonomes', 'Tech_RFID',
-               'Tech_Réalité augmentée', 'Tech_MES (Manufacturing Execution System)',
-               'Tech_WMS (Warehouse Management System)', 'Tech_Big Data et Analytics',
-               'Tech_IVMS', 'Tech_Intelligence artificielle',
-               'Tech_Systèmes cyber physiques',
-               'Tech_ERP (Enterprise Resource Planning)', 'Lean_Juste à temps']
+            cols_prefix_to_remove = df.filter(regex=r'^(Secteur|taille)').columns.tolist()
+            exclude_cols = (
+               exclude_cols + cols_prefix_to_remove
+            )
+            features_dt = df.drop(columns=exclude_cols, errors='ignore')
+            features_dt = features_dt.select_dtypes(include=[np.number])
             y = df[target_col]
-            
+            features_dt = features_dt.loc[y.index]
 
             max_depth = st.slider("Max Depth", 1, 10, 4)
             min_samples_split = st.slider("Min Samples Split", 2, 10, 4)
 
-            X_train, X_test, y_train, y_test = train_test_split(features_dt, y, test_size=0.2, random_state=9)
+            X_train, X_test, y_train, y_test = train_test_split(features_dt, y, test_size=0.2, random_state=46, stratify=y)
             clf = DecisionTreeClassifier(random_state=10, min_samples_leaf=2)
             clf.fit(X_train, y_train)
                         # Display columns in Streamlit

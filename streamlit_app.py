@@ -148,7 +148,7 @@ if use_github:
     # df['Tech_Robots autonomes'] = df['Tech_Robots autonomes'] | df['Tech_Autonomous robots']
     # df.drop(columns=['Tech_Autonomous robots'], inplace=True)
 
-    # column_to_drop = 'Tech_Je ne sais pas'
+    
     # df.drop(columns=[column_to_drop], inplace=True)
     
     

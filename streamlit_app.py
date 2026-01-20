@@ -87,10 +87,7 @@ exclude_cols = ['Indicateurs suivis', 'Zone investissement principale', 'Typolog
                 'cluster', 'Cluster', 'Feature_Cluster', 'Niveau Maturité', 'Cluster Label'] + sum(dimension_map.values(), [])
 
 # Columns to remove based on prefix
-cols_prefix_to_remove = [
-    col for col in df.columns
-    if col.startswith('Secteur') or col.startswith('taille')
-]
+cols_prefix_to_remove = df.filter(regex=r'^(Secteur|taille)').columns.tolist()
 exclude_cols = (
     exclude_cols + cols_prefix_to_remove
 )

@@ -282,9 +282,16 @@ if use_github:
         ax2.set_ylabel("Score")
         st.pyplot(fig2)
 
-        final_k = st.selectbox("Select final K", list(range(k_range[0], k_range[1] + 1)))
-        kmeans = KMeans(n_clusters=final_k, random_state=42, n_init=10)
-        df['cluster'] = kmeans.fit_predict(scaled_features)
+        k_values = list(range(k_range[0], k_range[1] + 1))
+        
+        # Ensure 3 is inside the range
+        default_k = 3 if 3 in k_values else k_values[0]
+        
+        final_k = st.selectbox(
+            "Select final K",
+            k_values,
+            index=k_values.index(default_k)
+        )
 
         # Maturity label map
         cluster_label_map = {

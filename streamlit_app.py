@@ -836,7 +836,10 @@ if use_github:
 
         # 4a. Calcul des gaps par sous-dimension (comparaison cluster cible vs entreprise)
         # Récupérer moyennes du cluster cible (niveau réel + 1 si possible)
-       
+        st.write("next_cluster:", next_cluster)
+        st.write("cluster_means.index:", cluster_means.index.tolist())
+        st.write("index dtype:", cluster_means.index.dtype)
+
 
 
         # Calcul des écarts entre l'entreprise et le cluster cible

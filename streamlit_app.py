@@ -475,7 +475,7 @@ if use_github:
                'Tech_Systèmes cyber physiques',
                'Tech_ERP (Enterprise Resource Planning)', 'Lean_Juste à temps']
             y = df[target_col]
-            features_dt = features_dt.loc[y.index]
+           
 
             max_depth = st.slider("Max Depth", 1, 10, 4)
             min_samples_split = st.slider("Min Samples Split", 2, 10, 4)

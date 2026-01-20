@@ -463,7 +463,24 @@ if use_github:
             )
             features_dt = df.drop(columns=exclude_cols, errors='ignore')
             features_dt = features_dt.select_dtypes(include=[np.number])
-
+            colonnes = [
+                "Leadership - Engagement Lean ",
+                "Leadership - Engagement DT",
+                "Leadership - Stratégie ",
+                "Leadership - Communication",
+                "Supply Chain - Collaboration inter-organisationnelle",
+                "Supply Chain - Traçabilité",
+                "Supply Chain - Impact sur les employées",
+                "Opérations - Standardisation des processus",
+                "Opérations - Juste-à-temps (JAT)",
+                "Opérations - Gestion des résistances",
+                "Technologies - Connectivité et gestion des données",
+                "Technologies - Automatisation",
+                "Technologies - Pilotage du changement",
+                "Organisation apprenante  - Formation et développement des compétences",
+                "Organisation apprenante  - Collaboration et Partage des Connaissances",
+                "Organisation apprenante  - Flexibilité organisationnelle",
+            ]
             # Define the columns to remove from features
             cols_to_remove_from_features = [
                 'Indicateurs suivis',

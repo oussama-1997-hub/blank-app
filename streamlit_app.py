@@ -90,8 +90,9 @@ exclude_cols = ['Indicateurs suivis', 'Zone investissement principale', 'Typolog
 use_github = st.sidebar.checkbox("📂 Use database from GitHub instead of uploading")
 
 if use_github:
-     # "https://raw.githubusercontent.com/oussama-1997-hub/blank-app/main/processed_df.xlsx"
-     github_url = "https://raw.githubusercontent.com/oussama-1997-hub/blank-app/main/df_cleaned_with_dummies.xlsx"
+    # GitHub raw URL for Excel file
+    github_url = "https://raw.githubusercontent.com/oussama-1997-hub/blank-app/main/df_cleaned_with_dummies.xlsx"
+
     @st.cache_data
     def load_data():
         return pd.read_excel(github_url)

@@ -463,13 +463,50 @@ if use_github:
             )
             features_dt = df.drop(columns=exclude_cols, errors='ignore')
             features_dt = features_dt.select_dtypes(include=[np.number])
+
+            # Define the columns to remove from features
+            cols_to_remove_from_features = [
+                'Indicateurs suivis',
+                'Zone investissement principale',
+                'Typologie de production',
+                'Type de flux',
+                'Pays ',
+                'Cluster Label',
+                'taille_categorie', 'Secteur_Groupe', 'taille_categorie_encoded',
+                'Secteur_Groupe_Divers', 'Secteur_Groupe_Industrie lourde',
+                'Secteur_Groupe_Industrie légère',
+                'Secteur_Groupe_Service et Technologie'
+            ] + colonnes # Add the original survey question columns
+            # Columns to remove based on prefix
+            cols_prefix_to_remove = [
+                col for col in df.columns
+                if col.startswith('Secteur') or col.startswith('taille')
+            ]
+            cols_to_remove_from_features = (
+                cols_to_remove_from_features + cols_prefix_to_remove
+            )
+            # Create the feature set by dropping the target and specified columns from df
+            # Make sure to drop the original multi-value columns ('Méthodes Lean ', 'Technologies industrie 4.0') as they are replaced by cledf_cleaed_clustered
+            features = df.drop(columns=[target] + cols_to_remove_from_features + ['Méthodes Lean ', 'Technologies industrie 4.0', 'cluster', 'Cluster', 'Feature_Cluster', 'Niveau Maturité'], errors='ignore')
+            
+            # Ensure there are no remaining non-numeric columns that weren't intended to be features
+            # For robustness, drop any remaining object type columns if they exist unexpectedly
+            features = features.select_dtypes(exclude=['object'])
+            
+            # Also, ensure there are no NaNs in the features or target
+            features.fillna(0, inplace=True) # Fill potential NaNs with 0 (common for dummy variables)
+            y = df[target].dropna()
+            features = features.loc[y.index] # Align features with the non-null target values
+            
+            # Separate features (X) and target (y)
+            X = features
             y = df[target_col]
             features_dt = features_dt.loc[y.index]
 
             max_depth = st.slider("Max Depth", 1, 10, 4)
             min_samples_split = st.slider("Min Samples Split", 2, 10, 4)
 
-            X_train, X_test, y_train, y_test = train_test_split(features_dt, y, test_size=0.2, random_state=46, stratify=y)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=46, stratify=y)
             clf = DecisionTreeClassifier(random_state=10, min_samples_leaf=2)
             clf.fit(X_train, y_train)
                         # Display columns in Streamlit

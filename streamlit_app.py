@@ -471,11 +471,11 @@ if use_github:
                'Tech_Cloud computing', 'Tech_Robots autonomes', 'Tech_RFID',
                'Tech_Réalité augmentée', 'Tech_MES (Manufacturing Execution System)',
                'Tech_WMS (Warehouse Management System)', 'Tech_Big Data et Analytics',
-               'Tech_IVMS', 'Tech_Je ne sais pas', 'Tech_Intelligence artificielle',
+               'Tech_IVMS', 'Tech_Intelligence artificielle',
                'Tech_Systèmes cyber physiques',
                'Tech_ERP (Enterprise Resource Planning)', 'Lean_Juste à temps']
             y = df[target_col]
-           
+            
 
             max_depth = st.slider("Max Depth", 1, 10, 4)
             min_samples_split = st.slider("Min Samples Split", 2, 10, 4)

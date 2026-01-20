@@ -510,19 +510,12 @@ if use_github:
         entreprise = df.loc[entreprise_idx]
 
         # === Affichage des scores de maturité (par groupe de sous-dimensions) ===
+                
+        # Secteur et taille de l'entreprise sélectionnée
+        secteur = entreprise["Secteur Regroupé"] if "Secteur Regroupé" in entreprise.index else "N/A"
+        taille  = entreprise["taille_categorie"] if "taille_categorie" in entreprise.index else "N/A"
         
-        # Données des sous-dimensions de l'entreprise
-        # Affichage des infos générales : secteur et taille
-        if not df.empty and "Secteur Regroupé" in df.columns:
-            secteur = df["Secteur Regroupé"].iloc[0]
-        else:
-            secteur = "N/A"
-        
-        if not df.empty and "taille_categorie" in df.columns:
-            taille = df["taille_categorie"].iloc[0]
-        else:
-            taille = "N/A"
-        
+                
                 
         st.markdown("### 🏭 Informations générales sur l'entreprise")
         st.markdown(f"- **Secteur d'activité :** {secteur}")

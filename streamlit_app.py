@@ -292,6 +292,9 @@ if use_github:
             k_values,
             index=k_values.index(default_k)
         )
+        
+        kmeans = KMeans(n_clusters=final_k, random_state=42, n_init=10)
+        df['cluster'] = kmeans.fit_predict(scaled_features)
 
         # Maturity label map
         cluster_label_map = {

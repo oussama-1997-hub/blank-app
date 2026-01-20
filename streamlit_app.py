@@ -148,7 +148,7 @@ if use_github:
     # df['Tech_Robots autonomes'] = df['Tech_Robots autonomes'] | df['Tech_Autonomous robots']
     # df.drop(columns=['Tech_Autonomous robots'], inplace=True)
 
-    
+    # column_to_drop = 'Tech_Je ne sais pas'
     # df.drop(columns=[column_to_drop], inplace=True)
     
     
@@ -457,12 +457,23 @@ if use_github:
 
         if target_col in df.columns:
             # Columns to remove based on prefix
-            cols_prefix_to_remove = df.filter(regex=r'^(Secteur|taille)').columns.tolist()
-            exclude_cols = (
-                exclude_cols + cols_prefix_to_remove
-            )
-            features_dt = df.drop(columns=exclude_cols, errors='ignore')
-            features_dt = features_dt.select_dtypes(include=[np.number])
+            #cols_prefix_to_remove = df.filter(regex=r'^(Secteur|taille)').columns.tolist()
+            #exclude_cols = (
+             #   exclude_cols + cols_prefix_to_remove
+            #)
+            #features_dt = df.drop(columns=exclude_cols, errors='ignore')
+            #features_dt = features_dt.select_dtypes(include=[np.number])
+            fetures_dt= ['Lean_QRQC', 'Lean_DDMRP/ hoshin kanri', 'Lean_5S', 'Lean_Heijunka',
+               'Lean_Value Stream Mapping (VSM)', 'Lean_Kaizen',
+               'Lean_Méthode TPM / TRS', 'Lean_Kata', 'Lean_QRAP', 'Lean_6 sigma',
+               'Lean_Poka Yoke', 'Lean_Takt Time', 'Lean_Kanban', 'Lean_GEMBA',
+               'Tech_Simulation', 'Tech_Fabrication additive (Impression 3D)',
+               'Tech_Cloud computing', 'Tech_Robots autonomes', 'Tech_RFID',
+               'Tech_Réalité augmentée', 'Tech_MES (Manufacturing Execution System)',
+               'Tech_WMS (Warehouse Management System)', 'Tech_Big Data et Analytics',
+               'Tech_IVMS', 'Tech_Je ne sais pas', 'Tech_Intelligence artificielle',
+               'Tech_Systèmes cyber physiques',
+               'Tech_ERP (Enterprise Resource Planning)', 'Lean_Juste à temps']
             y = df[target_col]
             features_dt = features_dt.loc[y.index]
 

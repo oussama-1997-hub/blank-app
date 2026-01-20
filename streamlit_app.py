@@ -461,8 +461,8 @@ if use_github:
                 exclude_cols + cols_prefix_to_remove
             )
             features_dt = df.drop(columns=exclude_cols, errors='ignore')
-            features_dt = features_dt.select_dtypes(include=[np.number]).fillna(0)
-            y = df[target_col].dropna()
+            features_dt = features_dt.select_dtypes(include=[np.number])
+            y = df[target_col]
             features_dt = features_dt.loc[y.index]
 
             max_depth = st.slider("Max Depth", 1, 10, 4)

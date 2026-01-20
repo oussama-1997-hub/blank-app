@@ -472,7 +472,10 @@ if use_github:
             X_train, X_test, y_train, y_test = train_test_split(features_dt, y, test_size=0.2, random_state=9)
             clf = DecisionTreeClassifier(random_state=10, min_samples_leaf=2)
             clf.fit(X_train, y_train)
-
+                        # Display columns in Streamlit
+            st.markdown("### Columns in Features")
+            st.write(list(features_dt.columns))
+            
             importances = pd.Series(clf.feature_importances_, index=X_train.columns)
             top_importances = importances[importances > 0].sort_values(ascending=False).head(20)
 

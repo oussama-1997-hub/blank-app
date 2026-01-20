@@ -513,9 +513,17 @@ if use_github:
         
         # Données des sous-dimensions de l'entreprise
         # Affichage des infos générales : secteur et taille
-        secteur = df["Secteur Regroupé"].values[0] if "Secteur Regroupé" in df.columns else "N/A"
-        taille = df["taille_categorie"].values[0] if "taille_categorie" in df.columns else "N/A"
+        if not df.empty and "Secteur Regroupé" in df.columns:
+            secteur = df["Secteur Regroupé"].iloc[0]
+        else:
+            secteur = "N/A"
         
+        if not df.empty and "taille_categorie" in df.columns:
+            taille = df["taille_categorie"].iloc[0]
+        else:
+            taille = "N/A"
+        
+                
         st.markdown("### 🏭 Informations générales sur l'entreprise")
         st.markdown(f"- **Secteur d'activité :** {secteur}")
         st.markdown(f"- **Taille de l'entreprise :** {taille}")

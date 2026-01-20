@@ -13,3 +13,4 @@ Pillow
 dtreeviz==1.4.0
 openpyxl
 xlrd
+streamlit[charts]

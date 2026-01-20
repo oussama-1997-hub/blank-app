@@ -452,7 +452,8 @@ if use_github:
     # ----- Decision Tree Tab -----
     with tabs[4]:
         st.header("🌳 Decision Tree Classification")
-        target_col = 'Niveau de maturité Lean 4.0'
+        #target_col = 'Niveau de maturité Lean 4.0'
+        target_col = 'Cluster'
 
         if target_col in df.columns:
             # Columns to remove based on prefix

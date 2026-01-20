@@ -86,7 +86,14 @@ exclude_cols = ['Indicateurs suivis', 'Zone investissement principale', 'Typolog
                 'Type de flux', 'Pays ', 'Méthodes Lean ', 'Technologies industrie 4.0',
                 'cluster', 'Cluster', 'Feature_Cluster', 'Niveau Maturité', 'Cluster Label'] + sum(dimension_map.values(), [])
 
-
+# Columns to remove based on prefix
+cols_prefix_to_remove = [
+    col for col in df.columns
+    if col.startswith('Secteur') or col.startswith('taille')
+]
+exclude_cols = (
+    exclude_cols + cols_prefix_to_remove
+)
 use_github = st.sidebar.checkbox("📂 Use database from GitHub instead of uploading")
 
 if use_github:
@@ -462,8 +469,8 @@ if use_github:
             max_depth = st.slider("Max Depth", 1, 10, 4)
             min_samples_split = st.slider("Min Samples Split", 2, 10, 4)
 
-            X_train, X_test, y_train, y_test = train_test_split(features_dt, y, test_size=0.3, stratify=y, random_state=42)
-            clf = DecisionTreeClassifier(max_depth=max_depth, min_samples_split=min_samples_split, random_state=42)
+            X_train, X_test, y_train, y_test = train_test_split(features_dt, y, test_size=0.2, stratify=y, random_state=9)
+            clf = DecisionTreeClassifier(random_state=10, min_samples_leaf=2)
             clf.fit(X_train, y_train)
 
             importances = pd.Series(clf.feature_importances_, index=X_train.columns)

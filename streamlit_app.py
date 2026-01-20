@@ -86,11 +86,7 @@ exclude_cols = ['Indicateurs suivis', 'Zone investissement principale', 'Typolog
                 'Type de flux', 'Pays ', 'Méthodes Lean ', 'Technologies industrie 4.0',
                 'cluster', 'Cluster', 'Feature_Cluster', 'Niveau Maturité', 'Cluster Label'] + sum(dimension_map.values(), [])
 
-# Columns to remove based on prefix
-cols_prefix_to_remove = df.filter(regex=r'^(Secteur|taille)').columns.tolist()
-exclude_cols = (
-    exclude_cols + cols_prefix_to_remove
-)
+
 use_github = st.sidebar.checkbox("📂 Use database from GitHub instead of uploading")
 
 if use_github:
@@ -458,6 +454,11 @@ if use_github:
         target_col = 'Niveau de maturité Lean 4.0'
 
         if target_col in df.columns:
+            # Columns to remove based on prefix
+            cols_prefix_to_remove = df.filter(regex=r'^(Secteur|taille)').columns.tolist()
+            exclude_cols = (
+                exclude_cols + cols_prefix_to_remove
+            )
             features_dt = df.drop(columns=exclude_cols, errors='ignore')
             features_dt = features_dt.select_dtypes(include=[np.number]).fillna(0)
             y = df[target_col].dropna()

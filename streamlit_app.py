@@ -454,7 +454,7 @@ if use_github:
         st.header("🌳 Decision Tree Classification")
         #target_col = 'Niveau de maturité Lean 4.0'
         target_col = 'Niveau Maturité'
-
+        target = 'Niveau Maturité'
         if target_col in df.columns:
             # Columns to remove based on prefix
             cols_prefix_to_remove = df.filter(regex=r'^(Secteur|taille)').columns.tolist()

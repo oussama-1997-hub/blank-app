@@ -601,7 +601,7 @@ if use_github:
                 
         # Secteur et taille de l'entreprise sélectionnée
         secteur = entreprise["Secteur industriel"] if "Secteur industriel" in entreprise.index else "N/A"
-        taille  = entreprise["taille_categorie"] if "taille_categorie" in entreprise.index else "N/A"
+        taille  = entreprise["Taille entreprise "] if "Taille entreprise " in entreprise.index else "N/A"
         
                 
                 

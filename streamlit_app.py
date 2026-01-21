@@ -600,7 +600,7 @@ if use_github:
         # === Affichage des scores de maturité (par groupe de sous-dimensions) ===
                 
         # Secteur et taille de l'entreprise sélectionnée
-        secteur = entreprise["Secteur Regroupé"] if "Secteur Regroupé" in entreprise.index else "N/A"
+        secteur = entreprise["Secteur industriel"] if "Secteur industriel" in entreprise.index else "N/A"
         taille  = entreprise["taille_categorie"] if "taille_categorie" in entreprise.index else "N/A"
         
                 

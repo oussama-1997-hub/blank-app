@@ -503,7 +503,7 @@ if use_github:
             )
             # Create the feature set by dropping the target and specified columns from df
             # Make sure to drop the original multi-value columns ('Méthodes Lean ', 'Technologies industrie 4.0') as they are replaced by cledf_cleaed_clustered
-            features = df.drop(columns=[target] + cols_to_remove_from_features + ['Méthodes Lean ', 'Technologies industrie 4.0', 'cluster', 'Cluster', 'Feature_Cluster', 'Niveau Maturité','Taille entreprise','Secteur industriel'], errors='ignore')
+            features = df.drop(columns=[target] + cols_to_remove_from_features + ['Méthodes Lean ', 'Technologies industrie 4.0', 'cluster', 'Cluster', 'Feature_Cluster', 'Niveau Maturité','Taille entreprise ','Secteur industriel',"Niveau de maturité Lean 4.0"], errors='ignore')
             
             # Ensure there are no remaining non-numeric columns that weren't intended to be features
             # For robustness, drop any remaining object type columns if they exist unexpectedly

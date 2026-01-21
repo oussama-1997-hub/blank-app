@@ -527,7 +527,7 @@ if use_github:
             clf.fit(X_train, y_train)
                         # Display columns in Streamlit
             st.markdown("### Columns in Features")
-            st.write(list(features_dt.columns))
+            st.write(list(X.columns))
             
             importances = pd.Series(clf.feature_importances_, index=X_train.columns)
             top_importances = importances[importances > 0].sort_values(ascending=False).head(20)

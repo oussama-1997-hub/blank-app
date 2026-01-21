@@ -457,12 +457,11 @@ if use_github:
         target = 'Niveau Maturité'
         if target_col in df.columns:
             # Columns to remove based on prefix
-            cols_prefix_to_remove = df.filter(regex=r'^(Secteur|taille)').columns.tolist()
-            exclude_cols = (
-               exclude_cols + cols_prefix_to_remove
-            )
+            # cols_prefix_to_remove = df.filter(regex=r'^(Secteur|taille)').columns.tolist()
+            # exclude_cols = (
+            # exclude_cols + cols_prefix_to_remove
+            # )
             features_dt = df.drop(columns=exclude_cols, errors='ignore')
-            features_dt = features_dt.select_dtypes(include=[np.number])
             colonnes = [
                 "Leadership - Engagement Lean ",
                 "Leadership - Engagement DT",

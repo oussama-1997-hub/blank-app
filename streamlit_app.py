@@ -549,7 +549,7 @@ if use_github:
 
 
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=46, stratify=y)
-            clf = DecisionTreeClassifier(random_state=10, min_samples_leaf=2, max_depth=5)
+            clf = DecisionTreeClassifier(random_state=10, min_samples_leaf=3, max_depth=5)
             clf.fit(X_train, y_train)
                         # Display columns in Streamlit
 

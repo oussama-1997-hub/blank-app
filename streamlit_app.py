@@ -463,8 +463,7 @@ if use_github:
         )
         df.drop(columns=['Lean_DDMRP', 'Lean_Maki-Gami/Hoshin…etc'], inplace=True)
         
-        df['Lean_Just in time'] = df['Lean_Juste à temps'] | df['Lean_Just in time']
-        df.drop(columns=['Lean_Just in time'], inplace=True)
+
         
         # Tech tools
         df['Tech_Réalité augmentée'] = df['Tech_Réalité augmentée'] | df['Tech_Augmented reality']

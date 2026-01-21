@@ -546,15 +546,13 @@ if use_github:
             y = df[target_col]
             features_dt = features_dt.loc[y.index]
 
-            max_depth = st.slider("Max Depth", 1, 10, 4)
-            min_samples_split = st.slider("Min Samples Split", 2, 10, 4)
+
 
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=46, stratify=y)
             clf = DecisionTreeClassifier(random_state=10, min_samples_leaf=2, max_depth=5)
             clf.fit(X_train, y_train)
                         # Display columns in Streamlit
-            st.markdown("### Columns in Features")
-            st.write(list(X.columns))
+
             
             importances = pd.Series(clf.feature_importances_, index=X_train.columns)
             top_importances = importances[importances > 0].sort_values(ascending=False).head(20)

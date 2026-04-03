@@ -1164,6 +1164,11 @@ if use_github:
         
             tech_df["Priorité"] = tech_df["Taux d'adoption dans cluster cible"].apply(priorite_adoption)
         
+            # =========================
+            # INDUSTRY 4.0 TECHNOLOGIES TABLE
+            # =========================
+            st.markdown("### 🤖 Technologies Industrie 4.0 à adopter")
+            
             styled_tech_df = (
                 tech_df.style
                 .background_gradient(
@@ -1177,22 +1182,8 @@ if use_github:
                     'props': [('text-align', 'center')]
                 }])
             )
-        
-            st.markdown("### 🤖 Technologies Industrie 4.0 à adopter")
+            
             st.dataframe(styled_tech_df, use_container_width=True)
-        
-            st.write("### Technologies Industrie 4.0 à adopter en priorité")
-            st.dataframe(
-                tech_df.style.background_gradient(
-                    subset=['Taux d\'adoption dans cluster cible'],
-                    cmap='Purples'
-                ).applymap(
-                    lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
-                              'color: orange; font-weight: bold' if x == 'Moyenne' else
-                              'color: green;',
-                    subset=['Priorité']
-                )
-            )
       
         else:
             st.info("Aucune technologie prioritaire à adopter.")

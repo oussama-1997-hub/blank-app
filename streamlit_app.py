@@ -982,7 +982,7 @@ if use_github:
                 'Priorité': [priorite_gap(val) for val in gap_values]
             })
             
-            st.dataframe(
+        st.dataframe(
                     gap_df.style
                         .background_gradient(subset=['Écart'], cmap='YlOrRd_r')
                         .map(

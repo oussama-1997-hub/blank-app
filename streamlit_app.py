@@ -1095,8 +1095,13 @@ if use_github:
         # Create support tech list matching display names or empty if not found
         technologies_support = [lean_to_tech_support.get(method, "") for method in lean_methods_display]
         
-     # Définition de la fonction priorite_adoption
+        import pandas as pd
+        import streamlit as st
+        
+        # --- Priority function (defined ONCE, not twice like before) ---
         def priorite_adoption(val):
+            if pd.isna(val):
+                return "Faible"
             if val >= 0.7:
                 return "Élevée"
             elif val >= 0.4:
@@ -1104,52 +1109,77 @@ if use_github:
             else:
                 return "Faible"
         
-        # Supposons que lean_to_adopt, lean_methods_display, et technologies_support sont déjà calculés correctement
-        # lean_methods_display = lean_to_adopt.index.str.replace('Lean_', '').tolist()
-        # technologies_support = [lean_to_tech_support.get(meth, "") for meth in lean_methods_display]
+        # --- Styling function (robust against dirty data) ---
+        def style_priorite(x):
+            if pd.isna(x):
+                return ''
+            x = str(x).strip()
+            if x == 'Élevée':
+                return 'color: red; font-weight: bold'
+            elif x == 'Moyenne':
+                return 'color: orange; font-weight: bold'
+            else:
+                return 'color: green;'
         
-        # Construire le DataFrame
+        # =========================
+        # LEAN METHODS TABLE
+        # =========================
         lean_df = pd.DataFrame({
             "Méthode Lean": lean_methods_display,
             "Technologies support": technologies_support,
             "Taux d'adoption dans cluster cible": lean_to_adopt.values.round(2),
-            "Priorité": [priorite_adoption(v) for v in lean_to_adopt.values]
         })
         
-        # Display the styled DataFrame
+        # Add priority column cleanly
+        lean_df["Priorité"] = lean_df["Taux d'adoption dans cluster cible"].apply(priorite_adoption)
+        
         st.markdown("### 🛠️ Méthodes Lean à adopter en priorité")
-        styled_lean_df = lean_df.style\
+        
+        styled_lean_df = (
+            lean_df.style
             .background_gradient(
-                subset=["Taux d'adoption dans cluster cible"], 
+                subset=["Taux d'adoption dans cluster cible"],
                 cmap="Oranges"
-            )\
-            .map(
-                lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
-                          'color: orange; font-weight: bold' if x == 'Moyenne' else
-                          'color: green;',
-                subset=["Priorité"]
             )
-            .set_properties(**{'text-align': 'center'})\
+            .map(style_priorite, subset=["Priorité"])
+            .set_properties(**{'text-align': 'center'})
             .set_table_styles([{
                 'selector': 'th',
                 'props': [('text-align', 'center')]
             }])
-        st.dataframe(styled_lean_df, use_container_width=True)
-        # Affichage technologies Industrie 4.0 à adopter
-        def priorite_adoption(val):
-            if val >= 0.7:
-                return "Élevée"
-            elif val >= 0.4:
-                return "Moyenne"
-            else:
-                return "Faible"
+        )
         
+        st.dataframe(styled_lean_df, use_container_width=True)
+        
+        
+        # =========================
+        # INDUSTRY 4.0 TECHNOLOGIES TABLE
+        # =========================
         if not tech_to_adopt.empty:
+        
             tech_df = pd.DataFrame({
-                "Technologie Industrie 4.0": tech_to_adopt.index.str.replace('Tech_', ''),
+                "Technologie Industrie 4.0": tech_to_adopt.index.str.replace('Tech_', '', regex=False),
                 "Taux d'adoption dans cluster cible": tech_to_adopt.values.round(2),
-                "Priorité": [priorite_adoption(v) for v in tech_to_adopt.values]
             })
+        
+            tech_df["Priorité"] = tech_df["Taux d'adoption dans cluster cible"].apply(priorite_adoption)
+        
+            styled_tech_df = (
+                tech_df.style
+                .background_gradient(
+                    subset=["Taux d'adoption dans cluster cible"],
+                    cmap="Blues"
+                )
+                .map(style_priorite, subset=["Priorité"])
+                .set_properties(**{'text-align': 'center'})
+                .set_table_styles([{
+                    'selector': 'th',
+                    'props': [('text-align', 'center')]
+                }])
+            )
+        
+            st.markdown("### 🤖 Technologies Industrie 4.0 à adopter")
+            st.dataframe(styled_tech_df, use_container_width=True)
         
             st.write("### Technologies Industrie 4.0 à adopter en priorité")
             st.dataframe(

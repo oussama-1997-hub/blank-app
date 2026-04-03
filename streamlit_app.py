@@ -1119,16 +1119,16 @@ if use_github:
         # Display the styled DataFrame
         st.markdown("### 🛠️ Méthodes Lean à adopter en priorité")
         styled_lean_df = lean_df.style\
-                .background_gradient(
-                    subset=["Taux d'adoption dans cluster cible"], 
-                    cmap="Oranges"
-                )\
-                .map(
-                    lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
-                              'color: orange; font-weight: bold' if x == 'Moyenne' else
-                              'color: green;',
-                    subset=["Priorité"]
-                )
+            .background_gradient(
+                subset=["Taux d'adoption dans cluster cible"], 
+                cmap="Oranges"
+            )\
+            .map(
+                lambda x: 'color: red; font-weight: bold' if x == 'Élevée' else
+                          'color: orange; font-weight: bold' if x == 'Moyenne' else
+                          'color: green;',
+                subset=["Priorité"]
+            )
             .set_properties(**{'text-align': 'center'})\
             .set_table_styles([{
                 'selector': 'th',

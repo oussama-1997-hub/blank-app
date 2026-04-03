@@ -982,19 +982,21 @@ if use_github:
                 'Priorité': [priorite_gap(val) for val in gap_values]
             })
             
-        st.dataframe(
-        gap_df.style.background_gradient(
-                    subset=['Écart'],
-                    cmap='YlOrRd_r'  # 🔁 Inversé pour mettre jaune foncé sur gros écart
-                ).applymap(
-                    lambda x: 'color: red; font-weight: bold' if x == 'Élevée'
-                    else 'color: orange; font-weight: bold' if x == 'Moyenne'
-                    else 'color: green;',
-                    subset=['Priorité']
-                )
+            st.dataframe(
+                gap_df.style
+                    .background_gradient(
+                        subset=['Écart'],
+                        cmap='YlOrRd_r'
+                    )
+                    .map(
+                        lambda x: (
+                            'color: red; font-weight: bold' if str(x).strip() == 'Élevée'
+                            else 'color: orange; font-weight: bold' if str(x).strip() == 'Moyenne'
+                            else 'color: green;'
+                        ),
+                        subset=['Priorité']
+                    )
             )
-        
-
 
         # 4b. Feuille de route technologique personnalisée
         st.subheader("Méthodes Lean & Technologies à adopter")
